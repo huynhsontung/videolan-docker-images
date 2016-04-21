@@ -1,28 +1,5 @@
-FROM debian:jessie
-
-MAINTAINER VideoLAN roots <roots@videolan.org>
-
-# Install and configure a basic SSH server
-RUN apt-get update &&\
-    apt-get install -y openssh-server &&\
-    apt-get clean -y && rm -rf /var/lib/apt/lists/* &&\
-    sed -i 's|session    required     pam_loginuid.so|session    optional     pam_loginuid.so|g' /etc/pam.d/sshd &&\
-    mkdir -p /var/run/sshd
-
-# Install JDK 7 (latest edition)
-RUN apt-get update &&\
-    apt-get install -y openjdk-7-jdk &&\
-    apt-get clean -y && rm -rf /var/lib/apt/lists/*
-
-# Set user jenkins to the image
-RUN adduser --quiet jenkins && \
-    echo "jenkins:jenkins" | chpasswd
-
-# Standard SSH port
-EXPOSE 22
-
-CMD ["/usr/sbin/sshd", "-D"]
+FROM videolan-base-jessie:latest
 
 RUN apt-get update && apt-get -y install \
-	ca-certificates build-essential \
-	git-core make
+	ca-certificates build-essential git-core make && \
+    apt-get clean -y && rm -rf /var/lib/apt/lists/*
