@@ -52,7 +52,6 @@ RUN mkdir /build && cd /build && \
                     make -j4 all-gcc && \
                     make install-gcc && \
     cd /build/mingw-w64/mingw-w64-crt && \
-    autoreconf -vif && \
     mkdir build && cd build && \
     ../configure --prefix=$MINGW_PREFIX \
                     --host=$TARGET_TUPLE && \
