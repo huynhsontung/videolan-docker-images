@@ -47,7 +47,8 @@ RUN mkdir /build && cd /build && \
                     --target=$TARGET_TUPLE \
                     --enable-languages=c,c++ \
                     --disable-shared \
-                    --disable-multilib && \
+                    --disable-multilib \
+                    --enable-sjlj-exceptions && \
                     make -j4 all-gcc && \
                     make install-gcc && \
     cd /build/mingw-w64/mingw-w64-crt && \
