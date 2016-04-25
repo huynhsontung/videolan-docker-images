@@ -12,8 +12,6 @@ ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
 ENV MINGW_PREFIX=$TOOLCHAIN_PREFIX/$TARGET_TUPLE
 ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
 
-COPY beginthread.patch .
-
 RUN mkdir /build && cd /build && \
     mkdir $TOOLCHAIN_PREFIX && \
     mkdir $MINGW_PREFIX && \
@@ -23,7 +21,6 @@ RUN mkdir /build && cd /build && \
     git config --global user.name "VideoLAN Buildbot" && \
     git config --global user.email buildbot@videolan.org && \
     git clone --depth=1 git://git.code.sf.net/p/mingw-w64/mingw-w64 && \
-    cd mingw-w64 git am ../beginthread.patch &&  cd .. && \
     tar xf gcc-5.3.0.tar.bz2 && \
     tar xf binutils-2.26.tar.bz2 && \
     cd binutils-2.26 && mkdir build && cd build && \
