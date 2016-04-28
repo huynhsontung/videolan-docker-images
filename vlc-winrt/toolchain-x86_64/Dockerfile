@@ -12,7 +12,7 @@ ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
 ENV MINGW_PREFIX=$TOOLCHAIN_PREFIX/$TARGET_TUPLE
 ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
 
-COPY beginthread.patch .
+COPY no-rtl-func.patch .
 
 RUN mkdir /build && cd /build && \
     mkdir $TOOLCHAIN_PREFIX && \
@@ -23,7 +23,7 @@ RUN mkdir /build && cd /build && \
     git config --global user.name "VideoLAN Buildbot" && \
     git config --global user.email buildbot@videolan.org && \
     git clone --depth=1 git://git.code.sf.net/p/mingw-w64/mingw-w64 && \
-    cd mingw-w64 git am ../beginthread.patch &&  cd .. && \
+    cd mingw-w64 && git am ../../no-rtl-func.patch && cd .. && \
     tar xf gcc-5.3.0.tar.bz2 && \
     tar xf binutils-2.26.tar.bz2 && \
     cd binutils-2.26 && mkdir build && cd build && \
@@ -47,11 +47,11 @@ RUN mkdir /build && cd /build && \
                     --target=$TARGET_TUPLE \
                     --enable-languages=c,c++ \
                     --disable-shared \
-                    --disable-multilib && \
+                    --disable-multilib \
+                    --enable-sjlj-exceptions && \
                     make -j4 all-gcc && \
                     make install-gcc && \
     cd /build/mingw-w64/mingw-w64-crt && \
-    autoreconf -vif && \
     mkdir build && cd build && \
     ../configure --prefix=$MINGW_PREFIX \
                     --host=$TARGET_TUPLE && \
