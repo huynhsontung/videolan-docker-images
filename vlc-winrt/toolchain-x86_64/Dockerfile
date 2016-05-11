@@ -4,7 +4,7 @@ MAINTAINER Hugo Beauzée-Luyssen <hugo@beauzee.fr>
 
 RUN apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file libwine-dev unzip libtool pkg-config cmake \
-    build-essential automake texinfo ragel yasm p7zip-full && \
+    build-essential automake texinfo ragel yasm p7zip-full autopoint && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 ENV TARGET_TUPLE=x86_64-w64-mingw32
