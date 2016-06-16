@@ -1,14 +1,14 @@
-From a430d9a80d259da29a6a3119380c95f017b16d7d Mon Sep 17 00:00:00 2001
-From: VideoLAN Buildbot <buildbot@videolan.org>
-Date: Thu, 16 Jun 2016 12:02:01 +0200
-Subject: [PATCH] Allow windows10 to use content of iphlpapi.h
+From f563cdaf1cbfc7c977103c59769eb9842123b98e Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Hugo=20Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
+Date: Thu, 16 Jun 2016 15:56:54 +0200
+Subject: [PATCH] headers: iphlpapi.h is fully available on windows10
 
 ---
  mingw-w64-headers/include/iphlpapi.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/mingw-w64-headers/include/iphlpapi.h b/mingw-w64-headers/include/iphlpapi.h
-index 03aed33..55bc1e4 100644
+index 03aed33..4df7607 100644
 --- a/mingw-w64-headers/include/iphlpapi.h
 +++ b/mingw-w64-headers/include/iphlpapi.h
 @@ -8,7 +8,7 @@
@@ -16,10 +16,10 @@ index 03aed33..55bc1e4 100644
  #include <winapifamily.h>
  
 -#if WINAPI_FAMILY_PARTITION (WINAPI_PARTITION_DESKTOP)
-+#if WINAPI_FAMILY_PARTITION (WINAPI_PARTITION_DESKTOP) || _WINNT_VER >= 0x0A00
++#if WINAPI_FAMILY_PARTITION (WINAPI_PARTITION_DESKTOP) || _WIN32_WINNT >= 0x0A00
  
  #ifdef __cplusplus
  extern "C" {
 -- 
-2.7.4
+2.8.1
 
