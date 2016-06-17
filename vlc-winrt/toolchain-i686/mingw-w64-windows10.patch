@@ -1,17 +1,17 @@
-From 504e345b25603ca2f8896db82a4293351ba7cc4f Mon Sep 17 00:00:00 2001
+From 42bba439de33271418f117ca546a08516827d598 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Hugo=20Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
 Date: Thu, 16 Jun 2016 15:56:54 +0200
 Subject: [PATCH] headers: Adjust header guards for Windows 10
 
 ---
- mingw-w64-headers/include/iphlpapi.h | 8 ++++++--
- mingw-w64-headers/include/iprtrmib.h | 5 +++++
- mingw-w64-headers/include/mprapi.h   | 6 ++++++
- mingw-w64-headers/include/nldef.h    | 2 +-
- 4 files changed, 18 insertions(+), 3 deletions(-)
+ mingw-w64-headers/include/iphlpapi.h | 11 ++++++++---
+ mingw-w64-headers/include/iprtrmib.h |  5 +++++
+ mingw-w64-headers/include/mprapi.h   |  6 ++++++
+ mingw-w64-headers/include/nldef.h    |  2 +-
+ 4 files changed, 20 insertions(+), 4 deletions(-)
 
 diff --git a/mingw-w64-headers/include/iphlpapi.h b/mingw-w64-headers/include/iphlpapi.h
-index 03aed33..5523f81 100644
+index 03aed33..c85fc84 100644
 --- a/mingw-w64-headers/include/iphlpapi.h
 +++ b/mingw-w64-headers/include/iphlpapi.h
 @@ -8,8 +8,6 @@
@@ -43,6 +43,18 @@ index 03aed33..5523f81 100644
  #ifdef _WINSOCK2API_
    ULONG WINAPI GetAdaptersAddresses (ULONG Family, ULONG Flags, PVOID Reserved, PIP_ADAPTER_ADDRESSES AdapterAddresses, PULONG SizePointer);
  #endif
+@@ -170,9 +174,10 @@ extern "C" {
+ #include <netioapi.h>
+ #endif
+ 
++#endif
++
+ #ifdef __cplusplus
+ }
+ #endif
+ 
+ #endif
+-#endif
 diff --git a/mingw-w64-headers/include/iprtrmib.h b/mingw-w64-headers/include/iprtrmib.h
 index 93e0cad..65ca264 100644
 --- a/mingw-w64-headers/include/iprtrmib.h
