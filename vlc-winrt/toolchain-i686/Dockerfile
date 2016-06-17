@@ -30,6 +30,7 @@ RUN mkdir /build && cd /build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE \
                     --disable-werror --disable-multilib && make -j4 && make install && \
     cd /build/mingw-w64/mingw-w64-headers && mkdir build && cd build && \
+    git am /mingw-w64-windows10.patch && \
     ../configure --prefix=$MINGW_PREFIX \
                     --host=$TARGET_TUPLE && make install && \
     cd /build && \
@@ -52,7 +53,6 @@ RUN mkdir /build && cd /build && \
                     make install-gcc && \
     cd /build/mingw-w64/mingw-w64-crt && \
     git am ../../../missing-snprintf.patch && \
-    git am ../../../mingw-w64-windows10.patch && \
     mkdir build && cd build && \
     ../configure --prefix=$MINGW_PREFIX \
                     --host=$TARGET_TUPLE && \
