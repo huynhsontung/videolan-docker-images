@@ -1,32 +1,34 @@
-From e99c487742228b7198db15db9292f79eb71d90e3 Mon Sep 17 00:00:00 2001
+From 504e345b25603ca2f8896db82a4293351ba7cc4f Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Hugo=20Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
 Date: Thu, 16 Jun 2016 15:56:54 +0200
 Subject: [PATCH] headers: Adjust header guards for Windows 10
 
 ---
- mingw-w64-headers/include/iphlpapi.h | 6 +++++-
+ mingw-w64-headers/include/iphlpapi.h | 8 ++++++--
  mingw-w64-headers/include/iprtrmib.h | 5 +++++
  mingw-w64-headers/include/mprapi.h   | 6 ++++++
  mingw-w64-headers/include/nldef.h    | 2 +-
- 4 files changed, 17 insertions(+), 2 deletions(-)
+ 4 files changed, 18 insertions(+), 3 deletions(-)
 
 diff --git a/mingw-w64-headers/include/iphlpapi.h b/mingw-w64-headers/include/iphlpapi.h
-index 03aed33..b28df42 100644
+index 03aed33..5523f81 100644
 --- a/mingw-w64-headers/include/iphlpapi.h
 +++ b/mingw-w64-headers/include/iphlpapi.h
-@@ -8,7 +8,7 @@
+@@ -8,8 +8,6 @@
  
  #include <winapifamily.h>
  
 -#if WINAPI_FAMILY_PARTITION (WINAPI_PARTITION_DESKTOP)
-+#if WINAPI_FAMILY_PARTITION (WINAPI_PARTITION_DESKTOP) || _WIN32_WINNT >= 0x0A00
- 
+-
  #ifdef __cplusplus
  extern "C" {
-@@ -19,6 +19,8 @@ extern "C" {
+ #endif
+@@ -19,6 +17,10 @@ extern "C" {
  #include <iptypes.h>
  #include <tcpestats.h>
  
++#if WINAPI_FAMILY_PARTITION (WINAPI_PARTITION_DESKTOP) || _WIN32_WINNT >= 0x0A00
++
 +#if WINAPI_FAMILY_PARTITION (WINAPI_PARTITION_DESKTOP)
 +
    DWORD WINAPI GetNumberOfInterfaces (PDWORD pdwNumIf);
