@@ -52,7 +52,7 @@ RUN mkdir /build && cd /build && \
                     make install-gcc && \
     cd /build/mingw-w64/mingw-w64-crt && \
     git am ../../../missing-snprintf.patch && \
-    git am ../../mingw-w64-windows10.patch && \
+    git am ../../../mingw-w64-windows10.patch && \
     mkdir build && cd build && \
     ../configure --prefix=$MINGW_PREFIX \
                     --host=$TARGET_TUPLE && \
