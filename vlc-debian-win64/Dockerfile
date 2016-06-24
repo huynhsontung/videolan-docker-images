@@ -9,6 +9,8 @@ RUN apt-get update && apt-get -y install \
     wine-development wine zip nsis bzip2 p7zip-full wget dos2unix ragel \
     yasm g++ protobuf-compiler m4 ant build-essential libtool-bin \
     gcc-mingw-w64-i686 g++-mingw-w64-i686 && \
+    dpkg --add-architecture i386 && \
+    apt-get update && apt-get -y install wine32 && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 RUN /enforce-static.sh
