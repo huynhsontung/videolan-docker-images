@@ -8,6 +8,8 @@ RUN apt-get update && apt-get -y install \
     qt4-default git subversion cmake cvs libwine-dev wine-development wine \
     zip nsis bzip2 p7zip-full wget dos2unix ragel yasm g++ protobuf-compiler \
     m4 ant build-essential libtool-bin && \
+    dpkg --add-architecture i386 && \
+    apt-get update && apt-get install wine32 && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 RUN /enforce-static.sh
