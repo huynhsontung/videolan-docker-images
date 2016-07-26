@@ -1,19 +1,15 @@
-FROM debian:sid
+FROM jenkins-vlc-devel-debian-unstable:latest
 
-RUN apt-get update && apt-get -y install \
-	ca-certificates build-essential \
-	git-core automake libtool pkg-config autoconf \
-	&& apt-get clean
+RUN git clone https://git.videolan.org/git/vlc.git && \
+    cd vlc && ./bootstrap && mkdir build && cd build && \
+    ../configure --disable-lua --disable-qt --disable-skins2 \
+        --disable-nls \
+        --prefix=/prefix && \
+    make -j4 && make install && \
+    git clone https://code.videolan.org/videolan/libvlcpp.git && \
+    cd libvlcpp && ./bootstrap && \
+    ./configure --prefix=/prefix/ && \
+    make -j4 && make install
 
-RUN apt-get -y install libvlc-dev libvlccore-dev cmake libjpeg-dev subversion rapidjson-dev libevas-dev libsqlite3-dev
+ENV PKG_CONFIG_PATH=/prefix/lib/pkgconfig 
 
-RUN git clone https://code.videolan.org/videolan/medialibrary.git && \
-	cd medialibrary && \
-	git clone https://code.videolan.org/videolan/libvlcpp.git && \
-	cmake -DLIBVLCPP_DIR=libvlcpp . && \
-	make && \
-	cd test && ./unittest
-
-
-	
-	
