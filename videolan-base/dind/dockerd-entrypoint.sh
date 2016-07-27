@@ -1,21 +1,11 @@
 #!/bin/sh
 set -ex
 
-ssh-keygen -A
-/usr/sbin/sshd -e
-
-if [ "$#" -eq 0 -o "${1:0:1}" = '-' ]; then
-	set -- docker daemon \
+dind docker daemon \
 		--host=unix:///var/run/docker.sock \
 		--host=tcp://0.0.0.0:2375 \
-		--storage-driver=vfs \
-		"$@"
-fi
+		--storage-driver=vfs &
 
-if [ "$1" = 'docker' -a "$2" = 'daemon' ]; then
-	# if we're running Docker, let's pipe through dind
-	# (and we'll run dind explicitly with "sh" since its shebang is /bin/bash)
-	set -- sh "$(which dind)" "$@"
-fi
+ssh-keygen -A
 
 exec "$@"

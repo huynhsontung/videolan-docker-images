@@ -10,7 +10,11 @@ RUN apk add --no-cache \
 		iptables \
 		xfsprogs \
 		xz \
-		openssh
+		openssh \
+		bash \
+		openjdk8-jre-base \
+		git \
+		make
 
 # TODO aufs-tools
 
