@@ -1,4 +1,4 @@
-FROM videolan-base-sid:latest
+FROM registry.videolan.org:5000/videolan-base-sid:latest
 
 RUN dpkg --add-architecture i386 && apt-get update && \
     apt-get install -y autoconf m4 automake ant autopoint cmake \
