@@ -14,7 +14,9 @@ ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
 
 COPY no-rtl-func.patch .
 COPY missing-snprintf.patch .
-COPY winstorecompat.patch .
+#COPY winstorecompat.patch .
+COPY windowsapp.a.patch .
+COPY getstartupinfo.patch .
 
 RUN mkdir /build && cd /build && \
     mkdir $TOOLCHAIN_PREFIX && \
@@ -27,7 +29,8 @@ RUN mkdir /build && cd /build && \
     git clone --depth=1 git://git.code.sf.net/p/mingw-w64/mingw-w64 && \
     cd mingw-w64 && git am ../../no-rtl-func.patch && \
     git am ../../missing-snprintf.patch && \
-    git am ../../winstorecompat.patch && \
+    git am ../../windowsapp.a.patch && \
+    git am ../../getstartupinfo.patch && \
     cd .. && \
     tar xf gcc-5.3.0.tar.bz2 && \
     tar xf binutils-2.26.tar.bz2 && \

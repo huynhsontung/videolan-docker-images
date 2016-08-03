@@ -13,7 +13,9 @@ ENV MINGW_PREFIX=$TOOLCHAIN_PREFIX/$TARGET_TUPLE
 ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
 
 COPY missing-snprintf.patch .
-COPY winstorecompat.patch .
+#COPY winstorecompat.patch .
+COPY windowsapp.a.patch .
+COPY getstartupinfo.patch .
 
 RUN mkdir /build && cd /build && \
     mkdir $TOOLCHAIN_PREFIX && \
@@ -52,7 +54,8 @@ RUN mkdir /build && cd /build && \
                     make install-gcc && \
     cd /build/mingw-w64/mingw-w64-crt && \
     git am ../../../missing-snprintf.patch && \
-    git am ../../../winstorecompat.patch && \
+    git am ../../../windowsapp.a.patch && \
+    git am ../../../getstartupinfo.patch && \
     mkdir build && cd build && \
     ../configure --prefix=$MINGW_PREFIX \
                     --host=$TARGET_TUPLE && \
