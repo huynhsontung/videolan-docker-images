@@ -17,6 +17,7 @@ COPY missing-snprintf.patch .
 #COPY winstorecompat.patch .
 COPY windowsapp.a.patch .
 COPY getstartupinfo.patch .
+COPY switchtothread.patch .
 
 RUN mkdir /build && cd /build && \
     mkdir $TOOLCHAIN_PREFIX && \
@@ -31,6 +32,7 @@ RUN mkdir /build && cd /build && \
     git am ../../missing-snprintf.patch && \
     git am ../../windowsapp.a.patch && \
     git am ../../getstartupinfo.patch && \
+    git am ../../switchtothread.patch && \
     cd .. && \
     tar xf gcc-5.3.0.tar.bz2 && \
     tar xf binutils-2.26.tar.bz2 && \

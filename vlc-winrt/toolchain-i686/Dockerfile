@@ -16,6 +16,7 @@ COPY missing-snprintf.patch .
 #COPY winstorecompat.patch .
 COPY windowsapp.a.patch .
 COPY getstartupinfo.patch .
+COPY switchtothread.patch .
 
 RUN mkdir /build && cd /build && \
     mkdir $TOOLCHAIN_PREFIX && \
@@ -32,6 +33,7 @@ RUN mkdir /build && cd /build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE \
                     --disable-werror --disable-multilib && make -j4 && make install && \
     cd /build/mingw-w64/mingw-w64-headers && mkdir build && cd build && \
+    git am /switchtothread.patch && \
     ../configure --prefix=$MINGW_PREFIX \
                     --host=$TARGET_TUPLE && make install && \
     cd /build && \
