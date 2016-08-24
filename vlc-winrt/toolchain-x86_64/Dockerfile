@@ -11,6 +11,7 @@ ENV TARGET_TUPLE=x86_64-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
 ENV MINGW_PREFIX=$TOOLCHAIN_PREFIX/$TARGET_TUPLE
 ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
+ENV GCC_VERSION=5.4.0
 
 COPY no-rtl-func.patch .
 COPY missing-snprintf.patch .
@@ -24,7 +25,7 @@ RUN mkdir /build && cd /build && \
     mkdir $MINGW_PREFIX && \
     ln -s $MINGW_PREFIX $TOOLCHAIN_PREFIX/mingw && \
     wget -q http://ftp.gnu.org/gnu/binutils/binutils-2.26.tar.bz2 && \
-    wget -q ftp://ftp.uvsq.fr/pub/gcc/releases/gcc-5.3.0/gcc-5.3.0.tar.bz2 && \
+    wget -q ftp://ftp.uvsq.fr/pub/gcc/releases/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.bz2 && \
     git config --global user.name "VideoLAN Buildbot" && \
     git config --global user.email buildbot@videolan.org && \
     git clone --depth=1 git://git.code.sf.net/p/mingw-w64/mingw-w64 && \
@@ -34,7 +35,7 @@ RUN mkdir /build && cd /build && \
     git am ../../getstartupinfo.patch && \
     git am ../../switchtothread.patch && \
     cd .. && \
-    tar xf gcc-5.3.0.tar.bz2 && \
+    tar xf gcc-$GCC_VERSION.tar.bz2 && \
     tar xf binutils-2.26.tar.bz2 && \
     cd binutils-2.26 && mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE \
@@ -49,10 +50,10 @@ RUN mkdir /build && cd /build && \
     tar xf mpfr-3.1.4.tar.gz && \
     tar xf gmp-6.1.0.tar.xz && \
     tar xf mpc-1.0.3.tar.gz && \
-    ln -s /build/mpfr-3.1.4 gcc-5.3.0/mpfr && \
-    ln -s /build/gmp-6.1.0 gcc-5.3.0/gmp && \
-    ln -s /build/mpc-1.0.3 gcc-5.3.0/mpc && \
-    cd gcc-5.3.0 && mkdir build && cd build && \
+    ln -s /build/mpfr-3.1.4 gcc-$GCC_VERSION/mpfr && \
+    ln -s /build/gmp-6.1.0 gcc-$GCC_VERSION/gmp && \
+    ln -s /build/mpc-1.0.3 gcc-$GCC_VERSION/mpc && \
+    cd gcc-$GCC_VERSION && mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX \
                     --target=$TARGET_TUPLE \
                     --enable-languages=c,c++ \
@@ -67,7 +68,7 @@ RUN mkdir /build && cd /build && \
                     --host=$TARGET_TUPLE && \
     make -j4 && \
     make install && \
-    cd /build/gcc-5.3.0/build && \
+    cd /build/gcc-$GCC_VERSION/build && \
     make -j4 && \
     make install && \
     cd /build/mingw-w64/mingw-w64-libraries/winstorecompat && \
