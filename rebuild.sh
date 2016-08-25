@@ -1,16 +1,27 @@
 #!/bin/sh
 
-# this is a helper script to rebuild all base images and then all dependant images
-# rebuilding dind image is too dangerous
+BASE=""
+LATE=""
 
-BASE="jessie sid"
+CHANGED=$(for i in `git log --name-only --pretty=oneline --full-index $GIT_PREVIOUS_COMMIT..$GIT_COMMIT | grep -vE '^[0-9a-f]{40} '`; do echo `dirname $i`; done | sort | uniq)
 
-DEPS="vlc-debian-unstable vlc-debian-android vlc-debian-win32 vlc-debian-win64"
-
-for type in $BASE; do
-    make -C videolan-base/$type push
+for dir in $CHANGED; do
+    case $dir in
+        videolan-base*)
+            BASE="$BASE $dir"
+            ;;
+        *)
+            LATE="$LATE $dir"
+            ;;
+        .)
+            ;;
+    esac
 done
 
-for dep in $DEPS; do
-    make -C $dep push
+for b in $BASE; do
+    make -C $b push
+done
+
+for l in $LATE; do
+    make -C $l push
 done
