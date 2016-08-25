@@ -1,5 +1,7 @@
 #!/bin/sh
 
+/usr/bin/env
+
 BASE=""
 LATE=""
 
@@ -17,6 +19,9 @@ for dir in $CHANGED; do
             ;;
     esac
 done
+
+echo "Changed base images: $BASE"
+echo "Changed late images: $LATE"
 
 for b in $BASE; do
     make -C $b push
