@@ -12,10 +12,10 @@ for dir in $CHANGED; do
         videolan-base*)
             BASE="$BASE $dir"
             ;;
+        .)
+            ;;
         *)
             LATE="$LATE $dir"
-            ;;
-        .)
             ;;
     esac
 done
