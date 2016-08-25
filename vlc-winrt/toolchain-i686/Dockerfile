@@ -79,4 +79,4 @@ RUN mkdir /build && cd /build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE && \
     make -j4 && \
     make install && \
-    cd / && rm -rf /build
+    cd / && rm -rf /build && rm -f /*.patch
