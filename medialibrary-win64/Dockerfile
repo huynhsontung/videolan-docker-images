@@ -1,4 +1,6 @@
-FROM jenkins-vlc-win64:latest
+FROM registry.videolan.org:5000/jenkins-vlc-win64:latest
+
+ENV IMAGE_DATE=201609150941
 
 ENV TARGET_TRIPLE=x86_64-w64-mingw32
 ENV SQLITE_VERSION=sqlite-autoconf-3140000
