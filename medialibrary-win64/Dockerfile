@@ -11,7 +11,7 @@ RUN mkdir /build && cd /build && \
     cd vlc && \
     cd contrib && mkdir win64 && cd win64 && \
     ../bootstrap --host=$TARGET_TRIPLE --disable-qt --disable-skins2 \
-        --disable-lua --disable-protobuf && make -j4 && \
+        --disable-lua --disable-protobuf --disable-gettext && make -j4 && \
     cd /build/vlc && ./bootstrap && mkdir build && cd build && \
     ../configure --host=$TARGET_TRIPLE \
         --disable-lua --disable-qt --disable-skins2 \
