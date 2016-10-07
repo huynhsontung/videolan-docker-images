@@ -11,10 +11,10 @@ RUN dpkg --add-architecture i386 && apt-get update && \
 # install android sdk
 COPY accept-licenses.sh /root
 RUN mkdir sdk && cd sdk && \
-    wget http://dl.google.com/android/repository/android-ndk-r12b-linux-x86_64.zip && \
-    unzip android-ndk-r12b-linux-x86_64.zip && \
-    rm -f android-ndk-r12b-linux-x86_64.zip && \
-    ln -s android-ndk-r12b android-ndk && \
+    wget http://dl.google.com/android/repository/android-ndk-r13-linux-x86_64.zip && \
+    unzip android-ndk-r13-linux-x86_64.zip && \
+    rm -f android-ndk-r13-linux-x86_64.zip && \
+    ln -s android-ndk-r13 android-ndk && \
     wget http://dl.google.com/android/android-sdk_r24.4.1-linux.tgz && \
     tar -xzf android-sdk_r24.4.1-linux.tgz && \
     rm -f android-sdk_r24.4.1-linux.tgz && \
