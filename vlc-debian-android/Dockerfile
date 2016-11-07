@@ -1,5 +1,7 @@
 FROM registry.videolan.org:5000/videolan-base-sid:latest
 
+ENV IMAGE_DATE=201611071546
+
 RUN dpkg --add-architecture i386 && apt-get update && \
     apt-get install -y autoconf m4 automake ant autopoint cmake \
     build-essential libtool libtool-bin patch pkg-config ragel subversion \
