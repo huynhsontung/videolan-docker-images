@@ -25,8 +25,10 @@ echo "Changed late images: '$LATE'"
 
 for b in $BASE; do
     make -C $b push
+    make -C $b swarm
 done
 
 for l in $LATE; do
     make -C $l push
+    make -C $l swarm
 done
