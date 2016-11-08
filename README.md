@@ -6,7 +6,7 @@ On push, the [Docker Images Job] will launch and figure out the images that need
 
 The results will be available on VideoLAN docker registry under registry.videolan.org:5000/$tag.
 
-If you require a new Linux distro to be a base of your future image(-s), please put it under videolan-base/ directory.
+If you require a new Linux distro to be a base of your future image(-s), please put it under videolan-base-$distro directory.
 
 
 To add a new build on Jenkins:
@@ -22,7 +22,6 @@ To add a new build on Jenkins:
  * Create a new freestyle job Item under an appropriate Folder.
 
 
-   [Gulp]: <http://gulpjs.com>
    [Jenkins]: <//jenkins.videolan.org>
    [Docker Images Job]: <https://jenkins.videolan.org/job/Infrastructure/job/Docker%20images/>
    [Configure Jenkins]: <//jenkins.videolan.org/configure>
