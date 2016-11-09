@@ -1,0 +1,105 @@
+From 245587fd246213515ab663b893bc0318fcc728f3 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Hugo=20Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
+Date: Wed, 9 Nov 2016 15:49:56 +0100
+Subject: [PATCH 11/11] winstorecompat: Regenerate automake
+
+---
+ mingw-w64-libraries/winstorecompat/Makefile.in | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
+
+diff --git a/mingw-w64-libraries/winstorecompat/Makefile.in b/mingw-w64-libraries/winstorecompat/Makefile.in
+index ff8b859..ce7fe73 100644
+--- a/mingw-w64-libraries/winstorecompat/Makefile.in
++++ b/mingw-w64-libraries/winstorecompat/Makefile.in
+@@ -135,10 +135,9 @@ am__v_AR_1 =
+ libwinstorecompat_a_AR = $(AR) $(ARFLAGS)
+ libwinstorecompat_a_LIBADD =
+ am__dirstamp = $(am__leading_dot)dirstamp
+-am_libwinstorecompat_a_OBJECTS = src/_wassert.$(OBJEXT) \
+-	src/beginthread.$(OBJEXT) src/GetModuleHandle.$(OBJEXT) \
+-	src/CreateEventW.$(OBJEXT) src/CreateMutexW.$(OBJEXT) \
+-	src/CreateSemaphoreW.$(OBJEXT) \
++am_libwinstorecompat_a_OBJECTS = src/beginthread.$(OBJEXT) \
++	src/GetModuleHandle.$(OBJEXT) src/CreateEventW.$(OBJEXT) \
++	src/CreateMutexW.$(OBJEXT) src/CreateSemaphoreW.$(OBJEXT) \
+ 	src/InitializeCriticalSection.$(OBJEXT) \
+ 	src/GetFileAttributes.$(OBJEXT) \
+ 	src/WaitForSingleObject.$(OBJEXT) src/LoadLibraryW.$(OBJEXT) \
+@@ -153,7 +152,8 @@ am_libwinstorecompat_a_OBJECTS = src/_wassert.$(OBJEXT) \
+ 	src/SleepEx.$(OBJEXT) src/SetFilePointer.$(OBJEXT) \
+ 	src/GetFileSize.$(OBJEXT) src/Tls.$(OBJEXT) \
+ 	src/SHGetFolderPathW.$(OBJEXT) src/QueueTimer.$(OBJEXT) \
+-	src/Crypto.$(OBJEXT)
++	src/Crypto.$(OBJEXT) src/GetStartupInfo.$(OBJEXT) \
++	src/GetConsoleOutputCP.$(OBJEXT)
+ libwinstorecompat_a_OBJECTS = $(am_libwinstorecompat_a_OBJECTS)
+ AM_V_P = $(am__v_P_@AM_V@)
+ am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
+@@ -315,6 +315,7 @@ pdfdir = @pdfdir@
+ prefix = @prefix@
+ program_transform_name = @program_transform_name@
+ psdir = @psdir@
++runstatedir = @runstatedir@
+ sbindir = @sbindir@
+ sharedstatedir = @sharedstatedir@
+ srcdir = @srcdir@
+@@ -327,7 +328,6 @@ AUTOMAKE_OPTIONS = foreign subdir-objects
+ AM_CFLAGS = -Wall -Wstrict-aliasing=2 -pedantic
+ lib_LIBRARIES = libwinstorecompat.a
+ libwinstorecompat_a_SOURCES = \
+-  src/_wassert.c \
+   src/beginthread.c \
+   src/GetModuleHandle.c \
+   src/CreateEventW.c \
+@@ -358,6 +358,8 @@ libwinstorecompat_a_SOURCES = \
+   src/SHGetFolderPathW.c \
+   src/QueueTimer.c \
+   src/Crypto.c \
++  src/GetStartupInfo.c \
++  src/GetConsoleOutputCP.c \
+   $(NULL)
+ 
+ all: all-am
+@@ -434,8 +436,6 @@ src/$(am__dirstamp):
+ src/$(DEPDIR)/$(am__dirstamp):
+ 	@$(MKDIR_P) src/$(DEPDIR)
+ 	@: > src/$(DEPDIR)/$(am__dirstamp)
+-src/_wassert.$(OBJEXT): src/$(am__dirstamp) \
+-	src/$(DEPDIR)/$(am__dirstamp)
+ src/beginthread.$(OBJEXT): src/$(am__dirstamp) \
+ 	src/$(DEPDIR)/$(am__dirstamp)
+ src/GetModuleHandle.$(OBJEXT): src/$(am__dirstamp) \
+@@ -494,6 +494,10 @@ src/QueueTimer.$(OBJEXT): src/$(am__dirstamp) \
+ 	src/$(DEPDIR)/$(am__dirstamp)
+ src/Crypto.$(OBJEXT): src/$(am__dirstamp) \
+ 	src/$(DEPDIR)/$(am__dirstamp)
++src/GetStartupInfo.$(OBJEXT): src/$(am__dirstamp) \
++	src/$(DEPDIR)/$(am__dirstamp)
++src/GetConsoleOutputCP.$(OBJEXT): src/$(am__dirstamp) \
++	src/$(DEPDIR)/$(am__dirstamp)
+ 
+ libwinstorecompat.a: $(libwinstorecompat_a_OBJECTS) $(libwinstorecompat_a_DEPENDENCIES) $(EXTRA_libwinstorecompat_a_DEPENDENCIES) 
+ 	$(AM_V_at)-rm -f libwinstorecompat.a
+@@ -513,9 +517,11 @@ distclean-compile:
+ @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/CreateSemaphoreW.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/Crypto.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/GetACP.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/GetConsoleOutputCP.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/GetFileAttributes.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/GetFileSize.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/GetModuleHandle.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/GetStartupInfo.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/GetTickCount.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/InitializeCriticalSection.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/IsDBCSLeadByteEx.Po@am__quote@
+@@ -534,7 +540,6 @@ distclean-compile:
+ @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/UnhandledExceptionFilter.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/VirtualProtect.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/WaitForSingleObject.Po@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/_wassert.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/beginthread.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/getenv.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/getpid.Po@am__quote@
+-- 
+2.9.3
+
