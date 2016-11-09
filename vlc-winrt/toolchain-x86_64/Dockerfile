@@ -1,4 +1,4 @@
-FROM videolan-base-sid:latest
+FROM registry.videolan.org:5000/videolan-base-sid:latest
 
 MAINTAINER Hugo Beauzée-Luyssen <hugo@beauzee.fr>
 
