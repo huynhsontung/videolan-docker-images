@@ -35,14 +35,14 @@ RUN cd /build && \
     ../configure --prefix=$MINGW_PREFIX \
                     --host=$TARGET_TUPLE && make install && \
     cd /build && \
-    wget -q http://www.mpfr.org/mpfr-current/mpfr-3.1.4.tar.gz && \
-    wget -q https://gmplib.org/download/gmp/gmp-6.1.0.tar.xz && \
+    wget -q http://www.mpfr.org/mpfr-current/mpfr-3.1.5.tar.gz && \
+    wget -q https://gmplib.org/download/gmp/gmp-6.1.1.tar.xz && \
     wget -q ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.3.tar.gz && \
-    tar xf mpfr-3.1.4.tar.gz && \
-    tar xf gmp-6.1.0.tar.xz && \
+    tar xf mpfr-3.1.5.tar.gz && \
+    tar xf gmp-6.1.1.tar.xz && \
     tar xf mpc-1.0.3.tar.gz && \
-    ln -s /build/mpfr-3.1.4 gcc-$GCC_VERSION/mpfr && \
-    ln -s /build/gmp-6.1.0 gcc-$GCC_VERSION/gmp && \
+    ln -s /build/mpfr-3.1.5 gcc-$GCC_VERSION/mpfr && \
+    ln -s /build/gmp-6.1.1 gcc-$GCC_VERSION/gmp && \
     ln -s /build/mpc-1.0.3 gcc-$GCC_VERSION/mpc && \
     cd gcc-$GCC_VERSION && mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX \
