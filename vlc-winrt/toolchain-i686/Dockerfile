@@ -12,15 +12,11 @@ ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
 ENV MINGW_PREFIX=$TOOLCHAIN_PREFIX/$TARGET_TUPLE
 ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
 
-COPY missing-snprintf.patch .
-#COPY winstorecompat.patch .
-COPY windowsapp.a.patch .
-COPY getstartupinfo.patch .
-COPY switchtothread.patch .
+COPY patches /build/patches
 
 ENV GCC_VERSION=5.4.0
 
-RUN mkdir /build && cd /build && \
+RUN cd /build && \
     mkdir $TOOLCHAIN_PREFIX && \
     mkdir $MINGW_PREFIX && \
     ln -s $MINGW_PREFIX $TOOLCHAIN_PREFIX/mingw && \
@@ -34,8 +30,8 @@ RUN mkdir /build && cd /build && \
     cd binutils-2.26 && mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE \
                     --disable-werror --disable-multilib && make -j4 && make install && \
+    cd /build/mingw-w64 && git am /build/patches/*.patch && \
     cd /build/mingw-w64/mingw-w64-headers && mkdir build && cd build && \
-    git am /switchtothread.patch && \
     ../configure --prefix=$MINGW_PREFIX \
                     --host=$TARGET_TUPLE && make install && \
     cd /build && \
@@ -57,9 +53,6 @@ RUN mkdir /build && cd /build && \
                     make -j4 all-gcc && \
                     make install-gcc && \
     cd /build/mingw-w64/mingw-w64-crt && \
-    git am ../../../missing-snprintf.patch && \
-    git am ../../../windowsapp.a.patch && \
-    git am ../../../getstartupinfo.patch && \
     mkdir build && cd build && \
     ../configure --prefix=$MINGW_PREFIX \
                     --host=$TARGET_TUPLE && \
@@ -79,4 +72,4 @@ RUN mkdir /build && cd /build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE && \
     make -j4 && \
     make install && \
-    cd / && rm -rf /build && rm -f /*.patch
+    cd / && rm -rf /build

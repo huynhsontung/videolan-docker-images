@@ -1,0 +1,470 @@
+From ee2e5cb0baa853e2bbcbcbc81c07128d2e4c2c61 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Hugo=20Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
+Date: Thu, 22 Sep 2016 18:11:38 +0200
+Subject: [PATCH 7/9] winstorecompat: Fix mangling header guard.
+
+Symbols are only mangled on i686, while the old check was causing arm
+symbols to be mangled as well
+---
+ mingw-w64-libraries/winstorecompat/src/CreateEventW.c                | 2 +-
+ mingw-w64-libraries/winstorecompat/src/CreateFileW.c                 | 2 +-
+ mingw-w64-libraries/winstorecompat/src/CreateMutexW.c                | 2 +-
+ mingw-w64-libraries/winstorecompat/src/CreateSemaphoreW.c            | 4 ++--
+ mingw-w64-libraries/winstorecompat/src/Crypto.c                      | 2 +-
+ mingw-w64-libraries/winstorecompat/src/GetACP.c                      | 2 +-
+ mingw-w64-libraries/winstorecompat/src/GetConsoleOutputCP.c          | 2 +-
+ mingw-w64-libraries/winstorecompat/src/GetFileAttributes.c           | 2 +-
+ mingw-w64-libraries/winstorecompat/src/GetFileSize.c                 | 2 +-
+ mingw-w64-libraries/winstorecompat/src/GetModuleHandle.c             | 2 +-
+ mingw-w64-libraries/winstorecompat/src/GetStartupInfo.c              | 2 +-
+ mingw-w64-libraries/winstorecompat/src/GetTickCount.c                | 2 +-
+ mingw-w64-libraries/winstorecompat/src/InitializeCriticalSection.c   | 2 +-
+ mingw-w64-libraries/winstorecompat/src/IsDBCSLeadByteEx.c            | 2 +-
+ mingw-w64-libraries/winstorecompat/src/LoadLibraryW.c                | 2 +-
+ mingw-w64-libraries/winstorecompat/src/LocalAlloc.c                  | 2 +-
+ mingw-w64-libraries/winstorecompat/src/LocalFree.c                   | 2 +-
+ mingw-w64-libraries/winstorecompat/src/QueueTimer.c                  | 2 +-
+ mingw-w64-libraries/winstorecompat/src/SHGetFolderPathW.c            | 2 +-
+ mingw-w64-libraries/winstorecompat/src/SetErrorMode.c                | 2 +-
+ mingw-w64-libraries/winstorecompat/src/SetFilePointer.c              | 2 +-
+ mingw-w64-libraries/winstorecompat/src/SetUnhandledExceptionFilter.c | 2 +-
+ mingw-w64-libraries/winstorecompat/src/Sleep.c                       | 2 +-
+ mingw-w64-libraries/winstorecompat/src/SleepEx.c                     | 2 +-
+ mingw-w64-libraries/winstorecompat/src/TerminateProcess.c            | 2 +-
+ mingw-w64-libraries/winstorecompat/src/Tls.c                         | 2 +-
+ mingw-w64-libraries/winstorecompat/src/UnhandledExceptionFilter.c    | 2 +-
+ mingw-w64-libraries/winstorecompat/src/VirtualProtect.c              | 2 +-
+ mingw-w64-libraries/winstorecompat/src/WaitForSingleObject.c         | 2 +-
+ mingw-w64-libraries/winstorecompat/src/beginthread.c                 | 2 +-
+ mingw-w64-libraries/winstorecompat/src/getenv.c                      | 2 +-
+ mingw-w64-libraries/winstorecompat/src/getpid.c                      | 2 +-
+ 32 files changed, 33 insertions(+), 33 deletions(-)
+
+diff --git a/mingw-w64-libraries/winstorecompat/src/CreateEventW.c b/mingw-w64-libraries/winstorecompat/src/CreateEventW.c
+index 623898c..a313999 100644
+--- a/mingw-w64-libraries/winstorecompat/src/CreateEventW.c
++++ b/mingw-w64-libraries/winstorecompat/src/CreateEventW.c
+@@ -39,7 +39,7 @@ HANDLE WINAPI CreateEventW(LPSECURITY_ATTRIBUTES lpEventAttributes, BOOL bManual
+     return CreateEventExW(lpEventAttributes, lpName, flags, EVENT_ALL_ACCESS);
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ HANDLE (WINAPI *__MINGW_IMP_SYMBOL(CreateEventW))(LPSECURITY_ATTRIBUTES lpEventAttributes, BOOL bManualReset, BOOL bInitialState, LPCWSTR lpName) asm("__imp__CreateEventW@16") = CreateEventW;
+ #else
+ HANDLE (WINAPI *__MINGW_IMP_SYMBOL(CreateEventW))(LPSECURITY_ATTRIBUTES lpEventAttributes, BOOL bManualReset, BOOL bInitialState, LPCWSTR lpName) asm("__imp_CreateEventW") = CreateEventW;
+diff --git a/mingw-w64-libraries/winstorecompat/src/CreateFileW.c b/mingw-w64-libraries/winstorecompat/src/CreateFileW.c
+index d025500..9ff0dcf 100644
+--- a/mingw-w64-libraries/winstorecompat/src/CreateFileW.c
++++ b/mingw-w64-libraries/winstorecompat/src/CreateFileW.c
+@@ -47,7 +47,7 @@ HANDLE WINAPI CreateFileW(LPCWSTR lpFileName,
+     return CreateFile2(lpFileName, dwDesiredAccess, dwShareMode, dwCreationDisposition, &createExParams);
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ HANDLE (WINAPI *__MINGW_IMP_SYMBOL(CreateFileW))(LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,  LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile) asm("__imp__CreateFileW@28") = CreateFileW;
+ #else
+ HANDLE (WINAPI *__MINGW_IMP_SYMBOL(CreateFileW))(LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,  LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile) asm("__imp_CreateFileW") = CreateFileW;
+diff --git a/mingw-w64-libraries/winstorecompat/src/CreateMutexW.c b/mingw-w64-libraries/winstorecompat/src/CreateMutexW.c
+index 30a3df8..0dc1f7b 100644
+--- a/mingw-w64-libraries/winstorecompat/src/CreateMutexW.c
++++ b/mingw-w64-libraries/winstorecompat/src/CreateMutexW.c
+@@ -37,7 +37,7 @@ HANDLE WINAPI CreateMutexW(LPSECURITY_ATTRIBUTES lpMutexAttributes, BOOL bInitia
+     return CreateMutexExW(lpMutexAttributes, lpName, flags, EVENT_ALL_ACCESS);
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ HANDLE (WINAPI *__MINGW_IMP_SYMBOL(CreateMutexW))(LPSECURITY_ATTRIBUTES lpMutexAttributes, BOOL bInitialOwner, LPCWSTR lpName) asm("__imp__CreateMutexW@12") = CreateMutexW;
+ #else
+ HANDLE (WINAPI *__MINGW_IMP_SYMBOL(CreateMutexW))(LPSECURITY_ATTRIBUTES lpMutexAttributes, BOOL bInitialOwner, LPCWSTR lpName) asm("__imp_CreateMutexW") = CreateMutexW;
+diff --git a/mingw-w64-libraries/winstorecompat/src/CreateSemaphoreW.c b/mingw-w64-libraries/winstorecompat/src/CreateSemaphoreW.c
+index 1f92fce..9289bd8 100644
+--- a/mingw-w64-libraries/winstorecompat/src/CreateSemaphoreW.c
++++ b/mingw-w64-libraries/winstorecompat/src/CreateSemaphoreW.c
+@@ -39,7 +39,7 @@ HANDLE WINAPI CreateSemaphoreW(LPSECURITY_ATTRIBUTES lpSemaphoreAttributes,
+     return CreateSemaphoreExW(lpSemaphoreAttributes, lInitialCount, lMaximumCount, lpName, 0, EVENT_ALL_ACCESS);
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ HANDLE (WINAPI *__MINGW_IMP_SYMBOL(CreateSemaphoreW))(LPSECURITY_ATTRIBUTES lpSemaphoreAttributes, LONG lInitialCount, LONG lMaximumCount, LPCWSTR lpName) asm("__imp__CreateSemaphoreW@16") = CreateSemaphoreW;
+ #else
+ HANDLE (WINAPI *__MINGW_IMP_SYMBOL(CreateSemaphoreW))(LPSECURITY_ATTRIBUTES lpSemaphoreAttributes, LONG lInitialCount, LONG lMaximumCount, LPCWSTR lpName) asm("__imp_CreateSemaphoreW") = CreateSemaphoreW;
+@@ -64,7 +64,7 @@ HANDLE WINAPI CreateSemaphoreA(LPSECURITY_ATTRIBUTES lpSemaphoreAttributes,
+     return CreateSemaphoreW(lpSemaphoreAttributes, lInitialCount, lMaximumCount, lpwName );
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ HANDLE (WINAPI *__MINGW_IMP_SYMBOL(CreateSemaphoreA))(LPSECURITY_ATTRIBUTES lpSemaphoreAttributes, LONG lInitialCount, LONG lMaximumCount, LPCSTR lpName) asm("__imp__CreateSemaphoreA@16") = CreateSemaphoreA;
+ #else
+ HANDLE (WINAPI *__MINGW_IMP_SYMBOL(CreateSemaphoreA))(LPSECURITY_ATTRIBUTES lpSemaphoreAttributes, LONG lInitialCount, LONG lMaximumCount, LPCSTR lpName) asm("__imp_CreateSemaphoreA") = CreateSemaphoreA;
+diff --git a/mingw-w64-libraries/winstorecompat/src/Crypto.c b/mingw-w64-libraries/winstorecompat/src/Crypto.c
+index 4d58e9e..028a4dc 100644
+--- a/mingw-w64-libraries/winstorecompat/src/Crypto.c
++++ b/mingw-w64-libraries/winstorecompat/src/Crypto.c
+@@ -100,7 +100,7 @@ BOOL WINAPI CryptGenRandom(HCRYPTPROV phProv, DWORD dwLen, BYTE *pbBuffer)
+     return TRUE;
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ BOOL (WINAPI *__MINGW_IMP_SYMBOL(CryptAcquireContextW))(HCRYPTPROV*, LPCTSTR, LPCTSTR, DWORD, DWORD) asm("__imp__CryptAcquireContextW@20") = CryptAcquireContextW;
+ BOOL (WINAPI *__MINGW_IMP_SYMBOL(CryptAcquireContextA))(HCRYPTPROV*, LPCTSTR, LPCTSTR, DWORD, DWORD) asm("__imp__CryptAcquireContextA@20") = CryptAcquireContextA;
+ BOOL (WINAPI *__MINGW_IMP_SYMBOL(CryptReleaseContext))(HCRYPTPROV, DWORD) asm("__imp__CryptReleaseContext@8") = CryptReleaseContext;
+diff --git a/mingw-w64-libraries/winstorecompat/src/GetACP.c b/mingw-w64-libraries/winstorecompat/src/GetACP.c
+index 2cefa5f..5f480c6 100644
+--- a/mingw-w64-libraries/winstorecompat/src/GetACP.c
++++ b/mingw-w64-libraries/winstorecompat/src/GetACP.c
+@@ -34,7 +34,7 @@ UINT WINAPI GetACP(void)
+     return CP_UTF8; /* utf-8 */
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ UINT (WINAPI *__MINGW_IMP_SYMBOL(GetACP))(void) asm("__imp__GetACP@0") = GetACP;
+ #else
+ UINT (WINAPI *__MINGW_IMP_SYMBOL(GetACP))(void) asm("__imp_GetACP") = GetACP;
+diff --git a/mingw-w64-libraries/winstorecompat/src/GetConsoleOutputCP.c b/mingw-w64-libraries/winstorecompat/src/GetConsoleOutputCP.c
+index 4e60ec2..308e6c5 100644
+--- a/mingw-w64-libraries/winstorecompat/src/GetConsoleOutputCP.c
++++ b/mingw-w64-libraries/winstorecompat/src/GetConsoleOutputCP.c
+@@ -31,7 +31,7 @@ UINT GetConsoleOutputCP(void)
+     return CP_UTF8;
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ UINT (*__MINGW_IMP_SYMBOL(GetConsoleOutputCP))(void) asm("__imp__GetConsoleOutputCP") = GetConsoleOutputCP;
+ #else
+ UINT (*__MINGW_IMP_SYMBOL(GetConsoleOutputCP))(void) asm("__imp_GetConsoleOutputCP") = GetConsoleOutputCP;
+diff --git a/mingw-w64-libraries/winstorecompat/src/GetFileAttributes.c b/mingw-w64-libraries/winstorecompat/src/GetFileAttributes.c
+index a8fb915..c7b21d0 100644
+--- a/mingw-w64-libraries/winstorecompat/src/GetFileAttributes.c
++++ b/mingw-w64-libraries/winstorecompat/src/GetFileAttributes.c
+@@ -41,7 +41,7 @@ DWORD WINAPI GetFileAttributesW(LPCWSTR lpFileName)
+         return INVALID_FILE_ATTRIBUTES;
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ DWORD (WINAPI *__MINGW_IMP_SYMBOL(GetFileAttributesW))(LPCWSTR lpFileName) asm("__imp__GetFileAttributesW@4") = GetFileAttributesW;
+ #else
+ DWORD (WINAPI *__MINGW_IMP_SYMBOL(GetFileAttributesW))(LPCWSTR lpFileName) asm("__imp_GetFileAttributesW") = GetFileAttributesW;
+diff --git a/mingw-w64-libraries/winstorecompat/src/GetFileSize.c b/mingw-w64-libraries/winstorecompat/src/GetFileSize.c
+index 3e81918..a503999 100644
+--- a/mingw-w64-libraries/winstorecompat/src/GetFileSize.c
++++ b/mingw-w64-libraries/winstorecompat/src/GetFileSize.c
+@@ -48,7 +48,7 @@ DWORD WINAPI GetFileSize(HANDLE hFile, LPDWORD lpFileSizeHigh)
+     return dwRet;
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ DWORD (WINAPI *__MINGW_IMP_SYMBOL(GetFileSize))(HANDLE hFile, LPDWORD lpFileSizeHigh) asm("__imp__GetFileSize@8") = GetFileSize;
+ #else
+ DWORD (WINAPI *__MINGW_IMP_SYMBOL(GetFileSize))(HANDLE hFile, LPDWORD lpFileSizeHigh) asm("__imp_GetFileSize") = GetFileSize;
+diff --git a/mingw-w64-libraries/winstorecompat/src/GetModuleHandle.c b/mingw-w64-libraries/winstorecompat/src/GetModuleHandle.c
+index 7de9005..412ed04 100644
+--- a/mingw-w64-libraries/winstorecompat/src/GetModuleHandle.c
++++ b/mingw-w64-libraries/winstorecompat/src/GetModuleHandle.c
+@@ -56,7 +56,7 @@ HMODULE WINAPI GetModuleHandleW(LPCWSTR lpModuleName)
+     return NULL;
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ HMODULE (WINAPI *__MINGW_IMP_SYMBOL(GetModuleHandleA))(LPCSTR) asm("__imp__GetModuleHandleA@4") = GetModuleHandleA;
+ HMODULE (WINAPI *__MINGW_IMP_SYMBOL(GetModuleHandleW))(LPCWSTR) asm("__imp__GetModuleHandleW@4") = GetModuleHandleW;
+ #else
+diff --git a/mingw-w64-libraries/winstorecompat/src/GetStartupInfo.c b/mingw-w64-libraries/winstorecompat/src/GetStartupInfo.c
+index 9094ade..9d7d159 100644
+--- a/mingw-w64-libraries/winstorecompat/src/GetStartupInfo.c
++++ b/mingw-w64-libraries/winstorecompat/src/GetStartupInfo.c
+@@ -35,7 +35,7 @@ VOID WINAPI GetStartupInfo( LPSTARTUPINFO lpStartupInfo )
+     assert(0);
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ VOID (WINAPI *__MINGW_IMP_SYMBOL(GetStartupInfoA))(LPSTARTUPINFO) asm("__imp__GetStartupInfoA@4") = GetStartupInfo;
+ VOID (WINAPI *__MINGW_IMP_SYMBOL(GetStartupInfoW))(LPSTARTUPINFO) asm("__imp__GetStartupInfoW@4") = GetStartupInfo;
+ #else
+diff --git a/mingw-w64-libraries/winstorecompat/src/GetTickCount.c b/mingw-w64-libraries/winstorecompat/src/GetTickCount.c
+index 92113f3..83dd18f 100644
+--- a/mingw-w64-libraries/winstorecompat/src/GetTickCount.c
++++ b/mingw-w64-libraries/winstorecompat/src/GetTickCount.c
+@@ -34,7 +34,7 @@ DWORD WINAPI GetTickCount(void)
+     return (DWORD)GetTickCount64();
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ DWORD (WINAPI *__MINGW_IMP_SYMBOL(GetTickCount))(void) asm("__imp__GetTickCount@0") = GetTickCount;
+ #else
+ DWORD (WINAPI *__MINGW_IMP_SYMBOL(GetTickCount))(void) asm("__imp_GetTickCount") = GetTickCount;
+diff --git a/mingw-w64-libraries/winstorecompat/src/InitializeCriticalSection.c b/mingw-w64-libraries/winstorecompat/src/InitializeCriticalSection.c
+index 26970bf..998d0e5 100644
+--- a/mingw-w64-libraries/winstorecompat/src/InitializeCriticalSection.c
++++ b/mingw-w64-libraries/winstorecompat/src/InitializeCriticalSection.c
+@@ -36,7 +36,7 @@ void WINAPI InitializeCriticalSection(LPCRITICAL_SECTION lpCriticalSection)
+     InitializeCriticalSectionEx(lpCriticalSection, 0, flags);
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ void (WINAPI *__MINGW_IMP_SYMBOL(InitializeCriticalSection))(LPCRITICAL_SECTION lpCriticalSection) asm("__imp__InitializeCriticalSection@4") = InitializeCriticalSection;
+ #else
+ void (WINAPI *__MINGW_IMP_SYMBOL(InitializeCriticalSection))(LPCRITICAL_SECTION lpCriticalSection) asm("__imp_InitializeCriticalSection") = InitializeCriticalSection;
+diff --git a/mingw-w64-libraries/winstorecompat/src/IsDBCSLeadByteEx.c b/mingw-w64-libraries/winstorecompat/src/IsDBCSLeadByteEx.c
+index 985a318..b56ce24 100644
+--- a/mingw-w64-libraries/winstorecompat/src/IsDBCSLeadByteEx.c
++++ b/mingw-w64-libraries/winstorecompat/src/IsDBCSLeadByteEx.c
+@@ -46,7 +46,7 @@ BOOL WINAPI IsDBCSLeadByteEx( UINT CodePage, BYTE TestChar )
+     return FALSE;
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ BOOL (WINAPI *__MINGW_IMP_SYMBOL(IsDBCSLeadByteEx))(UINT CodePage, BYTE TestChar) asm("__imp__IsDBCSLeadByteEx@8") = IsDBCSLeadByteEx;
+ #else
+ BOOL (WINAPI *__MINGW_IMP_SYMBOL(IsDBCSLeadByteEx))(UINT CodePage, BYTE TestChar) asm("__imp_IsDBCSLeadByteEx") = IsDBCSLeadByteEx;
+diff --git a/mingw-w64-libraries/winstorecompat/src/LoadLibraryW.c b/mingw-w64-libraries/winstorecompat/src/LoadLibraryW.c
+index b5a2481..633cbd2 100644
+--- a/mingw-w64-libraries/winstorecompat/src/LoadLibraryW.c
++++ b/mingw-w64-libraries/winstorecompat/src/LoadLibraryW.c
+@@ -34,7 +34,7 @@ HMODULE WINAPI LoadLibraryW(LPCWSTR lpFileName)
+     return LoadPackagedLibrary(lpFileName, 0);
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ HMODULE (WINAPI *__MINGW_IMP_SYMBOL(LoadLibraryW))(LPCWSTR lpFileName) asm("__imp__LoadLibraryW@4") = LoadLibraryW;
+ #else
+ HMODULE (WINAPI *__MINGW_IMP_SYMBOL(LoadLibraryW))(LPCWSTR lpFileName) asm("__imp_LoadLibraryW") = LoadLibraryW;
+diff --git a/mingw-w64-libraries/winstorecompat/src/LocalAlloc.c b/mingw-w64-libraries/winstorecompat/src/LocalAlloc.c
+index 9d5acb7..d07c77a 100644
+--- a/mingw-w64-libraries/winstorecompat/src/LocalAlloc.c
++++ b/mingw-w64-libraries/winstorecompat/src/LocalAlloc.c
+@@ -38,7 +38,7 @@ HLOCAL WINAPI LocalAlloc(UINT uFlags, SIZE_T uBytes)
+     return HeapAlloc(GetProcessHeap(), (uFlags & LMEM_ZEROINIT) ? HEAP_ZERO_MEMORY : 0, uBytes);
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ HLOCAL (WINAPI *__MINGW_IMP_SYMBOL(LocalAlloc))(UINT uFlags, SIZE_T uByte) asm("__imp__LocalAlloc@8") = LocalAlloc;
+ #else
+ HLOCAL (WINAPI *__MINGW_IMP_SYMBOL(LocalAlloc))(UINT uFlags, SIZE_T uByte) asm("__imp_LocalAlloc") = LocalAlloc;
+diff --git a/mingw-w64-libraries/winstorecompat/src/LocalFree.c b/mingw-w64-libraries/winstorecompat/src/LocalFree.c
+index daacf92..6852849 100644
+--- a/mingw-w64-libraries/winstorecompat/src/LocalFree.c
++++ b/mingw-w64-libraries/winstorecompat/src/LocalFree.c
+@@ -37,7 +37,7 @@ HLOCAL WINAPI LocalFree(HLOCAL hMem)
+         return hMem;
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ HLOCAL (WINAPI *__MINGW_IMP_SYMBOL(LocalFree))(HLOCAL hMem) asm("__imp__LocalFree@4") = LocalFree;
+ #else
+ HLOCAL (WINAPI *__MINGW_IMP_SYMBOL(LocalFree))(HLOCAL hMem) asm("__imp_LocalFree") = LocalFree;
+diff --git a/mingw-w64-libraries/winstorecompat/src/QueueTimer.c b/mingw-w64-libraries/winstorecompat/src/QueueTimer.c
+index 2a4c563..8f0481d 100644
+--- a/mingw-w64-libraries/winstorecompat/src/QueueTimer.c
++++ b/mingw-w64-libraries/winstorecompat/src/QueueTimer.c
+@@ -45,7 +45,7 @@ WINBOOL WINAPI DeleteTimerQueueTimer (HANDLE TimerQueue, HANDLE Timer, HANDLE Co
+     return 0;
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ WINBOOL (WINAPI *__MINGW_IMP_SYMBOL(CreateTimerQueueTimer)) (PHANDLE phNewTimer, HANDLE TimerQueue, WAITORTIMERCALLBACK Callback, PVOID Parameter, DWORD DueTime, DWORD Period, ULONG Flags) asm("__imp__CreateTimerQueueTimer@28") = CreateTimerQueueTimer;
+ WINBOOL (WINAPI *__MINGW_IMP_SYMBOL(DeleteTimerQueueTimer)) (HANDLE TimerQueue, HANDLE Timer, HANDLE CompletionEvent) asm("__imp__DeleteTimerQueueTimer@12") = DeleteTimerQueueTimer;
+ #else
+diff --git a/mingw-w64-libraries/winstorecompat/src/SHGetFolderPathW.c b/mingw-w64-libraries/winstorecompat/src/SHGetFolderPathW.c
+index 93ca1b5..6982982 100644
+--- a/mingw-w64-libraries/winstorecompat/src/SHGetFolderPathW.c
++++ b/mingw-w64-libraries/winstorecompat/src/SHGetFolderPathW.c
+@@ -34,7 +34,7 @@ HRESULT WINAPI SHGetFolderPathW(HWND hwnd,int csidl,HANDLE hToken,DWORD dwFlags,
+     return S_FALSE;
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ HRESULT (WINAPI *__MINGW_IMP_SYMBOL(SHGetFolderPathW))(HWND hwnd,int csidl,HANDLE hToken,DWORD dwFlags,LPWSTR pszPath) asm("__imp__SHGetFolderPathW@20") = SHGetFolderPathW;
+ #else
+ HRESULT (WINAPI *__MINGW_IMP_SYMBOL(SHGetFolderPathW))(HWND hwnd,int csidl,HANDLE hToken,DWORD dwFlags,LPWSTR pszPath) asm("__imp_SHGetFolderPathW") = SHGetFolderPathW;
+diff --git a/mingw-w64-libraries/winstorecompat/src/SetErrorMode.c b/mingw-w64-libraries/winstorecompat/src/SetErrorMode.c
+index d42b521..3f9da86 100644
+--- a/mingw-w64-libraries/winstorecompat/src/SetErrorMode.c
++++ b/mingw-w64-libraries/winstorecompat/src/SetErrorMode.c
+@@ -35,7 +35,7 @@ UINT WINAPI SetErrorMode(UINT uMode)
+     return InterlockedExchange(&oldMode, (LONG)uMode);
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ UINT (WINAPI *__MINGW_IMP_SYMBOL(SetErrorMode))(UINT uMode) asm("__imp__SetErrorMode@4") = SetErrorMode;
+ #else
+ UINT (WINAPI *__MINGW_IMP_SYMBOL(SetErrorMode))(UINT uMode) asm("__imp_SetErrorMode") = SetErrorMode;
+diff --git a/mingw-w64-libraries/winstorecompat/src/SetFilePointer.c b/mingw-w64-libraries/winstorecompat/src/SetFilePointer.c
+index 337559d..17b474f 100644
+--- a/mingw-w64-libraries/winstorecompat/src/SetFilePointer.c
++++ b/mingw-w64-libraries/winstorecompat/src/SetFilePointer.c
+@@ -56,7 +56,7 @@ DWORD WINAPI SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistance
+     return newpos.u.LowPart;
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ DWORD (WINAPI *__MINGW_IMP_SYMBOL(SetFilePointer))(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh, DWORD dwMoveMethod) asm("__imp__SetFilePointer@16") = SetFilePointer;
+ #else
+ DWORD (WINAPI *__MINGW_IMP_SYMBOL(SetFilePointer))(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh, DWORD dwMoveMethod) asm("__imp_SetFilePointer") = SetFilePointer;
+diff --git a/mingw-w64-libraries/winstorecompat/src/SetUnhandledExceptionFilter.c b/mingw-w64-libraries/winstorecompat/src/SetUnhandledExceptionFilter.c
+index 0126c89..17b8c59 100644
+--- a/mingw-w64-libraries/winstorecompat/src/SetUnhandledExceptionFilter.c
++++ b/mingw-w64-libraries/winstorecompat/src/SetUnhandledExceptionFilter.c
+@@ -39,7 +39,7 @@ LPTOP_LEVEL_EXCEPTION_FILTER WINAPI SetUnhandledExceptionFilter(LPTOP_LEVEL_EXCE
+     return (LPTOP_LEVEL_EXCEPTION_FILTER)(INT_PTR)InterlockedExchangePointer(target, lpTopLevelExceptionFilter);
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ LPTOP_LEVEL_EXCEPTION_FILTER (WINAPI *__MINGW_IMP_SYMBOL(SetUnhandledExceptionFilter))(LPTOP_LEVEL_EXCEPTION_FILTER) asm("__imp__SetUnhandledExceptionFilter@4") = SetUnhandledExceptionFilter;
+ #else
+ LPTOP_LEVEL_EXCEPTION_FILTER (WINAPI *__MINGW_IMP_SYMBOL(SetUnhandledExceptionFilter))(LPTOP_LEVEL_EXCEPTION_FILTER) asm("__imp_SetUnhandledExceptionFilter") = SetUnhandledExceptionFilter;
+diff --git a/mingw-w64-libraries/winstorecompat/src/Sleep.c b/mingw-w64-libraries/winstorecompat/src/Sleep.c
+index 9803aa8..cc714be 100644
+--- a/mingw-w64-libraries/winstorecompat/src/Sleep.c
++++ b/mingw-w64-libraries/winstorecompat/src/Sleep.c
+@@ -34,7 +34,7 @@ VOID WINAPI Sleep(DWORD dwMilliseconds)
+     WaitForSingleObjectEx(GetCurrentThread(), dwMilliseconds, FALSE);
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ VOID (WINAPI *__MINGW_IMP_SYMBOL(Sleep))(DWORD dwMilliseconds) asm("__imp__Sleep@4") = Sleep;
+ #else
+ VOID (WINAPI *__MINGW_IMP_SYMBOL(Sleep))(DWORD dwMilliseconds) asm("__imp_Sleep") = Sleep;
+diff --git a/mingw-w64-libraries/winstorecompat/src/SleepEx.c b/mingw-w64-libraries/winstorecompat/src/SleepEx.c
+index 2d0c6f4..d65ca56 100644
+--- a/mingw-w64-libraries/winstorecompat/src/SleepEx.c
++++ b/mingw-w64-libraries/winstorecompat/src/SleepEx.c
+@@ -38,7 +38,7 @@ DWORD WINAPI SleepEx(DWORD dwMilliseconds, BOOL bAlertable)
+         return ret;
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ DWORD (WINAPI *__MINGW_IMP_SYMBOL(SleepEx))(DWORD dwMilliseconds, BOOL bAlertable) asm("__imp__SleepEx@8") = SleepEx;
+ #else
+ DWORD (WINAPI *__MINGW_IMP_SYMBOL(SleepEx))(DWORD dwMilliseconds, BOOL bAlertable) asm("__imp_SleepEx") = SleepEx;
+diff --git a/mingw-w64-libraries/winstorecompat/src/TerminateProcess.c b/mingw-w64-libraries/winstorecompat/src/TerminateProcess.c
+index b6fa49c..026014f 100644
+--- a/mingw-w64-libraries/winstorecompat/src/TerminateProcess.c
++++ b/mingw-w64-libraries/winstorecompat/src/TerminateProcess.c
+@@ -41,7 +41,7 @@ BOOL WINAPI TerminateProcess(HANDLE hProcess, UINT uExitCode)
+     }
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ BOOL (WINAPI *__MINGW_IMP_SYMBOL(TerminateProcess))(HANDLE, UINT) asm("__imp__TerminateProcess@8") = TerminateProcess;
+ #else
+ BOOL (WINAPI *__MINGW_IMP_SYMBOL(TerminateProcess))(HANDLE, UINT) asm("__imp_TerminateProcess") = TerminateProcess;
+diff --git a/mingw-w64-libraries/winstorecompat/src/Tls.c b/mingw-w64-libraries/winstorecompat/src/Tls.c
+index 5774423..1c28938 100644
+--- a/mingw-w64-libraries/winstorecompat/src/Tls.c
++++ b/mingw-w64-libraries/winstorecompat/src/Tls.c
+@@ -65,7 +65,7 @@ DWORD WINAPI TlsAlloc (void)
+     return FlsAlloc (__ic_fls_free);
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ DWORD (WINAPI *__MINGW_IMP_SYMBOL(TlsAlloc))(void) asm("__imp__TlsAlloc@0") = TlsAlloc;
+ WINBOOL (WINAPI *__MINGW_IMP_SYMBOL(TlsFree))(DWORD) asm("__imp__TlsFree@4") = TlsFree;
+ WINBOOL (WINAPI *__MINGW_IMP_SYMBOL(TlsSetValue))(DWORD, LPVOID) asm("__imp__TlsSetValue@8") = TlsSetValue;
+diff --git a/mingw-w64-libraries/winstorecompat/src/UnhandledExceptionFilter.c b/mingw-w64-libraries/winstorecompat/src/UnhandledExceptionFilter.c
+index d5d2570..54adc30 100644
+--- a/mingw-w64-libraries/winstorecompat/src/UnhandledExceptionFilter.c
++++ b/mingw-w64-libraries/winstorecompat/src/UnhandledExceptionFilter.c
+@@ -34,7 +34,7 @@ LONG WINAPI UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo)
+     return EXCEPTION_CONTINUE_SEARCH;
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ LONG (WINAPI *__MINGW_IMP_SYMBOL(UnhandledExceptionFilter))(struct _EXCEPTION_POINTERS *) asm("__imp__UnhandledExceptionFilter@4") = UnhandledExceptionFilter;
+ #else
+ LONG (WINAPI *__MINGW_IMP_SYMBOL(UnhandledExceptionFilter))(struct _EXCEPTION_POINTERS *) asm("__imp_UnhandledExceptionFilter") = UnhandledExceptionFilter;
+diff --git a/mingw-w64-libraries/winstorecompat/src/VirtualProtect.c b/mingw-w64-libraries/winstorecompat/src/VirtualProtect.c
+index f7e5b41..88fd06b 100644
+--- a/mingw-w64-libraries/winstorecompat/src/VirtualProtect.c
++++ b/mingw-w64-libraries/winstorecompat/src/VirtualProtect.c
+@@ -34,7 +34,7 @@ BOOL WINAPI VirtualProtect(LPVOID lpAddress, SIZE_T dwSize, DWORD flNewProtect,
+     return FALSE;
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ BOOL (WINAPI *__MINGW_IMP_SYMBOL(VirtualProtect))(LPVOID lpAddress, SIZE_T dwSize, DWORD flNewProtect, PDWORD lpflOldProtect) asm("__imp__VirtualProtect@16") = VirtualProtect;
+ #else
+ BOOL (WINAPI *__MINGW_IMP_SYMBOL(VirtualProtect))(LPVOID lpAddress, SIZE_T dwSize, DWORD flNewProtect, PDWORD lpflOldProtect) asm("__imp_VirtualProtect") = VirtualProtect;
+diff --git a/mingw-w64-libraries/winstorecompat/src/WaitForSingleObject.c b/mingw-w64-libraries/winstorecompat/src/WaitForSingleObject.c
+index e774f8b..b5f7b3d 100644
+--- a/mingw-w64-libraries/winstorecompat/src/WaitForSingleObject.c
++++ b/mingw-w64-libraries/winstorecompat/src/WaitForSingleObject.c
+@@ -34,7 +34,7 @@ DWORD WINAPI WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds)
+     return WaitForSingleObjectEx(hHandle, dwMilliseconds, FALSE);
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ DWORD (WINAPI *__MINGW_IMP_SYMBOL(WaitForSingleObject))(HANDLE hHandle, DWORD dwMilliseconds) asm("__imp__WaitForSingleObject@8") = WaitForSingleObject;
+ #else
+ DWORD (WINAPI *__MINGW_IMP_SYMBOL(WaitForSingleObject))(HANDLE hHandle, DWORD dwMilliseconds) asm("__imp_WaitForSingleObject") = WaitForSingleObject;
+diff --git a/mingw-w64-libraries/winstorecompat/src/beginthread.c b/mingw-w64-libraries/winstorecompat/src/beginthread.c
+index bae4a6a..d9c9d577 100644
+--- a/mingw-w64-libraries/winstorecompat/src/beginthread.c
++++ b/mingw-w64-libraries/winstorecompat/src/beginthread.c
+@@ -45,7 +45,7 @@ void __cdecl _endthreadex(unsigned _Retval)
+     ExitThread(_Retval);
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ uintptr_t (__cdecl *__MINGW_IMP_SYMBOL(_beginthreadex))(void*, unsigned, unsigned (__stdcall *)(void *), void *,unsigned, unsigned*) asm("__imp___beginthreadex") = _beginthreadex;
+ void (__cdecl *__MINGW_IMP_SYMBOL(_endthreadex))(unsigned) asm("__imp___endthreadex") = _endthreadex;
+ #else
+diff --git a/mingw-w64-libraries/winstorecompat/src/getenv.c b/mingw-w64-libraries/winstorecompat/src/getenv.c
+index 7bc4c41..16d423e 100644
+--- a/mingw-w64-libraries/winstorecompat/src/getenv.c
++++ b/mingw-w64-libraries/winstorecompat/src/getenv.c
+@@ -32,7 +32,7 @@ char *getenv(const char *name)
+     return NULL;
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ char *(*__MINGW_IMP_SYMBOL(getenv))(const char *) asm("__imp__getenv") = getenv;
+ #else
+ char *(*__MINGW_IMP_SYMBOL(getenv))(const char *) asm("__imp_getenv") = getenv;
+diff --git a/mingw-w64-libraries/winstorecompat/src/getpid.c b/mingw-w64-libraries/winstorecompat/src/getpid.c
+index e11b9ca..036ab72 100644
+--- a/mingw-w64-libraries/winstorecompat/src/getpid.c
++++ b/mingw-w64-libraries/winstorecompat/src/getpid.c
+@@ -33,7 +33,7 @@ int getpid(void)
+     return GetCurrentProcessId();
+ }
+ 
+-#ifndef _WIN64
++#ifdef _X86_
+ int (*__MINGW_IMP_SYMBOL(getpid))(void) asm("__imp__getpid") = getpid;
+ #else
+ int (*__MINGW_IMP_SYMBOL(getpid))(void) asm("__imp_getpid") = getpid;
+-- 
+2.9.3
+

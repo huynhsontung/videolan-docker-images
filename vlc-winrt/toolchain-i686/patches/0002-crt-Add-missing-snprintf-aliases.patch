@@ -1,7 +1,7 @@
-From 44ad7738b988b86cddc7b171af160c9397cf2b33 Mon Sep 17 00:00:00 2001
+From 52944716641824d4dcd1460540ceb821491c9551 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Hugo=20Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
 Date: Fri, 29 Apr 2016 11:07:45 +0200
-Subject: [PATCH 4/5] crt: Add missing snprintf aliases
+Subject: [PATCH 2/9] crt: Add missing snprintf aliases
 
 ---
  mingw-w64-crt/lib32/msvcr120_app.def.in | 1 +
@@ -33,5 +33,5 @@ index 53b2f7b..b829b84 100644
  _vsnprintf_c_l
  _vsnprintf_l
 -- 
-2.8.1
+2.9.3
 

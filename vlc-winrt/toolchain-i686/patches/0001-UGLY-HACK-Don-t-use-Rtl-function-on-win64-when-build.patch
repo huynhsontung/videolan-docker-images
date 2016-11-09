@@ -1,8 +1,8 @@
-From 65b26e230dff7c58c38cb9a42f6f963fbc252ee9 Mon Sep 17 00:00:00 2001
+From 31eb1cd55bb3d47449860e9b9d0e6d18926b0377 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Hugo=20Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
 Date: Thu, 21 Apr 2016 16:07:59 +0200
-Subject: [PATCH] UGLY HACK: Don't use Rtl* function on win64 when building for
- winrt
+Subject: [PATCH 1/9] UGLY HACK: Don't use Rtl* function on win64 when building
+ for winrt
 
 ---
  mingw-w64-crt/crt/crt_handler.c | 2 +-
@@ -51,10 +51,10 @@ index ae37e0f..3be64bb 100644
  #endif
      _set_invalid_parameter_handler (__mingw_invalidParameterHandler);
 diff --git a/mingw-w64-crt/crt/gs_support.c b/mingw-w64-crt/crt/gs_support.c
-index dbd95d5..4207fff 100644
+index c5c1773..51d2d1a 100644
 --- a/mingw-w64-crt/crt/gs_support.c
 +++ b/mingw-w64-crt/crt/gs_support.c
-@@ -103,7 +103,7 @@ __declspec(noreturn) void __cdecl
+@@ -104,7 +104,7 @@ __declspec(noreturn) void __cdecl
  __report_gsfailure (ULONG_PTR StackCookie)
  {
    volatile UINT_PTR cookie[2] __MINGW_ATTRIB_UNUSED;
@@ -64,5 +64,5 @@ index dbd95d5..4207fff 100644
    PRUNTIME_FUNCTION fctEntry;
    PVOID hndData;
 -- 
-2.8.0.rc3
+2.9.3
 

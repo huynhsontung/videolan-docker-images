@@ -1,14 +1,14 @@
-From 6ab38488dcaf853b616ee636a4714cedff33e1c9 Mon Sep 17 00:00:00 2001
+From fa610ea3dd1bf3cf3505e51420eb0ff741a41fd0 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Hugo=20Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
 Date: Tue, 2 Aug 2016 10:47:13 +0200
-Subject: [PATCH 2/2] winstorecompat: Add a GetStartupInfo stub
+Subject: [PATCH 4/9] winstorecompat: Add a GetStartupInfo stub
 
 This is required for configure test executables to link when building
 with windowsapp.lib
 ---
  mingw-w64-libraries/winstorecompat/Makefile.am     |  1 +
- .../winstorecompat/src/GetStartupInfo.c            | 40 ++++++++++++++++++++++
- 2 files changed, 41 insertions(+)
+ .../winstorecompat/src/GetStartupInfo.c            | 44 ++++++++++++++++++++++
+ 2 files changed, 45 insertions(+)
  create mode 100644 mingw-w64-libraries/winstorecompat/src/GetStartupInfo.c
 
 diff --git a/mingw-w64-libraries/winstorecompat/Makefile.am b/mingw-w64-libraries/winstorecompat/Makefile.am
@@ -23,10 +23,10 @@ index 332cae5..81512ce 100644
    $(NULL)
 diff --git a/mingw-w64-libraries/winstorecompat/src/GetStartupInfo.c b/mingw-w64-libraries/winstorecompat/src/GetStartupInfo.c
 new file mode 100644
-index 0000000..110099d
+index 0000000..9094ade
 --- /dev/null
 +++ b/mingw-w64-libraries/winstorecompat/src/GetStartupInfo.c
-@@ -0,0 +1,40 @@
+@@ -0,0 +1,44 @@
 +/*
 +    Copyright (c) 2016 mingw-w64 project
 +
@@ -54,10 +54,14 @@ index 0000000..110099d
 +#define GetStartupInfo __GetStartupInfo
 +#include <windows.h>
 +#undef GetStartupInfo
++#include <assert.h>
 +
 +VOID WINAPI GetStartupInfo( LPSTARTUPINFO lpStartupInfo )
 +{
-+    (void)lpStartupInfo;
++    // This stub is provided solely to allow configure to compile a test program
++    // linking with libwindowsapp.a
++    // There is no reason for a winstore application to call this function
++    assert(0);
 +}
 +
 +#ifndef _WIN64
@@ -68,5 +72,5 @@ index 0000000..110099d
 +VOID (WINAPI *__MINGW_IMP_SYMBOL(GetStartupInfoW))(LPSTARTUPINFO) asm("__imp_GetStartupInfoW") = GetStartupInfo;
 +#endif
 -- 
-2.8.1
+2.9.3
 

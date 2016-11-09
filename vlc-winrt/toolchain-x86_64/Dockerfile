@@ -13,14 +13,9 @@ ENV MINGW_PREFIX=$TOOLCHAIN_PREFIX/$TARGET_TUPLE
 ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
 ENV GCC_VERSION=5.4.0
 
-COPY no-rtl-func.patch .
-COPY missing-snprintf.patch .
-#COPY winstorecompat.patch .
-COPY windowsapp.a.patch .
-COPY getstartupinfo.patch .
-COPY switchtothread.patch .
+COPY patches /build/patches
 
-RUN mkdir /build && cd /build && \
+RUN cd /build && \
     mkdir $TOOLCHAIN_PREFIX && \
     mkdir $MINGW_PREFIX && \
     ln -s $MINGW_PREFIX $TOOLCHAIN_PREFIX/mingw && \
@@ -29,17 +24,12 @@ RUN mkdir /build && cd /build && \
     git config --global user.name "VideoLAN Buildbot" && \
     git config --global user.email buildbot@videolan.org && \
     git clone --depth=1 git://git.code.sf.net/p/mingw-w64/mingw-w64 && \
-    cd mingw-w64 && git am ../../no-rtl-func.patch && \
-    git am ../../missing-snprintf.patch && \
-    git am ../../windowsapp.a.patch && \
-    git am ../../getstartupinfo.patch && \
-    git am ../../switchtothread.patch && \
-    cd .. && \
     tar xf gcc-$GCC_VERSION.tar.bz2 && \
     tar xf binutils-2.26.tar.bz2 && \
     cd binutils-2.26 && mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE \
                     --disable-werror --disable-multilib && make -j4 && make install && \
+    cd /build/mingw-w64 && git am /build/patches/*.patch && \
     cd /build/mingw-w64/mingw-w64-headers && mkdir build && cd build && \
     ../configure --prefix=$MINGW_PREFIX \
                     --host=$TARGET_TUPLE && make install && \
@@ -82,4 +72,4 @@ RUN mkdir /build && cd /build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE && \
     make -j4 && \
     make install && \
-    cd / && rm -rf /build && rm -f /*.patch
+    cd / && rm -rf /build

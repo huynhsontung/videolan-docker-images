@@ -1,0 +1,68 @@
+From 31eb1cd55bb3d47449860e9b9d0e6d18926b0377 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Hugo=20Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
+Date: Thu, 21 Apr 2016 16:07:59 +0200
+Subject: [PATCH 1/9] UGLY HACK: Don't use Rtl* function on win64 when building
+ for winrt
+
+---
+ mingw-w64-crt/crt/crt_handler.c | 2 +-
+ mingw-w64-crt/crt/crtdll.c      | 2 +-
+ mingw-w64-crt/crt/crtexe.c      | 2 +-
+ mingw-w64-crt/crt/gs_support.c  | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/mingw-w64-crt/crt/crt_handler.c b/mingw-w64-crt/crt/crt_handler.c
+index a1b51ce..8a7983b 100644
+--- a/mingw-w64-crt/crt/crt_handler.c
++++ b/mingw-w64-crt/crt/crt_handler.c
+@@ -40,7 +40,7 @@ PBYTE _GetPEImageBase (void);
+ int __mingw_init_ehandler (void);
+ extern void _fpreset (void);
+ 
+-#if defined(_WIN64) && !defined(_MSC_VER)
++#if defined(_WIN64_NOPE_NOPE_NOPE) && !defined(_MSC_VER)
+ EXCEPTION_DISPOSITION __mingw_SEH_error_handler(struct _EXCEPTION_RECORD *, void *, struct _CONTEXT *, void *);
+ 
+ #define MAX_PDATA_ENTRIES 32
+diff --git a/mingw-w64-crt/crt/crtdll.c b/mingw-w64-crt/crt/crtdll.c
+index 07a1840..026da7a 100644
+--- a/mingw-w64-crt/crt/crtdll.c
++++ b/mingw-w64-crt/crt/crtdll.c
+@@ -164,7 +164,7 @@ DllMainCRTStartup (HANDLE hDllHandle, DWORD dwReason, LPVOID lpreserved)
+   if (dwReason == DLL_PROCESS_ATTACH)
+     {
+       __security_init_cookie ();
+-#ifdef _WIN64
++#ifdef _WIN64_NOPE_NOPE_NOPE
+       __mingw_init_ehandler ();
+ #endif
+     }
+diff --git a/mingw-w64-crt/crt/crtexe.c b/mingw-w64-crt/crt/crtexe.c
+index ae37e0f..3be64bb 100644
+--- a/mingw-w64-crt/crt/crtexe.c
++++ b/mingw-w64-crt/crt/crtexe.c
+@@ -279,7 +279,7 @@ __tmainCRTStartup (void)
+     
+     _pei386_runtime_relocator ();
+     __mingw_oldexcpt_handler = SetUnhandledExceptionFilter (_gnu_exception_handler);
+-#ifdef _WIN64
++#ifdef _WIN64_NOPE_NOPE_NOPE
+     __mingw_init_ehandler ();
+ #endif
+     _set_invalid_parameter_handler (__mingw_invalidParameterHandler);
+diff --git a/mingw-w64-crt/crt/gs_support.c b/mingw-w64-crt/crt/gs_support.c
+index c5c1773..51d2d1a 100644
+--- a/mingw-w64-crt/crt/gs_support.c
++++ b/mingw-w64-crt/crt/gs_support.c
+@@ -104,7 +104,7 @@ __declspec(noreturn) void __cdecl
+ __report_gsfailure (ULONG_PTR StackCookie)
+ {
+   volatile UINT_PTR cookie[2] __MINGW_ATTRIB_UNUSED;
+-#ifdef _WIN64
++#ifdef _WIN64_NOPE_NOPE_NOPE
+   ULONG64 controlPC, imgBase, establisherFrame;
+   PRUNTIME_FUNCTION fctEntry;
+   PVOID hndData;
+-- 
+2.9.3
+

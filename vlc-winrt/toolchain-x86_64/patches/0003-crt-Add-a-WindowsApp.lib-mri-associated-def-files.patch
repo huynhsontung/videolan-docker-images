@@ -1,7 +1,7 @@
-From d84ee325df2d06b58a16a30eb5042e0a115f122b Mon Sep 17 00:00:00 2001
+From edb151a6826c67c96db73146a54458071fd21152 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Hugo=20Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
 Date: Tue, 2 Aug 2016 10:36:26 +0200
-Subject: [PATCH 1/2] crt: Add a WindowsApp.lib mri & associated def files
+Subject: [PATCH 3/9] crt: Add a WindowsApp.lib mri & associated def files
 
 This is required to have an application running on Xbox1, as it won't
 contain kernel32.dll, thus the symbols have to be looked for into other
@@ -273,10 +273,10 @@ locations
  create mode 100644 mingw-w64-crt/lib64/windowsapp.mri
 
 diff --git a/mingw-w64-crt/Makefile.am b/mingw-w64-crt/Makefile.am
-index 7804663..02d8035 100644
+index e727e64..44360db 100644
 --- a/mingw-w64-crt/Makefile.am
 +++ b/mingw-w64-crt/Makefile.am
-@@ -647,6 +647,33 @@ lib32/libsynchronization.a: lib32/synchronization.mri lib32/libapi-ms-win-core-s
+@@ -635,6 +635,33 @@ lib32/libsynchronization.a: lib32/synchronization.mri lib32/libapi-ms-win-core-s
  	$(AR) -M < $<
  	$(RANLIB) $@
  
@@ -310,7 +310,7 @@ index 7804663..02d8035 100644
  dx32_DATA =
  dx32_DATA += lib32/libxinput.a
  dx32_DATA += lib32/libxapofx.a
-@@ -1151,7 +1178,8 @@ lib64_DATA = \
+@@ -1138,7 +1165,8 @@ lib64_DATA = \
    lib64/libd3d11.a          lib64/libd3dcompiler_47.a \
    lib64/libwinhttp.a \
    lib64/libruntimeobject.a \
@@ -320,7 +320,7 @@ index 7804663..02d8035 100644
  
  if !W32API
  lib64_DATA += lib64/libmsvcp60.a lib64/libmsvcr80.a lib64/libmsvcr90.a lib64/libmsvcr100.a lib64/libmsvcr90d.a \
-@@ -1184,6 +1212,33 @@ lib64/libsynchronization.a: lib64/synchronization.mri lib64/libapi-ms-win-core-s
+@@ -1171,6 +1199,33 @@ lib64/libsynchronization.a: lib64/synchronization.mri lib64/libapi-ms-win-core-s
  	$(AR) -M < $<
  	$(RANLIB) $@
  
@@ -355,7 +355,7 @@ index 7804663..02d8035 100644
  dx64_DATA += lib64/libxinput.a
  dx64_DATA += lib64/libxapofx.a
 diff --git a/mingw-w64-crt/Makefile.in b/mingw-w64-crt/Makefile.in
-index c97401f..ff6d247 100644
+index 22bbae9..890434b 100644
 --- a/mingw-w64-crt/Makefile.in
 +++ b/mingw-w64-crt/Makefile.in
 @@ -198,8 +198,10 @@ host_triplet = @host@
@@ -371,7 +371,7 @@ index c97401f..ff6d247 100644
  @ENABLE_TESTS_UNICODE_TRUE@am__append_14 = testcases/t_municode testcases/t_tmain
  check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4) $(am__EXEEXT_6)
  TESTS = $(am__EXEEXT_2) $(am__EXEEXT_4) $(am__EXEEXT_6)
-@@ -5764,7 +5766,7 @@ src_intrincsarm32 =
+@@ -5727,7 +5729,7 @@ src_intrincsarm32 =
  @LIB32_TRUE@	lib32/libxaudio2_8.a lib32/libxinput1_1.a \
  @LIB32_TRUE@	lib32/libxinput1_2.a lib32/libxinput1_3.a \
  @LIB32_TRUE@	lib32/libxinput1_4.a lib32/libxinput9_1_0.a \
@@ -380,7 +380,7 @@ index c97401f..ff6d247 100644
  @LIB32_TRUE@dx32_DATA = lib32/libxinput.a lib32/libxapofx.a \
  @LIB32_TRUE@	lib32/libx3daudio.a lib32/libd3dx9.a \
  @LIB32_TRUE@	lib32/libd3dx10.a lib32/libd3dx11.a \
-@@ -6495,7 +6497,8 @@ src_intrincsarm32 =
+@@ -6457,7 +6459,8 @@ src_intrincsarm32 =
  @LIB64_TRUE@	lib64/libd3dcsx_46.a lib64/libd3d11.a \
  @LIB64_TRUE@	lib64/libd3dcompiler_47.a lib64/libwinhttp.a \
  @LIB64_TRUE@	lib64/libruntimeobject.a \
@@ -390,7 +390,7 @@ index c97401f..ff6d247 100644
  @LIB64_TRUE@dx64_DATA = lib64/libxinput.a lib64/libxapofx.a \
  @LIB64_TRUE@	lib64/libx3daudio.a lib64/libd3dx9.a \
  @LIB64_TRUE@	lib64/libd3dx10.a lib64/libd3dx11.a \
-@@ -49311,6 +49314,33 @@ lib64/DFP_src_%.dfp.obj: math/DFP/mpdecimal/libmpdec/%.c
+@@ -49200,6 +49203,33 @@ _libm_dummy.c:
  @LIB32_TRUE@	$(AR) -M < $<
  @LIB32_TRUE@	$(RANLIB) $@
  
@@ -424,7 +424,7 @@ index c97401f..ff6d247 100644
  @LIB32_TRUE@lib32/libxinput.a: lib32/$(xinput).def
  @LIB32_TRUE@	$(DTDEF32) $<
  @LIB32_TRUE@lib32/libxapofx.a: lib32/$(xapofx).def
-@@ -49375,6 +49405,33 @@ lib64/DFP_src_%.dfp.obj: math/DFP/mpdecimal/libmpdec/%.c
+@@ -49264,6 +49294,33 @@ _libm_dummy.c:
  @LIB64_TRUE@	$(AR) -M < $<
  @LIB64_TRUE@	$(RANLIB) $@
  
@@ -3048,5 +3048,5 @@ index 0000000..148483f
 +SAVE
 +END
 -- 
-2.8.1
+2.9.3
 
