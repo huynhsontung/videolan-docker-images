@@ -1,7 +1,7 @@
-From ee2e5cb0baa853e2bbcbcbc81c07128d2e4c2c61 Mon Sep 17 00:00:00 2001
+From 48f14d12c0e6394ccd0cb93cdd03ff904243fb79 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Hugo=20Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
 Date: Thu, 22 Sep 2016 18:11:38 +0200
-Subject: [PATCH 7/9] winstorecompat: Fix mangling header guard.
+Subject: [PATCH 07/11] winstorecompat: Fix mangling header guard.
 
 Symbols are only mangled on i686, while the old check was causing arm
 symbols to be mangled as well
@@ -180,11 +180,11 @@ index 7de9005..412ed04 100644
  HMODULE (WINAPI *__MINGW_IMP_SYMBOL(GetModuleHandleW))(LPCWSTR) asm("__imp__GetModuleHandleW@4") = GetModuleHandleW;
  #else
 diff --git a/mingw-w64-libraries/winstorecompat/src/GetStartupInfo.c b/mingw-w64-libraries/winstorecompat/src/GetStartupInfo.c
-index 9094ade..9d7d159 100644
+index 1961c8d..45e3758 100644
 --- a/mingw-w64-libraries/winstorecompat/src/GetStartupInfo.c
 +++ b/mingw-w64-libraries/winstorecompat/src/GetStartupInfo.c
-@@ -35,7 +35,7 @@ VOID WINAPI GetStartupInfo( LPSTARTUPINFO lpStartupInfo )
-     assert(0);
+@@ -34,7 +34,7 @@ VOID WINAPI GetStartupInfo( LPSTARTUPINFO lpStartupInfo )
+     abort();
  }
  
 -#ifndef _WIN64

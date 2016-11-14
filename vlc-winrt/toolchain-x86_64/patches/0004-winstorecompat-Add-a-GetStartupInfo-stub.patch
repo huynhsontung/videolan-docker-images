@@ -1,14 +1,14 @@
-From fa610ea3dd1bf3cf3505e51420eb0ff741a41fd0 Mon Sep 17 00:00:00 2001
+From 306b3cd02ed2d10fbb9956962f5a8688c5cb5333 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Hugo=20Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
 Date: Tue, 2 Aug 2016 10:47:13 +0200
-Subject: [PATCH 4/9] winstorecompat: Add a GetStartupInfo stub
+Subject: [PATCH 04/11] winstorecompat: Add a GetStartupInfo stub
 
 This is required for configure test executables to link when building
 with windowsapp.lib
 ---
  mingw-w64-libraries/winstorecompat/Makefile.am     |  1 +
- .../winstorecompat/src/GetStartupInfo.c            | 44 ++++++++++++++++++++++
- 2 files changed, 45 insertions(+)
+ .../winstorecompat/src/GetStartupInfo.c            | 43 ++++++++++++++++++++++
+ 2 files changed, 44 insertions(+)
  create mode 100644 mingw-w64-libraries/winstorecompat/src/GetStartupInfo.c
 
 diff --git a/mingw-w64-libraries/winstorecompat/Makefile.am b/mingw-w64-libraries/winstorecompat/Makefile.am
@@ -23,10 +23,10 @@ index 332cae5..81512ce 100644
    $(NULL)
 diff --git a/mingw-w64-libraries/winstorecompat/src/GetStartupInfo.c b/mingw-w64-libraries/winstorecompat/src/GetStartupInfo.c
 new file mode 100644
-index 0000000..9094ade
+index 0000000..1961c8d
 --- /dev/null
 +++ b/mingw-w64-libraries/winstorecompat/src/GetStartupInfo.c
-@@ -0,0 +1,44 @@
+@@ -0,0 +1,43 @@
 +/*
 +    Copyright (c) 2016 mingw-w64 project
 +
@@ -54,14 +54,13 @@ index 0000000..9094ade
 +#define GetStartupInfo __GetStartupInfo
 +#include <windows.h>
 +#undef GetStartupInfo
-+#include <assert.h>
 +
 +VOID WINAPI GetStartupInfo( LPSTARTUPINFO lpStartupInfo )
 +{
 +    // This stub is provided solely to allow configure to compile a test program
 +    // linking with libwindowsapp.a
 +    // There is no reason for a winstore application to call this function
-+    assert(0);
++    abort();
 +}
 +
 +#ifndef _WIN64
