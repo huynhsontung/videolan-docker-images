@@ -1,4 +1,4 @@
-FROM videolan-base-yakkety:latest
+FROM registry.videolan.org:5000/videolan-base-yakkety:latest
 
 # Don't clean the package lists cache, snapcraft needs it.
 RUN apt-get update && \

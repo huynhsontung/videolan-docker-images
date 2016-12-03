@@ -1,4 +1,4 @@
-FROM jenkins-vlc-devel-debian-unstable:latest
+FROM registry.videolan.org:5000/vlc-debian-unstable:latest
 
 RUN apt-get update && apt-get install -yq \
     rapidjson-dev libsqlite3-dev && \

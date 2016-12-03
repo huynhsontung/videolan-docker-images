@@ -1,4 +1,4 @@
-FROM registry.videolan.org:5000/jenkins-vlc-win64:latest
+FROM registry.videolan.org:5000/vlc-debian-win64:latest
 
 ENV IMAGE_DATE=201609151359
 

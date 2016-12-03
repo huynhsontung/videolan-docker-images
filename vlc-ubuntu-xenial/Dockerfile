@@ -1,4 +1,4 @@
-FROM videolan-base-xenial:latest
+FROM registry.videolan.org:5000/videolan-base-xenial:latest
 
 # Don't clean the package lists cache, snapcraft needs it.
 RUN apt-get update && \

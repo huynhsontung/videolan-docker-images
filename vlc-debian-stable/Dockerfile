@@ -1,4 +1,4 @@
-FROM videolan-base-jessie:latest
+FROM registry.videolan.org:5000/videolan-base-jessie:latest
 
 RUN apt-get update && apt-get build-dep -y vlc && \
     apt-get install -y git-core libtool automake autoconf autopoint make \
