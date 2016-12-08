@@ -7,11 +7,11 @@ TAG			:= $(notdir $(CURDIR))
 all:
 
 build:
-	docker build -t $(TAG):latest .
+	docker build -t $(TAG):$(REVISION) .
 
 push:
-	docker tag $(TAG):latest $(REGISTRY)/$(TAG):latest
-	docker push $(REGISTRY)/$(TAG):latest
+	docker tag $(TAG):$(REVISION) $(REGISTRY)/$(TAG)
+	docker push $(REGISTRY)/$(TAG)
 
 swarm:
-	docker $(SWARM) pull $(REGISTRY)/$(TAG):latest
+	docker $(SWARM) pull $(REGISTRY)/$(TAG)

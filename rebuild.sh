@@ -5,6 +5,7 @@
 BASE=""
 LATE=""
 
+export REVISION=$(git log --pretty=format:'%h' -n 1)
 CHANGED=$(for i in `git log --name-only --pretty=oneline --full-index $GIT_PREVIOUS_COMMIT..$GIT_COMMIT | grep -vE '^[0-9a-f]{40} '`; do echo `dirname $i`; done | sort | uniq)
 
 for dir in $CHANGED; do
