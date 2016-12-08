@@ -13,7 +13,7 @@ ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
 ENV GCC_VERSION=6.2.0
 ENV BINUTILS_VERSION=2.27
 
-RUN cd /build && \
+RUN mkdir /build && cd /build && \
     mkdir $TOOLCHAIN_PREFIX && \
     mkdir $MINGW_PREFIX && \
     ln -s $MINGW_PREFIX $TOOLCHAIN_PREFIX/mingw && \
