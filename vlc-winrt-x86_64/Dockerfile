@@ -49,6 +49,7 @@ RUN cd /build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX \
                     --target=$TARGET_TUPLE \
                     --enable-languages=c,c++ \
+                    --enable-lto \
                     --disable-shared \
                     --disable-multilib \
                     --enable-sjlj-exceptions && \

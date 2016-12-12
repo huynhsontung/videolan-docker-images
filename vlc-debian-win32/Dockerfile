@@ -45,6 +45,7 @@ RUN mkdir /build && cd /build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX \
                     --target=$TARGET_TUPLE \
                     --enable-languages=c,c++ \
+                    --enable-lto \
                     --disable-shared \
                     --disable-multilib && \
                     make -j4 all-gcc && \
