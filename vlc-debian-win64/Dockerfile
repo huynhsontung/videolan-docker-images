@@ -3,7 +3,7 @@ FROM registry.videolan.org:5000/videolan-base-sid:latest
 RUN apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file libwine-dev unzip libtool pkg-config cmake \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
-    gettext dos2unix && \
+    gettext dos2unix zip && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 ENV TARGET_TUPLE=x86_64-w64-mingw32
