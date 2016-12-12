@@ -44,7 +44,7 @@ RUN mkdir /build && cd /build && \
     ln -s /build/gmp-6.1.1 gcc-$GCC_VERSION/gmp && \
     ln -s /build/mpc-1.0.3 gcc-$GCC_VERSION/mpc && \
     sed -i '79i#define _GLIBCXX_USE_WEAK_REF 0' \
-        gcc-$GCC_VERSION/libstdc++-v3/config/os/mingw32-w64/os_defines.h
+        gcc-$GCC_VERSION/libstdc++-v3/config/os/mingw32-w64/os_defines.h && \
     cd gcc-$GCC_VERSION && mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX \
                     --target=$TARGET_TUPLE \
