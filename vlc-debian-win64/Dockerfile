@@ -1,5 +1,7 @@
 FROM registry.videolan.org:5000/videolan-base-sid:latest
 
+ENV IMAGE_DATE=201612121315
+
 RUN apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file libwine-dev unzip libtool pkg-config cmake \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
