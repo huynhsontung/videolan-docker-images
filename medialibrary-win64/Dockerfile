@@ -11,25 +11,25 @@ RUN mkdir /build && cd /build && \
     cd vlc && \
     cd contrib && mkdir win64 && cd win64 && \
     ../bootstrap --host=$TARGET_TRIPLE --disable-qt --disable-skins2 \
-        --disable-lua --disable-protobuf --disable-gettext && make -j4 && \
+        --disable-lua --disable-protobuf --disable-gettext && make -j`nproc` && \
     cd /build/vlc && ./bootstrap && mkdir build && cd build && \
     ../configure --host=$TARGET_TRIPLE \
         --disable-lua --disable-qt --disable-skins2 \
         --disable-nls \
         --prefix=/prefix && \
-    make -j4 && make install && \
+    make -j`nproc` && make install && \
     mkdir -p /prefix/dll && \
     cp src/.libs/libvlccore.dll /prefix/dll/ && \
     cp lib/.libs/libvlc.dll /prefix/dll && \
     cd /build && wget https://www.sqlite.org/2016/$SQLITE_VERSION.tar.gz && \
     tar xzf $SQLITE_VERSION.tar.gz && cd $SQLITE_VERSION && \
     ./configure --prefix=/prefix --host=$TARGET_TRIPLE --disable-shared && \
-    make && make install && \
+    make -j`nproc` && make install && \
     cd /build && \
     wget http://downloads.sourceforge.net/project/libjpeg-turbo/1.5.0/libjpeg-turbo-$JPEGTURBO_VERSION.tar.gz && \
     tar xzf libjpeg-turbo-$JPEGTURBO_VERSION.tar.gz && \
     cd libjpeg-turbo-$JPEGTURBO_VERSION && ./configure --host=$TARGET_TRIPLE --prefix=/prefix --disable-shared && \
-    make -j4 && make install && \
+    make -j`nproc` && make install && \
     cd /build && wget https://github.com/miloyip/rapidjson/archive/v1.0.2.tar.gz && \
     tar xzf v1.0.2.tar.gz && cd rapidjson-1.0.2/ && \
     cmake -DCMAKE_INSTALL_PREFIX=/prefix -DRAPIDJSON_BUILD_DOC=OFF \
