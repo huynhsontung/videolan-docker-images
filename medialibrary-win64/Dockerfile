@@ -7,7 +7,7 @@ ENV SQLITE_VERSION=sqlite-autoconf-3140000
 ENV JPEGTURBO_VERSION=1.5.0
 
 RUN mkdir /build && cd /build && \
-    git clone https://git.videolan.org/git/vlc.git && \
+    git clone --depth=1 https://git.videolan.org/git/vlc.git && \
     cd vlc && \
     cd extras/tools && ./bootstrap && make -j`nproc` && \
     export PATH=`pwd`/build/bin:$PATH && cd ../../ && \
