@@ -9,7 +9,7 @@ ENV JPEGTURBO_VERSION=1.5.0
 RUN mkdir /build && cd /build && \
     git clone https://git.videolan.org/git/vlc.git && \
     cd vlc && \
-    cd extra/tools && ./bootstrap && make -j`nproc` && \
+    cd extras/tools && ./bootstrap && make -j`nproc` && \
     export PATH=`pwd`/build/bin && cd ../../ && \
     cd contrib && mkdir win64 && cd win64 && \
     ../bootstrap --host=$TARGET_TRIPLE --disable-qt --disable-skins2 \
