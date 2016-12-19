@@ -10,7 +10,7 @@ RUN mkdir /build && cd /build && \
     git clone https://git.videolan.org/git/vlc.git && \
     cd vlc && \
     cd extras/tools && ./bootstrap && make -j`nproc` && \
-    export PATH=`pwd`/build/bin && cd ../../ && \
+    export PATH=`pwd`/build/bin:$PATH && cd ../../ && \
     cd contrib && mkdir win32 && cd win32 && \
     ../bootstrap --host=$TARGET_TRIPLE --disable-qt --disable-skins2 \
         --disable-lua --disable-protobuf --disable-gettext && make -j`nproc` && \
