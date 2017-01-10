@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-sid:latest
 
-ENV IMAGE_DATE=201701101949
+ENV IMAGE_DATE=201701102144
 
 RUN apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file libwine-dev unzip libtool pkg-config cmake \
