@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 /usr/bin/env
 
 BASE=""
