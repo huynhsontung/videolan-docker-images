@@ -1,5 +1,7 @@
 FROM registry.videolan.org:5000/videolan-base-sid:latest
 
+ENV IMAGE_DATE=201701301134
+
 RUN apt-get update && apt-get -y install \
     gcc make git yasm \
     gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 \
