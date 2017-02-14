@@ -6,7 +6,8 @@ ENV IMAGE_DATE=201702141059
 RUN apt-get update && \
     apt-get install -y git-core make build-essential snapcraft locales \
     protobuf-compiler libpostproc-dev libswscale-dev libavcodec-dev libavformat-dev \
-    qtbase5-private-dev wayland-protocols && \
+    qtbase5-private-dev wayland-protocols dh-buildinfo liblircclient-dev \
+    libmodplug-dev libschroedinger-dev && \
     apt-get build-dep -y vlc && \
     apt-get clean -y && \
     locale-gen en_US.UTF-8 && \
