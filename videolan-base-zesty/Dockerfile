@@ -2,6 +2,8 @@ FROM registry.videolan.org:5000/videolan-ubuntu-core:zesty
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
+ENV IMAGE_DATE=201702141059
+
 RUN apt-get update && \
     apt-get install -y openssh-server openjdk-8-jdk lftp ca-certificates && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
