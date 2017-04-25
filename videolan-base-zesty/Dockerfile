@@ -1,4 +1,4 @@
-FROM registry.videolan.org:5000/videolan-ubuntu-core:zesty
+FROM ubuntu:zesty
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
