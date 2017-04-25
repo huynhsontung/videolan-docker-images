@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-zesty:latest
 
-ENV IMAGE_DATE=201703211457
+ENV IMAGE_DATE=201704251512
 
 # Don't clean the package lists cache, snapcraft needs it.
 RUN apt-get update && \
