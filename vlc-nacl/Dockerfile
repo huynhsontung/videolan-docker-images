@@ -1,4 +1,4 @@
-FROM registry.videolan.org:5000/videolan-base-sid:latest
+FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
 MAINTAINER Bastien Penavayre <bastienPenava@gmail.com>
 
