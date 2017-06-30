@@ -2,7 +2,7 @@ FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
 MAINTAINER Hugo Beauzée-Luyssen <hugo@beauzee.fr>
 
-ENV IMAGE_DATE=201706301200
+ENV IMAGE_DATE=201706301249
 
 RUN apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file libwine-dev unzip libtool pkg-config cmake \
