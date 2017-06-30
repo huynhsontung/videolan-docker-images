@@ -2,7 +2,7 @@ FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
 MAINTAINER Bastien Penavayre <bastienPenava@gmail.com>
 
-ENV IMAGE_DATE=201706301127
+ENV IMAGE_DATE=201706301131
 
 ENV DEP_ROOT="/deps/"
 

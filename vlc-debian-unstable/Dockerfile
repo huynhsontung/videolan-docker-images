@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
-ENV IMAGE_DATE=201706301127
+ENV IMAGE_DATE=201706301131
 
 RUN apt-get update && apt-get build-dep -y vlc && \
     apt-get install -y git-core libtool automake autoconf autopoint make \

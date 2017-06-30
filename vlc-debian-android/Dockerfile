@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
-ENV IMAGE_DATE=201706301127
+ENV IMAGE_DATE=201706301131
 
 RUN dpkg --add-architecture i386 && apt-get update && \
     apt-get install -y autoconf m4 automake ant autopoint cmake \

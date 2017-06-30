@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
-ENV IMAGE_DATE=201706301127
+ENV IMAGE_DATE=201706301131
 
 # We still need an i686 cross compiler to build the installer
 RUN apt-get update -qq && apt-get install -qqy \

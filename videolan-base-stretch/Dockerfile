@@ -1,5 +1,7 @@
 FROM debian:stretch
 
+ENV IMAGE_DATE=201706301131
+
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
 RUN echo "deb http://ftp.fr.debian.org/debian/ stretch main" > /etc/apt/sources.list && \
