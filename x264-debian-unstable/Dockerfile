@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
-ENV IMAGE_DATE=201705302345
+ENV IMAGE_DATE=201706301127
 
 RUN apt-get update && apt-get -y install \
     gcc make git \

@@ -2,6 +2,8 @@ FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
 MAINTAINER Bastien Penavayre <bastienPenava@gmail.com>
 
+ENV IMAGE_DATE=201706301127
+
 ENV DEP_ROOT="/deps/"
 
 RUN mkdir $DEP_ROOT && cd $DEP_ROOT && \
