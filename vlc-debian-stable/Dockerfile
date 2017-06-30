@@ -1,4 +1,4 @@
-FROM registry.videolan.org:5000/videolan-base-jessie:latest
+FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
 ENV IMAGE_DATE=201612031725
 

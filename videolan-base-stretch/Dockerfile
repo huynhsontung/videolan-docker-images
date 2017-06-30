@@ -1,9 +1,9 @@
-FROM debian:jessie
+FROM debian:stretch
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-RUN echo "deb http://ftp.fr.debian.org/debian/ jessie main" > /etc/apt/sources.list && \
-    echo "deb-src http://ftp.fr.debian.org/debian/ jessie main" >> /etc/apt/sources.list && \
+RUN echo "deb http://ftp.fr.debian.org/debian/ stretch main" > /etc/apt/sources.list && \
+    echo "deb-src http://ftp.fr.debian.org/debian/ stretch main" >> /etc/apt/sources.list && \
     apt-get update && \
     apt-get install -y openssh-server openjdk-7-jdk lftp ca-certificates && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
