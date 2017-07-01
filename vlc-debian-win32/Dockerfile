@@ -5,7 +5,7 @@ ENV IMAGE_DATE=201706301249
 RUN apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file libwine-dev unzip libtool pkg-config cmake \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
-    gettext dos2unix zip wine nsis && \
+    gettext dos2unix zip wine nsis curl && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install wine32 && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
