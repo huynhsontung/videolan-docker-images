@@ -6,7 +6,7 @@ RUN dpkg --add-architecture i386 && apt-get update && \
     apt-get install -y autoconf m4 automake ant autopoint cmake \
     build-essential libtool libtool-bin patch pkg-config ragel subversion \
     git rpm2cpio libwebkitgtk-1.0-0 yasm ragel g++ protobuf-compiler gettext \
-    libgsm1-dev wget expect unzip \
+    libgsm1-dev wget expect unzip python \
     zlib1g:i386 libstdc++6:i386 libc6:i386 && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
