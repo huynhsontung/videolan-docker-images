@@ -2,7 +2,7 @@ FROM ubuntu:zesty
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=201702141059
+ENV IMAGE_DATE=201707021640
 
 RUN apt-get update && \
     apt-get install -y openssh-server openjdk-8-jdk lftp ca-certificates && \
