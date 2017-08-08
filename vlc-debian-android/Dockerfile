@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
-ENV IMAGE_DATE=201706301243
+ENV IMAGE_DATE=201708081145
 
 RUN dpkg --add-architecture i386 && apt-get update && \
     apt-get install -y autoconf m4 automake ant autopoint cmake \
@@ -11,16 +11,17 @@ RUN dpkg --add-architecture i386 && apt-get update && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # install android sdk
-COPY accept-licenses.sh /root
 RUN mkdir sdk && cd sdk && \
-    wget http://dl.google.com/android/repository/android-ndk-r13b-linux-x86_64.zip && \
-    unzip android-ndk-r13b-linux-x86_64.zip && \
-    rm -f android-ndk-r13b-linux-x86_64.zip && \
-    ln -s android-ndk-r13b android-ndk && \
-    wget http://dl.google.com/android/android-sdk_r24.4.1-linux.tgz && \
-    tar -xzf android-sdk_r24.4.1-linux.tgz && \
-    rm -f android-sdk_r24.4.1-linux.tgz && \
+    wget http://dl.google.com/android/repository/android-ndk-r14b-linux-x86_64.zip && \
+    unzip android-ndk-r14b-linux-x86_64.zip && \
+    rm -f android-ndk-r14b-linux-x86_64.zip && \
+    ln -s android-ndk-r14b android-ndk && \
+    mkdir android-sdk-linux && \
     cd android-sdk-linux && \
-    /root/accept-licenses.sh tools/android update sdk -u -t \
-        $(tools/android list sdk | grep 'Android SDK Build-tools' | sed 's/ *\([0-9]\+\)\-.*/\1/'),$(tools/android list sdk | grep 'SDK Platform Android' | head -n 1 | sed 's/ *\([0-9]\+\)\-.*/\1/'),$(tools/android list sdk | grep 'Android SDK Tools' | sed 's/ *\([0-9]\+\)\-.*/\1/'),$(tools/android list sdk | grep 'Android SDK Platform-tools' | sed 's/ *\([0-9]\+\)\-.*/\1/') && \
+    mkdir "licenses" && \
+    echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > "licenses/android-sdk-license" && \
+    wget https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip && \
+    unzip sdk-tools-linux-3859397.zip && \
+    rm -f sdk-tools-linux-3859397.zip && \
+    tools/bin/sdkmanager "build-tools;26.0.1" "platform-tools" "platforms;android-26" && \
     chown -R jenkins /sdk
