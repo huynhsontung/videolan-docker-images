@@ -3,7 +3,8 @@ FROM registry.videolan.org:5000/videolan-base-stretch:latest
 ENV IMAGE_DATE=201710021800
 
 # We still need an i686 cross compiler to build the installer
-RUN apt-get update -qq && apt-get install -qqy \
+RUN set -x && \
+    apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file libwine-dev unzip libtool pkg-config cmake \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
     gettext dos2unix zip wine nsis g++-mingw-w64-i686 gperf && \
@@ -17,7 +18,8 @@ ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
 ENV GCC_VERSION=6.2.0
 ENV BINUTILS_VERSION=2.27
 
-RUN mkdir /build && cd /build && \
+RUN set -x && \
+    mkdir /build && cd /build && \
     mkdir $TOOLCHAIN_PREFIX && \
     mkdir $MINGW_PREFIX && \
     ln -s $MINGW_PREFIX $TOOLCHAIN_PREFIX/mingw && \
@@ -35,7 +37,7 @@ RUN mkdir /build && cd /build && \
     ../configure --prefix=$MINGW_PREFIX \
                     --host=$TARGET_TUPLE --enable-secure-api && make install && \
     cd /build && \
-    wget -q http://www.mpfr.org/mpfr-current/mpfr-3.1.5.tar.gz && \
+    wget -q http://www.mpfr.org/mpfr-current/mpfr-3.1.6.tar.gz && \
     wget -q https://gmplib.org/download/gmp/gmp-6.1.1.tar.xz && \
     wget -q ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.3.tar.gz && \
     tar xf mpfr-3.1.5.tar.gz && \
