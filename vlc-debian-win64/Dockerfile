@@ -17,6 +17,9 @@ ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
 
 ENV GCC_VERSION=6.2.0
 ENV BINUTILS_VERSION=2.27
+ENV MPFR_VERSION=3.1.6
+ENV GMP_VERSION=6.1.1
+ENV MPC_VERSION=1.0.3
 
 RUN set -x && \
     mkdir /build && cd /build && \
@@ -37,15 +40,15 @@ RUN set -x && \
     ../configure --prefix=$MINGW_PREFIX \
                     --host=$TARGET_TUPLE --enable-secure-api && make install && \
     cd /build && \
-    wget -q http://www.mpfr.org/mpfr-current/mpfr-3.1.6.tar.gz && \
-    wget -q https://gmplib.org/download/gmp/gmp-6.1.1.tar.xz && \
-    wget -q ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.3.tar.gz && \
-    tar xf mpfr-3.1.5.tar.gz && \
-    tar xf gmp-6.1.1.tar.xz && \
-    tar xf mpc-1.0.3.tar.gz && \
-    ln -s /build/mpfr-3.1.5 gcc-$GCC_VERSION/mpfr && \
-    ln -s /build/gmp-6.1.1 gcc-$GCC_VERSION/gmp && \
-    ln -s /build/mpc-1.0.3 gcc-$GCC_VERSION/mpc && \
+    wget -q http://www.mpfr.org/mpfr-current/mpfr-$MPFR_VERSION.tar.gz && \
+    wget -q https://gmplib.org/download/gmp/gmp-$GMP_VERSION.tar.xz && \
+    wget -q ftp://ftp.gnu.org/gnu/mpc/mpc-$MPC_VERSION.tar.gz && \
+    tar xf mpfr-$MPFR_VERSION.tar.gz && \
+    tar xf gmp-$GMP_VERSION.tar.xz && \
+    tar xf mpc-$MPC_VERSION.tar.gz && \
+    ln -s /build/mpfr-$MPFR_VERSION gcc-$GCC_VERSION/mpfr && \
+    ln -s /build/gmp-GMP_VERSION gcc-$GCC_VERSION/gmp && \
+    ln -s /build/mpc-$MPC_VERSION gcc-$GCC_VERSION/mpc && \
     sed -i '79i#define _GLIBCXX_USE_WEAK_REF 0' \
         gcc-$GCC_VERSION/libstdc++-v3/config/os/mingw32-w64/os_defines.h && \
     cd gcc-$GCC_VERSION && mkdir build && cd build && \
