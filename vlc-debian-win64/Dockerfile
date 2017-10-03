@@ -8,20 +8,18 @@ RUN set -x && \
     git wget bzip2 file libwine-dev unzip libtool pkg-config cmake \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
     gettext dos2unix zip wine nsis g++-mingw-w64-i686 gperf && \
-    apt-get clean -y && rm -rf /var/lib/apt/lists/*
-
-ENV TARGET_TUPLE=x86_64-w64-mingw32
-ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
-ENV MINGW_PREFIX=$TOOLCHAIN_PREFIX/$TARGET_TUPLE
-ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
-
-ENV GCC_VERSION=6.2.0
-ENV BINUTILS_VERSION=2.27
-ENV MPFR_VERSION=3.1.6
-ENV GMP_VERSION=6.1.1
-ENV MPC_VERSION=1.0.3
-
-RUN set -x && \
+    apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
+    \
+    TARGET_TUPLE=x86_64-w64-mingw32 \
+    TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE \
+    MINGW_PREFIX=$TOOLCHAIN_PREFIX/$TARGET_TUPLE \
+    PATH=$TOOLCHAIN_PREFIX/bin:$PATH \
+    GCC_VERSION=6.2.0 \
+    BINUTILS_VERSION=2.27 \
+    MPFR_VERSION=3.1.6 \
+    GMP_VERSION=6.1.1 \
+    MPC_VERSION=1.0.3 \
+    \
     mkdir /build && cd /build && \
     mkdir $TOOLCHAIN_PREFIX && \
     mkdir $MINGW_PREFIX && \
