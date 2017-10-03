@@ -18,7 +18,7 @@ RUN set -x && \
     BINUTILS_VERSION=2.27 \
     MPFR_VERSION=3.1.6 \
     GMP_VERSION=6.1.1 \
-    MPC_VERSION=1.0.3 \
+    MPC_VERSION=1.0.3 && \
     \
     mkdir /build && cd /build && \
     mkdir $TOOLCHAIN_PREFIX && \
