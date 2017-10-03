@@ -45,7 +45,7 @@ RUN set -x && \
     tar xf gmp-$GMP_VERSION.tar.xz && \
     tar xf mpc-$MPC_VERSION.tar.gz && \
     ln -s /build/mpfr-$MPFR_VERSION gcc-$GCC_VERSION/mpfr && \
-    ln -s /build/gmp-GMP_VERSION gcc-$GCC_VERSION/gmp && \
+    ln -s /build/gmp-$GMP_VERSION gcc-$GCC_VERSION/gmp && \
     ln -s /build/mpc-$MPC_VERSION gcc-$GCC_VERSION/mpc && \
     sed -i '79i#define _GLIBCXX_USE_WEAK_REF 0' \
         gcc-$GCC_VERSION/libstdc++-v3/config/os/mingw32-w64/os_defines.h && \
