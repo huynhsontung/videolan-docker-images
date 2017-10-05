@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/vlc-debian-unstable:latest
 
-ENV IMAGE_DATE=201707021250
+ENV IMAGE_DATE=201710051621
 
 RUN apt-get update && apt-get install -yq \
     rapidjson-dev libsqlite3-dev && \
