@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-sid:latest
 
-ENV IMAGE_DATE=201707021245
+ENV IMAGE_DATE=201710241305
 
 RUN apt-get update && apt-get build-dep -y vlc && \
     apt-get install -y git-core libtool automake autoconf autopoint make \
@@ -9,5 +9,5 @@ RUN apt-get update && apt-get build-dep -y vlc && \
     libtool-bin libavcodec-dev \
     libavformat-dev libavresample-dev libavutil-dev libpostproc-dev \
     libswscale-dev wayland-protocols qtbase5-private-dev libarchive-dev \
-    libmicrodns-dev libmpg123-dev libnfs-dev curl libltdl-dev && \
+    libmicrodns-dev libmpg123-dev libnfs-dev curl libltdl-dev libqt5svg5-dev && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*

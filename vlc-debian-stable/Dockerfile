@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
-ENV IMAGE_DATE=201707021140
+ENV IMAGE_DATE=201710241305
 
 RUN apt-get update && apt-get build-dep -y vlc && \
     apt-get install -y git-core libtool automake autoconf autopoint make \
@@ -8,5 +8,5 @@ RUN apt-get update && apt-get build-dep -y vlc && \
     ragel yasm g++ protobuf-compiler m4 ant build-essential libtool-bin \
     libavformat-dev libavresample-dev libavutil-dev libpostproc-dev \
     libswscale-dev wayland-protocols qtbase5-private-dev libarchive-dev \
-    libmicrodns-dev libmpg123-dev libnfs-dev  && \
+    libmicrodns-dev libmpg123-dev libnfs-dev libqt5svg5-dev && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
