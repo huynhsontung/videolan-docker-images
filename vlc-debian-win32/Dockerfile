@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
-ENV IMAGE_DATE=201710041546
+ENV IMAGE_DATE=201710261055
 
 RUN set -x && \
     apt-get update -qq && apt-get install -qqy \
@@ -16,7 +16,7 @@ ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
 ENV MINGW_PREFIX=$TOOLCHAIN_PREFIX/$TARGET_TUPLE
 ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
 
-ENV GCC_VERSION=6.2.0
+ENV GCC_VERSION=6.4.0
 ENV BINUTILS_VERSION=2.27
 ENV MPFR_VERSION=3.1.6
 ENV GMP_VERSION=6.1.1
@@ -28,11 +28,11 @@ RUN set -x && \
     mkdir $MINGW_PREFIX && \
     ln -s $MINGW_PREFIX $TOOLCHAIN_PREFIX/mingw && \
     wget -q http://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.bz2 && \
-    wget -q ftp://ftp.uvsq.fr/pub/gcc/releases/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.bz2 && \
+    wget -q ftp://ftp.uvsq.fr/pub/gcc/releases/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.xz && \
     git config --global user.name "VideoLAN Buildbot" && \
     git config --global user.email buildbot@videolan.org && \
     git clone --depth=1 git://git.code.sf.net/p/mingw-w64/mingw-w64 && \
-    tar xf gcc-$GCC_VERSION.tar.bz2 && \
+    tar xf gcc-$GCC_VERSION.tar.xz && \
     tar xf binutils-$BINUTILS_VERSION.tar.bz2 && \
     cd binutils-$BINUTILS_VERSION && mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE \
