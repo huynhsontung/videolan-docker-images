@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
-ENV IMAGE_DATE=201710261110
+ENV IMAGE_DATE=201711121210
 
 # We still need an i686 cross compiler to build the installer
 RUN set -x && \
@@ -8,6 +8,9 @@ RUN set -x && \
     git wget bzip2 file libwine-dev unzip libtool pkg-config cmake \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
     gettext dos2unix zip wine nsis g++-mingw-w64-i686 gperf && \
+    echo "deb http://deb.debian.org/debian experimental main" > /etc/apt/sources.list.d/experimental.list && \
+    apt-get update && apt-get -y -t experimental install nsis && \
+    rm -f /etc/apt/sources.list.d/experimental.list && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     \
     TARGET_TUPLE=x86_64-w64-mingw32 \

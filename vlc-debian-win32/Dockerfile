@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
-ENV IMAGE_DATE=201710261055
+ENV IMAGE_DATE=201711121210
 
 RUN set -x && \
     apt-get update -qq && apt-get install -qqy \
@@ -9,6 +9,9 @@ RUN set -x && \
     gettext dos2unix zip wine nsis curl gperf && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install wine32 && \
+    echo "deb http://deb.debian.org/debian experimental main" > /etc/apt/sources.list.d/experimental.list && \
+    apt-get update && apt-get -y -t experimental install nsis && \
+    rm -f /etc/apt/sources.list.d/experimental.list && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 ENV TARGET_TUPLE=i686-w64-mingw32
