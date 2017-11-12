@@ -1,6 +1,6 @@
 FROM debian:stretch
 
-ENV IMAGE_DATE=201710021800
+ENV IMAGE_DATE=201711121044
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
