@@ -1,4 +1,4 @@
-FROM registry.videolan.org:5000/videolan-base-zesty:latest
+FROM registry.videolan.org:5000/videolan-base-artful:latest
 
 ENV IMAGE_DATE=201711121520
 
