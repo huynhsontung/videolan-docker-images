@@ -27,12 +27,14 @@ echo "Changed base images: '$BASE'"
 echo "Changed late images: '$LATE'"
 
 for b in $BASE; do
+    [ -d "$b" ] || continue
     make -C $b build
     make -C $b push
     make -C $b swarm
 done
 
 for l in $LATE; do
+    [ -d "$l" ] || continue
     make -C $l build
     make -C $l push
     make -C $l swarm
