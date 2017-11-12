@@ -5,7 +5,7 @@ ENV IMAGE_DATE=201707021640
 # Don't clean the package lists cache, snapcraft needs it.
 RUN apt-get update && \
     apt-get install -y git-core make build-essential snapcraft locales \
-    protobuf-compiler libpostproc-dev libswscale-dev libavcodec-dev libavformat-dev \
+    libpostproc-dev libswscale-dev libavcodec-dev libavformat-dev \
     qtbase5-private-dev wayland-protocols dh-buildinfo liblircclient-dev \
     libmodplug-dev && \
     apt-get build-dep -y vlc && \
