@@ -12,20 +12,18 @@ RUN set -x && \
     echo "deb http://deb.debian.org/debian experimental main" > /etc/apt/sources.list.d/experimental.list && \
     apt-get update && apt-get -y -t experimental install nsis && \
     rm -f /etc/apt/sources.list.d/experimental.list && \
-    apt-get clean -y && rm -rf /var/lib/apt/lists/*
-
-ENV TARGET_TUPLE=i686-w64-mingw32
-ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
-ENV MINGW_PREFIX=$TOOLCHAIN_PREFIX/$TARGET_TUPLE
-ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
-
-ENV GCC_VERSION=6.4.0
-ENV BINUTILS_VERSION=2.27
-ENV MPFR_VERSION=3.1.6
-ENV GMP_VERSION=6.1.1
-ENV MPC_VERSION=1.0.3
-
-RUN set -x && \
+    apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
+    \
+    TARGET_TUPLE=i686-w64-mingw32 \
+    TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE \
+    MINGW_PREFIX=$TOOLCHAIN_PREFIX/$TARGET_TUPLE \
+    PATH=$TOOLCHAIN_PREFIX/bin:$PATH \
+    GCC_VERSION=6.4.0 \
+    BINUTILS_VERSION=2.27 \
+    MPFR_VERSION=3.1.6 \
+    GMP_VERSION=6.1.1 \
+    MPC_VERSION=1.0.3 && \
+    \
     mkdir /build && cd /build && \
     mkdir $TOOLCHAIN_PREFIX && \
     mkdir $MINGW_PREFIX && \
