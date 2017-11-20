@@ -1,7 +1,7 @@
-From 52944716641824d4dcd1460540ceb821491c9551 Mon Sep 17 00:00:00 2001
+From 42df9603d48c3378480c0ac16180a96a39986fdb Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Hugo=20Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
 Date: Fri, 29 Apr 2016 11:07:45 +0200
-Subject: [PATCH 2/9] crt: Add missing snprintf aliases
+Subject: [PATCH 2/3] crt: Add missing snprintf aliases
 
 ---
  mingw-w64-crt/lib32/msvcr120_app.def.in | 1 +
@@ -9,7 +9,7 @@ Subject: [PATCH 2/9] crt: Add missing snprintf aliases
  2 files changed, 2 insertions(+)
 
 diff --git a/mingw-w64-crt/lib32/msvcr120_app.def.in b/mingw-w64-crt/lib32/msvcr120_app.def.in
-index b29eaf9..0c5aaff 100644
+index b29eaf9a..0c5aaff9 100644
 --- a/mingw-w64-crt/lib32/msvcr120_app.def.in
 +++ b/mingw-w64-crt/lib32/msvcr120_app.def.in
 @@ -1042,6 +1042,7 @@ _vscwprintf_p
@@ -21,7 +21,7 @@ index b29eaf9..0c5aaff 100644
  _vsnprintf_c_l
  _vsnprintf_l
 diff --git a/mingw-w64-crt/lib64/msvcr120_app.def.in b/mingw-w64-crt/lib64/msvcr120_app.def.in
-index 53b2f7b..b829b84 100644
+index 53b2f7b0..b829b841 100644
 --- a/mingw-w64-crt/lib64/msvcr120_app.def.in
 +++ b/mingw-w64-crt/lib64/msvcr120_app.def.in
 @@ -984,6 +984,7 @@ _vscwprintf_p
@@ -33,5 +33,5 @@ index 53b2f7b..b829b84 100644
  _vsnprintf_c_l
  _vsnprintf_l
 -- 
-2.9.3
+2.11.0
 

@@ -1,14 +1,14 @@
-From 76fdf024eb822e0cb92e13fca7d633d229c2c548 Mon Sep 17 00:00:00 2001
+From a0e4ba37087e54898638fe56ea9445d2d3802643 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Hugo=20Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
 Date: Tue, 27 Jun 2017 17:30:24 +0200
-Subject: [PATCH] winbase.h: WaitForMultipleObjects is available on UWP
+Subject: [PATCH 3/3] winbase.h: WaitForMultipleObjects is available on UWP
 
 ---
  mingw-w64-headers/include/winbase.h | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/mingw-w64-headers/include/winbase.h b/mingw-w64-headers/include/winbase.h
-index 74bc512c..be050cc6 100644
+index 77da6a38..db391292 100644
 --- a/mingw-w64-headers/include/winbase.h
 +++ b/mingw-w64-headers/include/winbase.h
 @@ -1265,6 +1265,10 @@ extern "C" {
