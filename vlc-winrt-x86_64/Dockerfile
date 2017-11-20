@@ -14,11 +14,17 @@ ENV TARGET_TUPLE=x86_64-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
 ENV MINGW_PREFIX=$TOOLCHAIN_PREFIX/$TARGET_TUPLE
 ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
-ENV GCC_VERSION=5.4.0
 
 COPY patches /build/patches
 
 RUN cd /build && \
+    \
+    GCC_VERSION=5.4.0 \
+    MPFR_VERSION=3.1.5 \
+    BINUTILS_VERSION=2.26 \
+    GMP_VERSION=6.1.1 \
+    MPC_VERSION=1.0.3 && \
+    \
     mkdir $TOOLCHAIN_PREFIX && \
     mkdir $MINGW_PREFIX && \
     ln -s $MINGW_PREFIX $TOOLCHAIN_PREFIX/mingw && \
@@ -28,7 +34,7 @@ RUN cd /build && \
     git config --global user.email buildbot@videolan.org && \
     git clone --depth=1 git://git.code.sf.net/p/mingw-w64/mingw-w64 && \
     tar xf gcc-$GCC_VERSION.tar.bz2 && \
-    tar xf binutils-2.26.tar.bz2 && \
+    tar xf binutils-$BINUTILS_VERSION.tar.bz2 && \
     cd binutils-2.26 && mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE \
                     --disable-werror --disable-multilib && make -j4 && make install && \
@@ -37,15 +43,15 @@ RUN cd /build && \
     ../configure --prefix=$MINGW_PREFIX \
                     --host=$TARGET_TUPLE && make install && \
     cd /build && \
-    wget -q http://www.mpfr.org/mpfr-current/mpfr-3.1.5.tar.gz && \
-    wget -q https://gmplib.org/download/gmp/gmp-6.1.1.tar.xz && \
-    wget -q ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.3.tar.gz && \
-    tar xf mpfr-3.1.5.tar.gz && \
-    tar xf gmp-6.1.1.tar.xz && \
-    tar xf mpc-1.0.3.tar.gz && \
-    ln -s /build/mpfr-3.1.5 gcc-$GCC_VERSION/mpfr && \
-    ln -s /build/gmp-6.1.1 gcc-$GCC_VERSION/gmp && \
-    ln -s /build/mpc-1.0.3 gcc-$GCC_VERSION/mpc && \
+    wget -q http://www.mpfr.org/mpfr-current/mpfr-$MPFR_VERSION.tar.gz && \
+    wget -q https://gmplib.org/download/gmp/gmp-$GMP_VERSION.tar.xz && \
+    wget -q ftp://ftp.gnu.org/gnu/mpc/mpc-$MPC_VERSION.tar.gz && \
+    tar xf mpfr-$MPFR_VERSION.tar.gz && \
+    tar xf gmp-$GMP_VERSION.tar.xz && \
+    tar xf mpc-$MPC_VERSION.tar.gz && \
+    ln -s /build/mpfr-$MPFR_VERSION gcc-$GCC_VERSION/mpfr && \
+    ln -s /build/gmp-$GMP_VERSION gcc-$GCC_VERSION/gmp && \
+    ln -s /build/mpc-$MPC_VERSION gcc-$GCC_VERSION/mpc && \
     cd gcc-$GCC_VERSION && mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX \
                     --target=$TARGET_TUPLE \
