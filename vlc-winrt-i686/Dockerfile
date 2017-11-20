@@ -19,9 +19,9 @@ COPY patches /build/patches
 
 RUN cd /build && \
     \
-    GCC_VERSION=5.4.0 \
-    MPFR_VERSION=3.1.5 \
-    BINUTILS_VERSION=2.26 \
+    GCC_VERSION=6.4.0 \
+    MPFR_VERSION=3.1.6 \
+    BINUTILS_VERSION=2.27 \
     GMP_VERSION=6.1.1 \
     MPC_VERSION=1.0.3 && \
     \
