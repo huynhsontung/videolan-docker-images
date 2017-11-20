@@ -35,7 +35,7 @@ RUN cd /build && \
     git clone --depth=1 git://git.code.sf.net/p/mingw-w64/mingw-w64 && \
     tar xf gcc-$GCC_VERSION.tar.bz2 && \
     tar xf binutils-$BINUTILS_VERSION.tar.bz2 && \
-    cd binutils-2.26 && mkdir build && cd build && \
+    cd binutils-$BINUTILS_VERSION && mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE \
                     --disable-werror --disable-multilib && make -j4 && make install && \
     cd /build/mingw-w64 && git am /build/patches/*.patch && \

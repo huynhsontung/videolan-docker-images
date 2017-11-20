@@ -28,7 +28,7 @@ RUN cd /build && \
     mkdir $TOOLCHAIN_PREFIX && \
     mkdir $MINGW_PREFIX && \
     ln -s $MINGW_PREFIX $TOOLCHAIN_PREFIX/mingw && \
-    wget -q http://ftp.gnu.org/gnu/binutils/binutils-2.26.tar.bz2 && \
+    wget -q http://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.bz2 && \
     wget -q ftp://ftp.uvsq.fr/pub/gcc/releases/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.bz2 && \
     git config --global user.name "VideoLAN Buildbot" && \
     git config --global user.email buildbot@videolan.org && \
