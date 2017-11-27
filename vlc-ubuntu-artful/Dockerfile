@@ -7,7 +7,7 @@ RUN apt-get update && \
     apt-get install -y git-core make build-essential snapcraft locales \
     libpostproc-dev libswscale-dev libavcodec-dev libavformat-dev \
     qtbase5-private-dev wayland-protocols dh-buildinfo liblircclient-dev \
-    libmodplug-dev libdirectfb-dev libqt5svg5-dev && \
+    libmodplug-dev libdirectfb-dev libqt5svg5-dev flex bison && \
     apt-get build-dep -y vlc && \
     apt-get clean -y && \
     locale-gen en_US.UTF-8 && \
