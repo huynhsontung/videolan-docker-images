@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-xenial:latest
 
-ENV IMAGE_DATE=201712031300
+ENV IMAGE_DATE=201712031330
 
 # Don't clean the package lists cache, snapcraft needs it.
 RUN apt-get update && \
