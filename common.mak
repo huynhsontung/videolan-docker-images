@@ -3,7 +3,7 @@ REGISTRY	:= registry.videolan.org:5000
 TAG			:= $(notdir $(CURDIR))
 DATE		:= $(shell date +'%Y%m%d%H%M%S')
 
-.PHONY: build push swarm
+.PHONY: build push
 
 all:
 
@@ -15,7 +15,5 @@ push:
 	docker tag $(TAG):$(REVISION) $(REGISTRY)/$(TAG):$(DATE)
 	docker push $(REGISTRY)/$(TAG)
 	docker push $(REGISTRY)/$(TAG):$(DATE)
-
-swarm:
 	docker $(SWARM) pull $(REGISTRY)/$(TAG)
 	docker $(SWARM) pull $(REGISTRY)/$(TAG):$(DATE)
