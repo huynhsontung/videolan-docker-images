@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
-ENV IMAGE_DATE=201708090859
+ENV IMAGE_DATE=201712151145
 
 RUN dpkg --add-architecture i386 && apt-get update && \
     apt-get install -y autoconf m4 automake ant autopoint cmake \
@@ -20,6 +20,7 @@ RUN mkdir sdk && cd sdk && \
     cd android-sdk-linux && \
     mkdir "licenses" && \
     echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > "licenses/android-sdk-license" && \
+    echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> "licenses/android-sdk-license" && \
     wget https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip && \
     unzip sdk-tools-linux-3859397.zip && \
     rm -f sdk-tools-linux-3859397.zip && \
