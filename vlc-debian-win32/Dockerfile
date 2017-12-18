@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
-ENV IMAGE_DATE=201711121210
+ENV IMAGE_DATE=201712181741
 
 RUN set -x && \
     apt-get update -qq && apt-get install -qqy \
