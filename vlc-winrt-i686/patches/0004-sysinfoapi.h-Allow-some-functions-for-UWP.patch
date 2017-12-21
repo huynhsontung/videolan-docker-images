@@ -1,0 +1,62 @@
+From 405e3d27a769432b37b28908a98757042ac55832 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Hugo=20Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
+Date: Thu, 21 Dec 2017 15:10:39 +0100
+Subject: [PATCH] sysinfoapi.h: Allow some functions for UWP
+
+---
+ mingw-w64-headers/include/sysinfoapi.h | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
+
+diff --git a/mingw-w64-headers/include/sysinfoapi.h b/mingw-w64-headers/include/sysinfoapi.h
+index 7d43ff5b..cf5fedda 100644
+--- a/mingw-w64-headers/include/sysinfoapi.h
++++ b/mingw-w64-headers/include/sysinfoapi.h
+@@ -43,8 +43,7 @@ extern "C" {
+ #endif
+ #endif
+ 
+-#if WINAPI_FAMILY_PARTITION (WINAPI_PARTITION_DESKTOP)
+-  WINBASEAPI DWORD WINAPI GetVersion (VOID);
++#if WINAPI_FAMILY_PARTITION (WINAPI_PARTITION_DESKTOP) || _WIN32_WINNT >= _WIN32_WINNT_WIN10
+ 
+   typedef struct _MEMORYSTATUSEX {
+     DWORD dwLength;
+@@ -58,6 +57,14 @@ extern "C" {
+     DWORDLONG ullAvailExtendedVirtual;
+   } MEMORYSTATUSEX,*LPMEMORYSTATUSEX;
+ 
++  WINBASEAPI VOID WINAPI GetSystemInfo (LPSYSTEM_INFO lpSystemInfo);
++  WINBASEAPI WINBOOL WINAPI GlobalMemoryStatusEx (LPMEMORYSTATUSEX lpBuffer);
++  WINBASEAPI DWORD WINAPI GetTickCount (VOID);
++  WINBASEAPI VOID WINAPI GetSystemTimePreciseAsFileTime (LPFILETIME lpSystemTimeAsFileTime);
++
++#endif
++
++#if WINAPI_FAMILY_PARTITION (WINAPI_PARTITION_DESKTOP)
+   typedef enum _COMPUTER_NAME_FORMAT {
+     ComputerNameNetBIOS,
+     ComputerNameDnsHostname,
+@@ -70,10 +77,9 @@ extern "C" {
+     ComputerNameMax
+   } COMPUTER_NAME_FORMAT;
+ 
+-  WINBASEAPI WINBOOL WINAPI GlobalMemoryStatusEx (LPMEMORYSTATUSEX lpBuffer);
++  WINBASEAPI DWORD WINAPI GetVersion (VOID);
++
+   WINBASEAPI WINBOOL WINAPI SetLocalTime (CONST SYSTEMTIME *lpSystemTime);
+-  WINBASEAPI VOID WINAPI GetSystemInfo (LPSYSTEM_INFO lpSystemInfo);
+-  WINBASEAPI DWORD WINAPI GetTickCount (VOID);
+   WINBASEAPI WINBOOL WINAPI GetSystemTimeAdjustment (PDWORD lpTimeAdjustment, PDWORD lpTimeIncrement, PBOOL lpTimeAdjustmentDisabled);
+   WINBASEAPI UINT WINAPI GetSystemDirectoryA (LPSTR lpBuffer, UINT uSize);
+   WINBASEAPI UINT WINAPI GetSystemDirectoryW (LPWSTR lpBuffer, UINT uSize);
+@@ -89,7 +95,6 @@ extern "C" {
+   WINBASEAPI WINBOOL WINAPI GetVersionExW (LPOSVERSIONINFOW lpVersionInformation);
+   WINBASEAPI WINBOOL WINAPI GetLogicalProcessorInformation (PSYSTEM_LOGICAL_PROCESSOR_INFORMATION Buffer, PDWORD ReturnedLength);
+   NTSYSAPI ULONGLONG NTAPI VerSetConditionMask (ULONGLONG ConditionMask, ULONG TypeMask, UCHAR Condition);
+-  WINBASEAPI VOID WINAPI GetSystemTimePreciseAsFileTime (LPFILETIME lpSystemTimeAsFileTime);
+   WINBASEAPI UINT WINAPI EnumSystemFirmwareTables (DWORD FirmwareTableProviderSignature, PVOID pFirmwareTableEnumBuffer, DWORD BufferSize);
+   WINBASEAPI UINT WINAPI GetSystemFirmwareTable (DWORD FirmwareTableProviderSignature, DWORD FirmwareTableID, PVOID pFirmwareTableBuffer, DWORD BufferSize);
+ #if _WIN32_WINNT >= 0x0600
+-- 
+2.11.0
+
