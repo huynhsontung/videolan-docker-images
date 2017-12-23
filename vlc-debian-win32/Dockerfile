@@ -6,7 +6,8 @@ RUN set -x && \
     apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file libwine-dev unzip libtool pkg-config cmake \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
-    gettext dos2unix zip wine nsis curl gperf flex bison && \
+    gettext dos2unix zip wine nsis curl gperf flex bison \
+    libcurl4-gnutls-dev && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install wine32 && \
     echo "deb http://deb.debian.org/debian experimental main" > /etc/apt/sources.list.d/experimental.list && \
@@ -74,4 +75,8 @@ RUN set -x && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE && \
     make -j4 && \
     make install && \
+    cd /build/ && git clone --recursive https://code.videolan.org/videolan/breakpad.git && \
+    cd breakpad && autoreconf -vif && mkdir build && cd build && \
+    ../configure --enable-tools --disable-processor --prefix=/opt/breakpad && \
+    make -j4 && make install && \
     cd / && rm -rf /build
