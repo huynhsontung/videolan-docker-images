@@ -43,7 +43,7 @@ RUN set -x && \
     ../configure --prefix=$MINGW_PREFIX \
                     --host=$TARGET_TUPLE --enable-secure-api && make install && \
     cd /build && \
-    wget -q http://www.mpfr.org/mpfr-current/mpfr-$MPFR_VERSION.tar.gz && \
+    wget -q https://ftp.gnu.org/gnu/mpfr/mpfr-$MPFR_VERSION.tar.gz && \
     wget -q https://gmplib.org/download/gmp/gmp-$GMP_VERSION.tar.xz && \
     wget -q ftp://ftp.gnu.org/gnu/mpc/mpc-$MPC_VERSION.tar.gz && \
     tar xf mpfr-$MPFR_VERSION.tar.gz && \
