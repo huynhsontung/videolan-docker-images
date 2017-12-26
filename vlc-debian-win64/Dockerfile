@@ -8,7 +8,7 @@ RUN set -x && \
     git wget bzip2 file libwine-dev unzip libtool pkg-config cmake \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
     gettext dos2unix zip wine nsis g++-mingw-w64-i686 gperf flex bison \
-    libcurl4-gnutls-dev && \
+    libcurl4-gnutls-dev python3 python3-requests && \
     echo "deb http://deb.debian.org/debian experimental main" > /etc/apt/sources.list.d/experimental.list && \
     apt-get update && apt-get -y -t experimental install nsis && \
     rm -f /etc/apt/sources.list.d/experimental.list && \
