@@ -2,6 +2,8 @@ FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
 ENV IMAGE_DATE=201712181741
 
+COPY scripts/wait_process.sh /build/
+
 RUN set -x && \
     apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file libwine-dev unzip libtool pkg-config cmake \
@@ -25,7 +27,7 @@ RUN set -x && \
     GMP_VERSION=6.1.1 \
     MPC_VERSION=1.0.3 && \
     \
-    mkdir /build && cd /build && \
+    cd /build && \
     mkdir $TOOLCHAIN_PREFIX && \
     mkdir $MINGW_PREFIX && \
     ln -s $MINGW_PREFIX $TOOLCHAIN_PREFIX/mingw && \
@@ -79,4 +81,19 @@ RUN set -x && \
     cd breakpad && autoreconf -vif && mkdir build && cd build && \
     ../configure --enable-tools --disable-processor --prefix=/opt/breakpad && \
     make -j4 && make install && \
+    \
+    chmod +x /build/wait_process.sh && \
+    wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks -O /build/winetricks && \
+    chmod +x /build/winetricks && \
+    WINE_MONO_VERSION=4.5.6 && mkdir -p /usr/share/wine/mono \
+	&& wget "http://sourceforge.net/projects/wine/files/Wine%20Mono/$WINE_MONO_VERSION/wine-mono-$WINE_MONO_VERSION.msi/download" -O /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi && \
+    chmod +x /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi && \
+    wine wineboot --init && \
+    /build/wait_process.sh wineserver && \
+    /build/winetricks --unattended dotnet40 dotnet_verifier && \
+    /build/wait_process.sh wineserver && \
+    mkdir /opt/wix && cd /opt/wix/ && \
+    wget "http://wixtoolset.org/downloads/v3.9.1006.0/wix39-binaries.zip" && \
+    unzip wix39-binaries.zip && rm wix39-binaries.zip && \
     cd / && rm -rf /build
+

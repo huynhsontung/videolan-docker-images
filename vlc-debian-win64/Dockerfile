@@ -2,6 +2,8 @@ FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
 ENV IMAGE_DATE=201712181741
 
+COPY scripts/wait_process.sh /build/
+
 # We still need an i686 cross compiler to build the installer
 RUN set -x && \
     apt-get update -qq && apt-get install -qqy \
@@ -9,6 +11,8 @@ RUN set -x && \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
     gettext dos2unix zip wine nsis g++-mingw-w64-i686 gperf flex bison \
     libcurl4-gnutls-dev python3 python3-requests && \
+    dpkg --add-architecture i386 && \
+    apt-get update && apt-get -y install wine32 && \
     echo "deb http://deb.debian.org/debian experimental main" > /etc/apt/sources.list.d/experimental.list && \
     apt-get update && apt-get -y -t experimental install nsis && \
     rm -f /etc/apt/sources.list.d/experimental.list && \
@@ -24,7 +28,7 @@ RUN set -x && \
     GMP_VERSION=6.1.1 \
     MPC_VERSION=1.0.3 && \
     \
-    mkdir /build && cd /build && \
+    cd /build && \
     mkdir $TOOLCHAIN_PREFIX && \
     mkdir $MINGW_PREFIX && \
     ln -s $MINGW_PREFIX $TOOLCHAIN_PREFIX/mingw && \
@@ -79,5 +83,19 @@ RUN set -x && \
     cd /build/ && git clone --recursive https://code.videolan.org/videolan/breakpad.git && \
     cd breakpad && autoreconf -vif && mkdir build && cd build && \
     ../configure --enable-tools --disable-processor --prefix=/opt/breakpad && \
-    make -j4 && make install && \
+    make -j4 && make install 
+    
+RUN chmod +x /build/wait_process.sh && \
+    wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks -O /build/winetricks && \
+    chmod +x /build/winetricks && \
+    WINE_MONO_VERSION=4.5.6 && mkdir -p /usr/share/wine/mono \
+	&& wget "http://sourceforge.net/projects/wine/files/Wine%20Mono/$WINE_MONO_VERSION/wine-mono-$WINE_MONO_VERSION.msi/download" -O /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi && \
+    chmod +x /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi && \
+    wine wineboot --init && \
+    /build/wait_process.sh wineserver && \
+    /build/winetricks --unattended dotnet40 dotnet_verifier && \
+    /build/wait_process.sh wineserver && \
+    mkdir /opt/wix && cd /opt/wix/ && \
+    wget "http://wixtoolset.org/downloads/v3.9.1006.0/wix39-binaries.zip" && \
+    unzip wix39-binaries.zip && rm wix39-binaries.zip && \
     cd / && rm -rf /build
