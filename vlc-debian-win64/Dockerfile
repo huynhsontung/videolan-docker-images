@@ -86,6 +86,7 @@ RUN set -x && \
     make -j4 && make install && \
     \
     chmod +x /build/wait_process.sh && \
+    cd /build/ && \
     wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks -O /build/winetricks && \
     chmod +x /build/winetricks && \
     WINE_MONO_VERSION=4.5.6 && mkdir -p /usr/share/wine/mono \
