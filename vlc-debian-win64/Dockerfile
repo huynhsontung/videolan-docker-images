@@ -83,9 +83,9 @@ RUN set -x && \
     cd /build/ && git clone --recursive https://code.videolan.org/videolan/breakpad.git && \
     cd breakpad && autoreconf -vif && mkdir build && cd build && \
     ../configure --enable-tools --disable-processor --prefix=/opt/breakpad && \
-    make -j4 && make install 
-    
-RUN chmod +x /build/wait_process.sh && \
+    make -j4 && make install && \
+    \
+    chmod +x /build/wait_process.sh && \
     wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks -O /build/winetricks && \
     chmod +x /build/winetricks && \
     WINE_MONO_VERSION=4.5.6 && mkdir -p /usr/share/wine/mono \
