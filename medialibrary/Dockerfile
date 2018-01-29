@@ -1,12 +1,12 @@
 FROM registry.videolan.org:5000/vlc-debian-unstable:latest
 
-ENV IMAGE_DATE=201710051621
+ENV IMAGE_DATE=201801291702
 
 RUN apt-get update && apt-get install -yq \
     rapidjson-dev libsqlite3-dev && \
-    apt-get clean -y && rm -rf /var/lib/apt/lists/*
-
-RUN git clone https://git.videolan.org/git/vlc.git && \
+    apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
+    cd / && \
+    git clone https://git.videolan.org/git/vlc/vlc-3.0.git && \
     cd vlc && ./bootstrap && mkdir build && cd build && \
     ../configure --disable-lua --disable-qt --disable-skins2 \
         --disable-nls \
