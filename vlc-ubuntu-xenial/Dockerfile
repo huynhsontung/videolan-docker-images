@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-xenial:latest
 
-ENV IMAGE_DATE=201712071840
+ENV IMAGE_DATE=201802071245
 
 # Don't clean the package lists cache, snapcraft needs it.
 RUN apt-get update && \
@@ -16,7 +16,8 @@ RUN apt-get update && \
     libnet-smtp-ssl-perl libnet-ssleay-perl libtext-unidecode-perl liburi-perl \
     libvpx-dev libwww-perl libwww-robotrules-perl libxml-libxml-perl \
     libxml-namespacesupport-perl libxml-parser-perl libxml-sax-base-perl \
-    libxml-sax-expat-perl libxml-sax-perl tex-common texinfo yasm && \
+    libxml-sax-expat-perl libxml-sax-perl tex-common texinfo yasm libgtk-3-dev \
+    libprojectm-dev libsecret-1-dev protobuf-compiler protobuf-c-compiler && \
     apt-get build-dep -y vlc && \
     apt-get clean -y && \
     locale-gen en_US.UTF-8 && \
