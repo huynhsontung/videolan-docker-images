@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-xenial:latest
 
-ENV IMAGE_DATE=201802090045
+ENV IMAGE_DATE=201802080045
 
 RUN apt-get update && \
     apt-get install -y git-core make build-essential snapcraft locales \
@@ -29,7 +29,7 @@ RUN apt-get update && \
                libegl1-mesa=11.2.0-1ubuntu2 \
                libgl1-mesa-dri=11.2.0-1ubuntu2 \
                libegl1-mesa-dev=11.2.0-1ubuntu2 && \
-    apt-get clean -y && rm -rf /var/lib/apt/lists/* \
+    apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     locale-gen en_US.UTF-8 && \
     /usr/sbin/update-locale LANG=en_US.UTF-8
 
