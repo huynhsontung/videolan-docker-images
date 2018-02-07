@@ -1,8 +1,7 @@
 FROM registry.videolan.org:5000/videolan-base-xenial:latest
 
-ENV IMAGE_DATE=201802071245
+ENV IMAGE_DATE=201802090045
 
-# Don't clean the package lists cache, snapcraft needs it.
 RUN apt-get update && \
     apt-get install -y git-core make build-essential snapcraft locales \
     qtbase5-private-dev wayland-protocols dh-buildinfo liblircclient-dev \
@@ -19,7 +18,18 @@ RUN apt-get update && \
     libxml-sax-expat-perl libxml-sax-perl tex-common texinfo yasm libgtk-3-dev \
     libprojectm-dev libsecret-1-dev protobuf-compiler protobuf-c-compiler && \
     apt-get build-dep -y vlc && \
-    apt-get clean -y && \
+    apt-get install --allow-downgrades -y \
+               libmirclient9=0.21.0+16.04.20160330-0ubuntu1 \
+               libmirclient-dev=0.21.0+16.04.20160330-0ubuntu1 \
+               libmircommon-dev=0.21.0+16.04.20160330-0ubuntu1 \
+               libmircookie-dev=0.21.0+16.04.20160330-0ubuntu1 \
+               libmircookie2=0.21.0+16.04.20160330-0ubuntu1 \
+               libwayland-egl1-mesa=11.2.0-1ubuntu2 \
+               libegl1-mesa-dev=11.2.0-1ubuntu2 \
+               libegl1-mesa=11.2.0-1ubuntu2 \
+               libgl1-mesa-dri=11.2.0-1ubuntu2 \
+               libegl1-mesa-dev=11.2.0-1ubuntu2 && \
+    apt-get clean -y && rm -rf /var/lib/apt/lists/* \
     locale-gen en_US.UTF-8 && \
     /usr/sbin/update-locale LANG=en_US.UTF-8
 
