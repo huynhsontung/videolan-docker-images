@@ -1,11 +1,9 @@
-FROM registry.videolan.org:5000/videolan-base-xenial:20180208115632
+FROM registry.videolan.org:5000/videolan-base-xenial:20180215210000
 
-ENV IMAGE_DATE=201802081200
+ENV IMAGE_DATE=201802152100
 
-# we need to make sure we pull in no packages with a dependancy on libmir*
-# for now the offenders are: egl-mesa and gtk3
 RUN apt-get update && \
-    apt-get install -y git-core make build-essential locales \
+    apt-get install -y git-core make build-essential locales snapcraft \
     qtbase5-private-dev wayland-protocols dh-buildinfo liblircclient-dev \
     libmodplug-dev libdirectfb-dev libqt5svg5-dev flex bison cmake cmake-data \
     libauthen-sasl-perl libcurl3 libencode-locale-perl libfile-listing-perl \
@@ -18,11 +16,8 @@ RUN apt-get update && \
     libvpx-dev libwww-perl libwww-robotrules-perl libxml-libxml-perl \
     libxml-namespacesupport-perl libxml-parser-perl libxml-sax-base-perl \
     libxml-sax-expat-perl libxml-sax-perl tex-common texinfo yasm \
-    libprojectm-dev libsecret-1-dev protobuf-compiler protobuf-c-compiler && \
+    libprojectm-dev libsecret-1-dev libgtk-3-dev && \
     apt-get build-dep -y vlc && \
-    sed -i 's,^#\(deb.*updates.*\)$,\1,g' /etc/apt/sources.list && \
-    apt-get update && apt-get install -y snapcraft && \
-    sed -i 's,^\(deb.*updates.*\)$,#\1,g' /etc/apt/sources.list && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     locale-gen en_US.UTF-8 && \
     /usr/sbin/update-locale LANG=en_US.UTF-8
