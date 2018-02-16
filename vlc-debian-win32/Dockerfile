@@ -1,8 +1,9 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
-ENV IMAGE_DATE=201712181741
+ENV IMAGE_DATE=201802190951
 
 COPY scripts/wait_process.sh /build/
+COPY patches /patches
 
 RUN set -x && \
     apt-get update -qq && apt-get install -qqy \
@@ -54,7 +55,11 @@ RUN set -x && \
     ln -s /build/mpfr-$MPFR_VERSION gcc-$GCC_VERSION/mpfr && \
     ln -s /build/gmp-$GMP_VERSION gcc-$GCC_VERSION/gmp && \
     ln -s /build/mpc-$MPC_VERSION gcc-$GCC_VERSION/mpc && \
-    cd gcc-$GCC_VERSION && mkdir build && cd build && \
+    cd /build/gcc-$GCC_VERSION && patch -p0 < /patches/libstdcxx.patch && \
+    patch -p0 < /patches/gcc-configure-ac.patch && \
+    autoreconf -vif && cd libstdc++-v3/ && autoreconf && \
+    cd /build/gcc-$GCC_VERSION && \
+    mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX \
                     --target=$TARGET_TUPLE \
                     --enable-languages=c,c++ \
