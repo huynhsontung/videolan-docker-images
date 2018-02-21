@@ -4,7 +4,8 @@ ENV IMAGE_DATE=201802211142
 
 RUN TARGET_TRIPLE=i686-w64-mingw32 \
     SQLITE_VERSION=sqlite-autoconf-3140000 \
-    JPEGTURBO_VERSION=1.5.0 && \
+    JPEGTURBO_VERSION=1.5.0 \
+    PATH=/opt/gcc-$TARGET_TRIPLE/bin:$PATH && \
     mkdir /build && cd /build && \
     git clone --depth=1 https://git.videolan.org/git/vlc.git && \
     cd vlc && \
