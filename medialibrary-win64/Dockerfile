@@ -1,12 +1,11 @@
 FROM registry.videolan.org:5000/vlc-debian-win64:latest
 
-ENV IMAGE_DATE=201701101949
+ENV IMAGE_DATE=201802211142
 
-ENV TARGET_TRIPLE=x86_64-w64-mingw32
-ENV SQLITE_VERSION=sqlite-autoconf-3140000
-ENV JPEGTURBO_VERSION=1.5.0
-
-RUN mkdir /build && cd /build && \
+RUN TARGET_TRIPLE=x86_64-w64-mingw32 \
+    SQLITE_VERSION=sqlite-autoconf-3140000 \
+    JPEGTURBO_VERSION=1.5.0 && \
+    mkdir /build && cd /build && \
     git clone --depth=1 https://git.videolan.org/git/vlc.git && \
     cd vlc && \
     cd extras/tools && ./bootstrap && make -j`nproc` && \
