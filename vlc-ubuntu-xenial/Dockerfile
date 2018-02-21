@@ -1,8 +1,10 @@
 FROM registry.videolan.org:5000/videolan-base-xenial:20180215210000
 
-ENV IMAGE_DATE=201802152100
+ENV IMAGE_DATE=201802211300
 
-RUN apt-get update && \
+RUN echo "deb http://archive.neon.kde.org/user xenial main" >> /etc/apt/sources.list.d/neon.list && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E6D4736255751E5D && \
+    apt-get update && \
     apt-get install -y git-core make build-essential locales snapcraft \
     qtbase5-private-dev wayland-protocols dh-buildinfo liblircclient-dev \
     libmodplug-dev libdirectfb-dev libqt5svg5-dev flex bison cmake cmake-data \
