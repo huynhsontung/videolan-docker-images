@@ -1,6 +1,6 @@
-FROM registry.videolan.org:5000/videolan-base-sid:latest
+FROM registry.videolan.org:5000/videolan-base-sid:20180311183935
 
-ENV IMAGE_DATE=201711121045
+ENV IMAGE_DATE=201803111935
 
 RUN apt-get update && apt-get build-dep -y vlc && \
     apt-get install -y git-core libtool automake autoconf autopoint make \
