@@ -1,8 +1,8 @@
-FROM debian:sid
+FROM debian:sid-20180213
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=201712141625
+ENV IMAGE_DATE=201803111930
 
 RUN echo "deb http://ftp.fr.debian.org/debian/ sid main" > /etc/apt/sources.list && \
     echo "deb-src http://ftp.fr.debian.org/debian/ sid main" >> /etc/apt/sources.list && \
