@@ -17,7 +17,8 @@ ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
 
 COPY patches /build/patches
 
-RUN cd /build && \
+RUN set -x && \
+    cd /build && \
     \
     GCC_VERSION=6.4.0 \
     MPFR_VERSION=3.1.6 \
