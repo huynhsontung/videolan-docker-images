@@ -33,7 +33,7 @@ RUN set -x && \
     wget -q ftp://ftp.uvsq.fr/pub/gcc/releases/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.xz && \
     git config --global user.name "VideoLAN Buildbot" && \
     git config --global user.email buildbot@videolan.org && \
-    git clone --depth=1 --branch v5.0.3 git://git.code.sf.net/p/mingw-w64/mingw-w64 && \
+    git clone --depth=1 git://git.code.sf.net/p/mingw-w64/mingw-w64 && \
     tar xf gcc-$GCC_VERSION.tar.xz && \
     tar xf binutils-$BINUTILS_VERSION.tar.bz2 && \
     cd binutils-$BINUTILS_VERSION && mkdir build && cd build && \
