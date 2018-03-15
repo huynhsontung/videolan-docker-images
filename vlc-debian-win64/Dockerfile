@@ -101,7 +101,6 @@ RUN set -x && \
     /build/wait_process.sh wineserver && \
     /build/winetricks --unattended dotnet40 dotnet_verifier && \
     /build/wait_process.sh wineserver && \
-    mkdir /opt/wix && cd /opt/wix/ && \
-    wget "http://wixtoolset.org/downloads/v3.9.1006.0/wix39-binaries.zip" && \
-    unzip wix39-binaries.zip && rm wix39-binaries.zip && \
+    wget https://download.videolan.org/contrib/wix/wix-3.5.msi -O /build/wix.msi && \
+    wine msiexec /i /build/wix.msi && \
     cd / && rm -rf /build
