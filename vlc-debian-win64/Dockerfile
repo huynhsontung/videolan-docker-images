@@ -109,3 +109,4 @@ RUN wine wineboot --init && \
     cd ~/ && \
     rm -f ~/wix.msi
 
+USER root
