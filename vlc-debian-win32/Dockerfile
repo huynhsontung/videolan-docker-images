@@ -2,10 +2,11 @@ FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
 ENV IMAGE_DATE=201803151153
 
-COPY scripts/wait_process.sh /build/
+COPY scripts/wait_process.sh /opt/wine/
 COPY patches /patches
 
 RUN set -x && \
+    mkdir /build/ && \
     apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file libwine-dev unzip libtool pkg-config cmake \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
@@ -87,18 +88,21 @@ RUN set -x && \
     ../configure --enable-tools --disable-processor --prefix=/opt/breakpad && \
     make -j4 && make install && \
     \
-    chmod +x /build/wait_process.sh && \
-    cd /build/ && \
-    wget https://raw.githubusercontent.com/Winetricks/winetricks/d30478da6981e0842956e5b326339b52540efaec/src/winetricks -O /build/winetricks && \
-    chmod +x /build/winetricks && \
+    chmod +x /opt/wine/wait_process.sh && \
+    wget https://raw.githubusercontent.com/Winetricks/winetricks/d30478da6981e0842956e5b326339b52540efaec/src/winetricks -O /opt/wine/winetricks && \
+    chmod +x /opt/wine/winetricks && \
     WINE_MONO_VERSION=4.5.6 && mkdir -p /usr/share/wine/mono \
 	&& wget "http://sourceforge.net/projects/wine/files/Wine%20Mono/$WINE_MONO_VERSION/wine-mono-$WINE_MONO_VERSION.msi/download" -O /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi && \
     chmod +x /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi && \
-    wine wineboot --init && \
-    /build/wait_process.sh wineserver && \
-    /build/winetricks --unattended dotnet40 dotnet_verifier && \
-    /build/wait_process.sh wineserver && \
-    wget https://download.videolan.org/contrib/wix/wix-3.5.msi -O /build/wix.msi && \
-    wine msiexec /i /build/wix.msi && \
     cd / && rm -rf /build
+
+USER jenkins
+RUN wine wineboot --init && \
+    /opt/wine/wait_process.sh wineserver && \
+    /opt/wine/winetricks --unattended dotnet40 dotnet_verifier && \
+    /opt/wine/wait_process.sh wineserver && \
+    wget https://download.videolan.org/contrib/wix/wix-3.5.msi -O ~/wix.msi && \
+    wine msiexec /i ~/wix.msi && \
+    cd ~/ && \
+    rm -f ~/wix.msi
 
