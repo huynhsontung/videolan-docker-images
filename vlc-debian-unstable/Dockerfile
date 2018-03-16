@@ -11,4 +11,5 @@ RUN apt-get update && apt-get build-dep -y vlc && \
     libswscale-dev wayland-protocols qtbase5-private-dev libarchive-dev \
     libmicrodns-dev libmpg123-dev libnfs-dev curl libltdl-dev libqt5svg5-dev \
     flex bison && \
-    apt-get clean -y && rm -rf /var/lib/apt/lists/*
+    apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
+    echo "IMAGE_DATE=201803111935" >> /etc/environment
