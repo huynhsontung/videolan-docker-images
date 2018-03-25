@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-xenial:20180215210000
 
-ENV IMAGE_DATE=201802211300
+ENV IMAGE_DATE=201803251200
 
 RUN echo "deb http://archive.neon.kde.org/user xenial main" >> /etc/apt/sources.list.d/neon.list && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E6D4736255751E5D && \
@@ -18,7 +18,7 @@ RUN echo "deb http://archive.neon.kde.org/user xenial main" >> /etc/apt/sources.
     libvpx-dev libwww-perl libwww-robotrules-perl libxml-libxml-perl \
     libxml-namespacesupport-perl libxml-parser-perl libxml-sax-base-perl \
     libxml-sax-expat-perl libxml-sax-perl tex-common texinfo yasm \
-    libprojectm-dev libsecret-1-dev libgtk-3-dev && \
+    libprojectm-dev libsecret-1-dev libgtk-3-dev vim && \
     apt-get build-dep -y vlc && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     locale-gen en_US.UTF-8 && \
