@@ -16,7 +16,7 @@ RUN set -x && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install wine32 && \
     echo "deb http://deb.debian.org/debian experimental main" > /etc/apt/sources.list.d/experimental.list && \
-    apt-get update && apt-get -y -t experimental install nsis && \
+    apt-get update && apt-get -y -t experimental install nsis nasm && \
     rm -f /etc/apt/sources.list.d/experimental.list && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     \
