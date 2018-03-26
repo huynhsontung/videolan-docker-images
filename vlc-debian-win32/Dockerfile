@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:latest
 
-ENV IMAGE_DATE=201803151153
+ENV IMAGE_DATE=201803261800
 
 COPY scripts/wait_process.sh /opt/wine/
 COPY patches /patches
@@ -17,6 +17,9 @@ RUN set -x && \
     echo "deb http://deb.debian.org/debian experimental main" > /etc/apt/sources.list.d/experimental.list && \
     apt-get update && apt-get -y -t experimental install nsis && \
     rm -f /etc/apt/sources.list.d/experimental.list && \
+    echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list.d/testing.list && \
+    apt-get update && apt-get -y -t testing install nasm && \
+    rm -f /etc/apt/sources.list.d/testing.list && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     \
     TARGET_TUPLE=i686-w64-mingw32 \
