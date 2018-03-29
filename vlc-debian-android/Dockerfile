@@ -3,11 +3,14 @@ FROM registry.videolan.org:5000/videolan-base-stretch:latest
 ENV IMAGE_DATE=201712151145
 
 RUN dpkg --add-architecture i386 && apt-get update && \
-    apt-get install -y autoconf m4 automake ant autopoint cmake \
+    apt-get install -y autoconf m4 automake ant autopoint \
     build-essential libtool libtool-bin patch pkg-config ragel subversion \
     git rpm2cpio libwebkitgtk-1.0-0 yasm ragel g++ protobuf-compiler gettext \
     libgsm1-dev wget expect unzip python \
     zlib1g:i386 libstdc++6:i386 libc6:i386 && \
+    echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backports.list && \
+    apt-get update && apt-get -y -t stretch-backports install cmake && \
+    rm -f /etc/apt/sources.list.d/stretch-backports.list && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # install android sdk

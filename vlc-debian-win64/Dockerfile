@@ -9,7 +9,7 @@ COPY patches /patches
 RUN set -x && \
     mkdir /build/ && \
     apt-get update -qq && apt-get install -qqy \
-    git wget bzip2 file libwine-dev unzip libtool pkg-config cmake \
+    git wget bzip2 file libwine-dev unzip libtool pkg-config \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
     gettext dos2unix zip wine nsis g++-mingw-w64-i686 gperf flex bison \
     libcurl4-gnutls-dev python3 python3-requests && \
@@ -21,6 +21,9 @@ RUN set -x && \
     echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list.d/testing.list && \
     apt-get update && apt-get -y -t testing install nasm && \
     rm -f /etc/apt/sources.list.d/testing.list && \
+    echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backports.list && \
+    apt-get update && apt-get -y -t stretch-backports install cmake && \
+    rm -f /etc/apt/sources.list.d/stretch-backports.list && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     \
     TARGET_TUPLE=x86_64-w64-mingw32 \
