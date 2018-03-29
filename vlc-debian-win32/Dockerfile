@@ -98,7 +98,7 @@ RUN set -x && \
     wget https://raw.githubusercontent.com/Winetricks/winetricks/d30478da6981e0842956e5b326339b52540efaec/src/winetricks -O /opt/wine/winetricks && \
     chmod +x /opt/wine/winetricks && \
     WINE_MONO_VERSION=4.5.6 && mkdir -p /usr/share/wine/mono \
-	&& wget "http://sourceforge.net/projects/wine/files/Wine%20Mono/$WINE_MONO_VERSION/wine-mono-$WINE_MONO_VERSION.msi/download" -O /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi && \
+	&& wget "https://download.videolan.org/contrib/wine-mono/wine-mono-$WINE_MONO_VERSION.msi" -O /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi && \
     chmod +x /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi && \
     cd / && rm -rf /build
 
