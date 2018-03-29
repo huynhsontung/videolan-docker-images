@@ -9,7 +9,7 @@ COPY patches /patches
 RUN set -x && \
     mkdir /build/ && \
     apt-get update -qq && apt-get install -qqy \
-    git wget bzip2 file libwine-dev unzip libtool pkg-config \
+    git wget bzip2 file libwine-dev unzip libtool libtool-bin pkg-config ant \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
     gettext dos2unix zip wine nsis g++-mingw-w64-i686 gperf flex bison \
     libcurl4-gnutls-dev python3 python3-requests && \

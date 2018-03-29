@@ -5,7 +5,7 @@ MAINTAINER Hugo Beauzée-Luyssen <hugo@beauzee.fr>
 ENV IMAGE_DATE=201803151150
 
 RUN apt-get update -qq && apt-get install -qqy \
-    git wget bzip2 file libwine-dev unzip libtool pkg-config \
+    git wget bzip2 file libwine-dev unzip libtool libtool-bin pkg-config ant \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
     gettext flex bison && \
     echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backports.list && \
