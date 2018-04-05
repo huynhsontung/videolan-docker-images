@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-xenial:20180215210000
 
-ENV IMAGE_DATE=201803251200
+ENV IMAGE_DATE=201804051800
 
 RUN echo "deb http://archive.neon.kde.org/user xenial main" >> /etc/apt/sources.list.d/neon.list && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E6D4736255751E5D && \
