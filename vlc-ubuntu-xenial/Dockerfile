@@ -18,7 +18,7 @@ RUN echo "deb http://archive.neon.kde.org/user xenial main" >> /etc/apt/sources.
     libvpx-dev libwww-perl libwww-robotrules-perl libxml-libxml-perl \
     libxml-namespacesupport-perl libxml-parser-perl libxml-sax-base-perl \
     libxml-sax-expat-perl libxml-sax-perl tex-common texinfo yasm \
-    libprojectm-dev libsecret-1-dev libgtk-3-dev vim && \
+    libprojectm-dev libsecret-1-dev libgtk-3-dev qt5-default vim && \
     apt-get build-dep -y vlc && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     locale-gen en_US.UTF-8 && \
