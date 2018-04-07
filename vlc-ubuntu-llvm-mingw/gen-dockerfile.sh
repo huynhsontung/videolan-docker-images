@@ -13,7 +13,7 @@ LLVM_MINGW_WBS_REPO=https://github.com/mstorsjo/llvm-mingw
 LLVM_MINGW_WBS_COMMIT=e2c1dcac2b5cd7f81a937b1e065c894ad8d1d327
 VIDEOLAN_BASE_TAG=20180215210000
 SCRIPTS="build-all.sh build-llvm.sh install-wrappers.sh build-mingw-w64.sh build-compiler-rt.sh build-libcxx.sh merge-archives.sh strip-llvm.sh wrappers"
-VIDEOLAN_IMAGE_DATE=201804070110
+VIDEOLAN_IMAGE_DATE=201804082030
 
 find `dirname "$0"` -not -name `basename "$0"` -delete
 

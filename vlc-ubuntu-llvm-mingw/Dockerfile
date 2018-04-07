@@ -2,7 +2,7 @@
 #
 FROM registry.videolan.org:5000/videolan-base-xenial:20180215210000
  
-ENV IMAGE_DATE=201804070110
+ENV IMAGE_DATE=201804082030
 
 RUN apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file unzip libtool pkg-config cmake build-essential \
@@ -16,7 +16,7 @@ RUN git config --global user.name "LLVM MinGW" && \
 
 WORKDIR /build
 
-ARG CORES=`nproc`
+ARG CORES=4
 
 ENV TOOLCHAIN_PREFIX=/opt/llvm-mingw
 ENV TOOLCHAIN_ARCHS="i686 x86_64 armv7 aarch64"
