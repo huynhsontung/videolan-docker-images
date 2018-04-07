@@ -15,7 +15,7 @@ VIDEOLAN_BASE_TAG=20180215210000
 SCRIPTS="build-all.sh build-llvm.sh install-wrappers.sh build-mingw-w64.sh build-compiler-rt.sh build-libcxx.sh merge-archives.sh strip-llvm.sh wrappers"
 VIDEOLAN_IMAGE_DATE=201804070110
 
-find . -not -name `basename "$0"` -delete
+find `dirname "$0"` -not -name `basename "$0"` -delete
 
 git clone $LLVM_MINGW_WBS_REPO
 cd llvm-mingw
