@@ -1,0 +1,40 @@
+From 1b6fc0ae2e13045479d9e3bc0cae3f27f3a43200 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Hugo=20Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
+Date: Tue, 10 Apr 2018 15:09:37 +0200
+Subject: [PATCH 5/5] winreg.h: Add missing WINAPI_PARTITION_DESKTOP guard
+
+---
+ mingw-w64-headers/include/winreg.h | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/mingw-w64-headers/include/winreg.h b/mingw-w64-headers/include/winreg.h
+index c7caec8b..d49ab454 100644
+--- a/mingw-w64-headers/include/winreg.h
++++ b/mingw-w64-headers/include/winreg.h
+@@ -7,11 +7,14 @@
+ #define _WINREG_
+ 
+ #include <_mingw_unicode.h>
++#include <winapifamily.h>
+ 
+ #ifdef __cplusplus
+ extern "C" {
+ #endif
+ 
++#if WINAPI_FAMILY_PARTITION (WINAPI_PARTITION_DESKTOP)
++
+ #ifndef WINVER
+ #define WINVER 0x0502
+ #endif
+@@ -408,6 +411,8 @@ WINADVAPI DWORD WINAPI InitiateShutdownW(
+ 
+ #endif /* (_WIN32_WINNT >= 0x0600) */
+ 
++#endif /* WINAPI_FAMILY_PARTITION (WINAPI_PARTITION_DESKTOP) */
++
+ #ifdef __cplusplus
+ }
+ #endif
+-- 
+2.11.0
+
