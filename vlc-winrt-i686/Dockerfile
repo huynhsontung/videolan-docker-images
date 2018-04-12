@@ -24,16 +24,23 @@ RUN set -x && \
     cd /build && \
     \
     GCC_VERSION=6.4.0 \
+    GCC_SHA256=850bf21eafdfe5cd5f6827148184c08c4a0852a37ccf36ce69855334d2c914d4 \
     MPFR_VERSION=3.1.6 \
+    MPFR_SHA256=569ceb418aa935317a79e93b87eeb3f956cab1a97dfb2f3b5fd8ac2501011d62 \
     BINUTILS_VERSION=2.27 \
+    BINUTILS_SHA256=369737ce51587f92466041a97ab7d2358c6d9e1b6490b3940eb09fb0a9a6ac88 \
     GMP_VERSION=6.1.1 \
-    MPC_VERSION=1.0.3 && \
-    \
+    GMP_SHA256=d36e9c05df488ad630fff17edb50051d6432357f9ce04e34a09b3d818825e831 \
+    MPC_VERSION=1.0.3 \
+    MPC_SHA256=617decc6ea09889fb08ede330917a00b16809b8db88c29c31bfbb49cbf88ecc3 \
+    && \
     mkdir $TOOLCHAIN_PREFIX && \
     mkdir $MINGW_PREFIX && \
     ln -s $MINGW_PREFIX $TOOLCHAIN_PREFIX/mingw && \
     wget -q http://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.bz2 && \
+    echo $BINUTILS_SHA256 binutils-$BINUTILS_VERSION.tar.bz2 | sha256sum -c && \
     wget -q ftp://ftp.uvsq.fr/pub/gcc/releases/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.xz && \
+    echo $GCC_SHA256 gcc-$GCC_VERSION.tar.xz | sha256sum -c && \
     git config --global user.name "VideoLAN Buildbot" && \
     git config --global user.email buildbot@videolan.org && \
     git clone --depth=1 git://git.code.sf.net/p/mingw-w64/mingw-w64 && \
@@ -48,8 +55,11 @@ RUN set -x && \
                     --host=$TARGET_TUPLE && make install && \
     cd /build && \
     wget -q https://ftp.gnu.org/gnu/mpfr/mpfr-$MPFR_VERSION.tar.gz && \
+    echo $MPFR_SHA256 mpfr-$MPFR_VERSION.tar.gz | sha256sum -c && \
     wget -q https://gmplib.org/download/gmp/gmp-$GMP_VERSION.tar.xz && \
+    echo $GMP_SHA256 gmp-$GMP_VERSION.tar.xz | sha256sum -c && \
     wget -q ftp://ftp.gnu.org/gnu/mpc/mpc-$MPC_VERSION.tar.gz && \
+    echo $MPC_SHA256 mpc-$MPC_VERSION.tar.gz | sha256sum -c && \
     tar xf mpfr-$MPFR_VERSION.tar.gz && \
     tar xf gmp-$GMP_VERSION.tar.xz && \
     tar xf mpc-$MPC_VERSION.tar.gz && \

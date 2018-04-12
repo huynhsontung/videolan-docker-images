@@ -24,6 +24,8 @@ RUN  git config --global user.name "VideoLAN Buildbot" && \
      git config --global user.email buildbot@videolan.org  && \
      cd $DEP_ROOT && \
      wget -q https://storage.googleapis.com/nativeclient-mirror/nacl/nacl_sdk/nacl_sdk.zip &&\
+     NACL_SDK_SHA256=b4290a1761f0736f2527df7ec3d47bbfc8c328f39898ddfa1af809cbcb531da7 && \
+     echo $NACL_SDK_SHA256 nacl_sdk.zip | sha256sum -c && \
      git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git && \
      unzip nacl_sdk.zip && cd nacl_sdk && \
      ./naclsdk install $PEPPER_VERSION && \

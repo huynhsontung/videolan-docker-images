@@ -31,17 +31,24 @@ RUN set -x && \
     MINGW_PREFIX=$TOOLCHAIN_PREFIX/$TARGET_TUPLE \
     PATH=$TOOLCHAIN_PREFIX/bin:$PATH \
     GCC_VERSION=6.4.0 \
+    GCC_SHA256=850bf21eafdfe5cd5f6827148184c08c4a0852a37ccf36ce69855334d2c914d4 \
     BINUTILS_VERSION=2.27 \
+    BINUTILS_SHA256=369737ce51587f92466041a97ab7d2358c6d9e1b6490b3940eb09fb0a9a6ac88 \
     MPFR_VERSION=3.1.6 \
+    MPFR_SHA256=569ceb418aa935317a79e93b87eeb3f956cab1a97dfb2f3b5fd8ac2501011d62 \
     GMP_VERSION=6.1.1 \
-    MPC_VERSION=1.0.3 && \
-    \
+    GMP_SHA256=d36e9c05df488ad630fff17edb50051d6432357f9ce04e34a09b3d818825e831 \
+    MPC_VERSION=1.0.3 \
+    MPC_SHA256=617decc6ea09889fb08ede330917a00b16809b8db88c29c31bfbb49cbf88ecc3 \
+    && \
     cd /build && \
     mkdir $TOOLCHAIN_PREFIX && \
     mkdir $MINGW_PREFIX && \
     ln -s $MINGW_PREFIX $TOOLCHAIN_PREFIX/mingw && \
     wget -q http://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.bz2 && \
+    echo $BINUTILS_SHA256 binutils-$BINUTILS_VERSION.tar.bz2 | sha256sum -c && \
     wget -q ftp://ftp.uvsq.fr/pub/gcc/releases/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.xz && \
+    echo $GCC_SHA256 gcc-$GCC_VERSION.tar.xz | sha256sum -c && \
     git config --global user.name "VideoLAN Buildbot" && \
     git config --global user.email buildbot@videolan.org && \
     git clone --depth=1 --branch v5.0.3 git://git.code.sf.net/p/mingw-w64/mingw-w64 && \
@@ -55,8 +62,11 @@ RUN set -x && \
                     --host=$TARGET_TUPLE --enable-secure-api && make install && \
     cd /build && \
     wget -q https://ftp.gnu.org/gnu/mpfr/mpfr-$MPFR_VERSION.tar.gz && \
+    echo $MPFR_SHA256 mpfr-$MPFR_VERSION.tar.gz | sha256sum -c && \
     wget -q https://gmplib.org/download/gmp/gmp-$GMP_VERSION.tar.xz && \
+    echo $GMP_SHA256 gmp-$GMP_VERSION.tar.xz | sha256sum -c && \
     wget -q ftp://ftp.gnu.org/gnu/mpc/mpc-$MPC_VERSION.tar.gz && \
+    echo $MPC_SHA256 mpc-$MPC_VERSION.tar.gz | sha256sum -c && \
     tar xf mpfr-$MPFR_VERSION.tar.gz && \
     tar xf gmp-$GMP_VERSION.tar.xz && \
     tar xf mpc-$MPC_VERSION.tar.gz && \
@@ -98,10 +108,14 @@ RUN set -x && \
     make -j4 && make install && \
     \
     chmod +x /opt/wine/wait_process.sh && \
-    wget https://raw.githubusercontent.com/Winetricks/winetricks/d30478da6981e0842956e5b326339b52540efaec/src/winetricks -O /opt/wine/winetricks && \
+    wget -q https://raw.githubusercontent.com/Winetricks/winetricks/d30478da6981e0842956e5b326339b52540efaec/src/winetricks -O /opt/wine/winetricks && \
+    WINETRICKS_SHA256=01ebb56d22f54467343700eedfe283d82a47e67bbb6c2d68b7da743f41bb78a3 && \
+    echo $WINETRICKS_SHA256 /opt/wine/winetricks | sha256sum -c && \
     chmod +x /opt/wine/winetricks && \
-    WINE_MONO_VERSION=4.5.6 && mkdir -p /usr/share/wine/mono \
-	&& wget "https://download.videolan.org/contrib/wine-mono/wine-mono-$WINE_MONO_VERSION.msi" -O /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi && \
+    WINE_MONO_VERSION=4.5.6 && mkdir -p /usr/share/wine/mono && \
+    wget -q "https://download.videolan.org/contrib/wine-mono/wine-mono-$WINE_MONO_VERSION.msi" -O /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi && \
+    WINE_MONO_SHA256=ac681f737f83742d786706529eb85f4bc8d6bdddd8dcdfa9e2e336b71973bc25 && \
+    echo $WINE_MONO_SHA256 /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi | sha256sum -c && \
     chmod +x /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi && \
     cd / && rm -rf /build
 
@@ -110,7 +124,9 @@ RUN wine wineboot --init && \
     /opt/wine/wait_process.sh wineserver && \
     /opt/wine/winetricks --unattended dotnet40 dotnet_verifier && \
     /opt/wine/wait_process.sh wineserver && \
-    wget https://download.videolan.org/contrib/wix/wix-3.5.msi -O ~/wix.msi && \
+    wget -q https://download.videolan.org/contrib/wix/wix-3.5.msi -O ~/wix.msi && \
+    WIX_SHA256=621b70e8761d5b940d8c32a42b0e92fd55767f8908a9b32e06bb3d12a30bc47b && \
+    echo $WIX_SHA256 ~/wix.msi | sha256sum -c && \
     wine msiexec /i ~/wix.msi && \
     cd ~/ && \
     rm -f ~/wix.msi
