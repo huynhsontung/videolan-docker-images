@@ -14,11 +14,8 @@ RUN set -x && \
     libcurl4-gnutls-dev python3 python3-requests && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install wine32 && \
-    echo "deb http://deb.debian.org/debian experimental main" > /etc/apt/sources.list.d/experimental.list && \
-    apt-get update && apt-get -y -t experimental install nsis && \
-    rm -f /etc/apt/sources.list.d/experimental.list && \
     echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list.d/testing.list && \
-    apt-get update && apt-get -y -t testing install nasm && \
+    apt-get update && apt-get -y -t testing install nasm nsis && \
     rm -f /etc/apt/sources.list.d/testing.list && \
     echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backports.list && \
     apt-get update && apt-get -y -t stretch-backports install cmake && \
