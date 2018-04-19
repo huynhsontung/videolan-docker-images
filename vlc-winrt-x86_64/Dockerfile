@@ -1,4 +1,4 @@
-FROM registry.videolan.org:5000/videolan-base-stretch:latest
+FROM registry.videolan.org:5000/videolan-base-stretch:20180419104422
 
 MAINTAINER Hugo Beauzée-Luyssen <hugo@beauzee.fr>
 

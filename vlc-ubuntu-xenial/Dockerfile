@@ -1,4 +1,4 @@
-FROM registry.videolan.org:5000/videolan-base-xenial:20180215210000
+FROM registry.videolan.org:5000/videolan-base-xenial:20180419104953
 
 ENV IMAGE_DATE=201804051800
 

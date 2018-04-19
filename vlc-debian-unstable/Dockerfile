@@ -1,6 +1,6 @@
-FROM registry.videolan.org:5000/videolan-base-sid:20180311183935
+FROM registry.videolan.org:5000/videolan-base-sid:20180419103824
 
-ENV IMAGE_DATE=201803111935
+ENV IMAGE_DATE=20180419103824
 
 RUN apt-get update && apt-get build-dep -y vlc && \
     apt-get install -y git-core libtool automake autoconf autopoint make \
@@ -12,4 +12,4 @@ RUN apt-get update && apt-get build-dep -y vlc && \
     libmicrodns-dev libmpg123-dev libnfs-dev curl libltdl-dev libqt5svg5-dev \
     flex bison && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
-    echo "IMAGE_DATE=201803111935" >> /etc/environment
+    echo "IMAGE_DATE=20180419103824" >> /etc/environment
