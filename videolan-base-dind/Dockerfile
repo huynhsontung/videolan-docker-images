@@ -2,6 +2,13 @@ FROM docker:1.11
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
+# If someone wants to use VideoLAN docker images on a local machine and does
+# not want to be disturbed by the jenkins user, we should not take an uid/gid
+# in the user range of main distributions, which means:
+# - Debian based: <1000
+# - RPM based: <500 (CentOS, RedHat, etc.)
+ARG JENKINS_UID=499
+
 # https://github.com/docker/docker/blob/master/project/PACKAGERS.md#runtime-dependencies
 RUN apk add --no-cache \
 		btrfs-progs \
@@ -31,7 +38,8 @@ COPY dind /usr/local/bin
 COPY dockerd-entrypoint.sh /usr/local/bin/
 
 RUN mkdir -p /var/run/sshd && \
-	adduser -D jenkins && \
+	addgroup -g ${JENKINS_UID} jenkins && \
+	adduser -D -u ${JENKINS_UID} -G jenkins jenkins && \
 	echo "jenkins:jenkins" | chpasswd
 
 VOLUME /var/lib/docker
