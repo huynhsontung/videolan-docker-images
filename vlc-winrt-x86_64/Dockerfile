@@ -48,7 +48,7 @@ RUN set -x && \
     tar xf binutils-$BINUTILS_VERSION.tar.bz2 && \
     cd binutils-$BINUTILS_VERSION && mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE \
-                    --disable-werror --disable-multilib && make -j4 && make install && \
+                    --disable-werror --disable-multilib && make -j4 && make install-strip && \
     cd /build/mingw-w64 && git am /build/patches/*.patch && \
     cd /build/mingw-w64/mingw-w64-headers && mkdir build && cd build && \
     ../configure --prefix=$MINGW_PREFIX \
@@ -86,7 +86,7 @@ RUN set -x && \
     make install && \
     cd /build/gcc-$GCC_VERSION/build && \
     make -j4 && \
-    make install && \
+    make install-strip && \
     cd /build/mingw-w64/mingw-w64-libraries/winstorecompat && \
     autoreconf -vif && \
     mkdir build && cd build && \
