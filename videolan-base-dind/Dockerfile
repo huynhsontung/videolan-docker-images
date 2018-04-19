@@ -39,7 +39,7 @@ COPY dockerd-entrypoint.sh /usr/local/bin/
 
 RUN mkdir -p /var/run/sshd && \
 	addgroup -g ${JENKINS_UID} jenkins && \
-	adduser -D -u ${JENKINS_UID} -G jenkins jenkins && \
+	adduser -D -u ${JENKINS_UID} -G jenkins -s /bin/sh jenkins && \
 	echo "jenkins:jenkins" | chpasswd
 
 VOLUME /var/lib/docker
