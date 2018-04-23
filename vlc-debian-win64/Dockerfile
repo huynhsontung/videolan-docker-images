@@ -2,11 +2,20 @@ FROM registry.videolan.org:5000/videolan-base-stretch:20180419104422
 
 ENV IMAGE_DATE=201803261800
 
+ENV TARGET_TUPLE=x86_64-w64-mingw32
+ENV TOOLCHAIN_PREFIX=/opt/gcc-${TARGET_TUPLE}
+ENV MINGW_PREFIX=$TOOLCHAIN_PREFIX/${TARGET_TUPLE}
+ENV PATH=${TOOLCHAIN_PREFIX}/bin:${PATH}
+
 COPY scripts/wait_process.sh /opt/wine/
 COPY patches /patches
 
 # We still need an i686 cross compiler to build the installer
 RUN set -x && \
+    echo "export TARGET_TUPLE=${TARGET_TUPLE}" >> /etc/profile.d/vlc_env.sh && \
+    echo "export TOOLCHAIN_PREFIX=${TOOLCHAIN_PREFIX}" >> /etc/profile.d/vlc_env.sh && \
+    echo "export MINGW_PREFIX=${MINGW_PREFIX}" >> /etc/profile.d/vlc_env.sh && \
+    echo "export PATH=${TOOLCHAIN_PREFIX}/bin:\$PATH" >> /etc/profile.d/vlc_env.sh && \
     mkdir /build/ && \
     apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file libwine-dev unzip libtool libtool-bin pkg-config ant \
@@ -23,10 +32,6 @@ RUN set -x && \
     rm -f /etc/apt/sources.list.d/stretch-backports.list && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     \
-    TARGET_TUPLE=x86_64-w64-mingw32 \
-    TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE \
-    MINGW_PREFIX=$TOOLCHAIN_PREFIX/$TARGET_TUPLE \
-    PATH=$TOOLCHAIN_PREFIX/bin:$PATH \
     GCC_VERSION=6.4.0 \
     GCC_SHA256=850bf21eafdfe5cd5f6827148184c08c4a0852a37ccf36ce69855334d2c914d4 \
     BINUTILS_VERSION=2.27 \

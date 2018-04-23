@@ -4,6 +4,11 @@ MAINTAINER Hugo Beauzée-Luyssen <hugo@beauzee.fr>
 
 ENV IMAGE_DATE=201804101743
 
+ENV TARGET_TUPLE=i686-w64-mingw32
+ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
+ENV MINGW_PREFIX=$TOOLCHAIN_PREFIX/$TARGET_TUPLE
+ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
+
 RUN apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file libwine-dev unzip libtool libtool-bin pkg-config ant \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
@@ -13,14 +18,13 @@ RUN apt-get update -qq && apt-get install -qqy \
     rm -f /etc/apt/sources.list.d/stretch-backports.list && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-ENV TARGET_TUPLE=i686-w64-mingw32
-ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
-ENV MINGW_PREFIX=$TOOLCHAIN_PREFIX/$TARGET_TUPLE
-ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
-
 COPY patches /build/patches
 
 RUN set -x && \
+    echo "export TARGET_TUPLE=${TARGET_TUPLE}" >> /etc/profile.d/vlc_env.sh && \
+    echo "export TOOLCHAIN_PREFIX=${TOOLCHAIN_PREFIX}" >> /etc/profile.d/vlc_env.sh && \
+    echo "export MINGW_PREFIX=${MINGW_PREFIX}" >> /etc/profile.d/vlc_env.sh && \
+    echo "export PATH=$TOOLCHAIN_PREFIX/bin:\$PATH" >> /etc/profile.d/vlc_env.sh && \
     cd /build && \
     \
     GCC_VERSION=6.4.0 \
