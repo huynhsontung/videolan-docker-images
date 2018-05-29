@@ -1,8 +1,8 @@
-FROM ubuntu:xenial-20180123
+FROM ubuntu:xenial-20180417
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=20180202152100
+ENV IMAGE_DATE=20180529134500
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the jenkins user, we should not take an uid/gid
