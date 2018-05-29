@@ -1,11 +1,11 @@
 FROM registry.videolan.org:5000/videolan-base-xenial:20180529123029
 
-ENV IMAGE_DATE=201805291600
+ENV IMAGE_DATE=201805291741
 
 RUN echo "deb http://archive.neon.kde.org/user xenial main" >> /etc/apt/sources.list.d/neon.list && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E6D4736255751E5D && \
     apt-get update && \
-    apt-get install --no-install-suggests --no-install-recommends \
+    apt-get install --no-install-suggests --no-install-recommends -y \
       ant autoconf automake autopoint bison build-essential cmake flex g++ gettext
       git git-core libasound2-dev libavahi-client-dev libcdio-dev libdbus-1-dev
       libdirectfb-dev libegl1-mesa-dev libfreerdp-dev libfreetype6-dev libfribidi-dev
