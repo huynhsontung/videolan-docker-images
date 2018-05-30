@@ -8,5 +8,6 @@ RUN apt-get update && apt-get build-dep -y vlc && \
     ragel yasm g++ protobuf-compiler m4 ant build-essential libtool-bin \
     libavformat-dev libavresample-dev libavutil-dev libpostproc-dev \
     libswscale-dev wayland-protocols qtbase5-private-dev libarchive-dev \
-    libmicrodns-dev libmpg123-dev libnfs-dev libqt5svg5-dev flex bison curl && \
+    libmicrodns-dev libmpg123-dev libnfs-dev libqt5svg5-dev flex bison curl \
+    libxkbcommon-x11-dev && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
