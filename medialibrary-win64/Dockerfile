@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/vlc-debian-win64:latest
 
-ENV IMAGE_DATE=201802211142
+ENV IMAGE_DATE=201806051337
 
 RUN TARGET_TRIPLE=x86_64-w64-mingw32 \
     SQLITE_VERSION=sqlite-autoconf-3140000 \
