@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/vlc-debian-win64:latest
 
-ENV IMAGE_DATE=201806051337
+ENV IMAGE_DATE=201806051344
 
 RUN TARGET_TRIPLE=x86_64-w64-mingw32 \
     SQLITE_VERSION=sqlite-autoconf-3140000 \
@@ -11,7 +11,7 @@ RUN TARGET_TRIPLE=x86_64-w64-mingw32 \
     RAPIDJSON_SHA256=c3711ed2b3c76a5565ee9f0128bb4ec6753dbcc23450b713842df8f236d08666 \
     PATH=/opt/gcc-$TARGET_TRIPLE/bin:$PATH && \
     mkdir /build && cd /build && \
-    git clone --depth=1 https://git.videolan.org/git/vlc.git && \
+    git clone --depth=1 https://git.videolan.org/git/vlc/vlc-3.0.git && \
     cd vlc && \
     cd extras/tools && ./bootstrap && make -j`nproc` && \
     export PATH=`pwd`/build/bin:$PATH && cd ../../ && \
