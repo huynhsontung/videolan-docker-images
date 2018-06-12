@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:20180419104422
 
-ENV IMAGE_DATE=201803261800
+ENV IMAGE_DATE=201806121455
 
 ENV TARGET_TUPLE=i686-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
@@ -128,6 +128,7 @@ RUN wine wineboot --init && \
     echo $WIX_SHA256 ~/wix.msi | sha256sum -c && \
     wine msiexec /i ~/wix.msi && \
     cd ~/ && \
-    rm -f ~/wix.msi
+    rm -f ~/wix.msi && \
+    rm -rf ~/.cache/winetricks
 
 USER root
