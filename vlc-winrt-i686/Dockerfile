@@ -2,7 +2,7 @@ FROM registry.videolan.org:5000/videolan-base-stretch:20180419104422
 
 MAINTAINER Hugo Beauzée-Luyssen <hugo@beauzee.fr>
 
-ENV IMAGE_DATE=201807111132
+ENV IMAGE_DATE=201807111157
 
 ENV TARGET_TUPLE=i686-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
