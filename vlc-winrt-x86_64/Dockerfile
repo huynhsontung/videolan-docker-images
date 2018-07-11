@@ -23,7 +23,7 @@ RUN set -x && \
     echo "export TOOLCHAIN_PREFIX=${TOOLCHAIN_PREFIX}" >> /etc/profile.d/vlc_env.sh && \
     echo "export MINGW_PREFIX=${MINGW_PREFIX}" >> /etc/profile.d/vlc_env.sh && \
     echo "export PATH=${TOOLCHAIN_PREFIX}/bin:\$PATH" >> /etc/profile.d/vlc_env.sh && \
-    cd /build && \
+    mkdir /build && cd /build && \
     \
     GCC_VERSION=6.4.0 \
     GCC_SHA256=850bf21eafdfe5cd5f6827148184c08c4a0852a37ccf36ce69855334d2c914d4 \
