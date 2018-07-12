@@ -2,11 +2,12 @@
 #
 FROM registry.videolan.org:5000/videolan-base-bionic:20180605113924
  
-ENV IMAGE_DATE=201804082050
+ENV IMAGE_DATE=201807121425
 
 RUN apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file unzip libtool pkg-config cmake build-essential \
-    automake yasm gettext autopoint vim python git-svn ninja-build && \
+    automake yasm gettext autopoint vim python git-svn ninja-build libwine-dev \
+    flex && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
 
