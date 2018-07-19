@@ -2,7 +2,7 @@
 #
 FROM registry.videolan.org:5000/videolan-base-bionic:20180605113924
  
-ENV IMAGE_DATE=201807121425
+ENV IMAGE_DATE=201807191635
 
 RUN apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file unzip libtool pkg-config cmake build-essential \
@@ -10,6 +10,14 @@ RUN apt-get update -qq && apt-get install -qqy \
     flex ragel bison nasm zip dos2unix p7zip-full && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
+
+# Disable statx for the time being to fix Qt build
+# https://bugreports.qt.io/browse/QTBUG-64490
+RUN for f in /usr/include/sys/syscall.h /usr/include/$(gcc -print-multiarch)/sys/syscall.h; do \
+    if [ -f $f ]; then \
+      echo "#undef SYS_statx" >> $f; \
+    fi; \
+done
 
 
 RUN git config --global user.name "LLVM MinGW" && \
@@ -21,6 +29,7 @@ ARG CORES=4
 
 ENV TOOLCHAIN_PREFIX=/opt/llvm-mingw
 ENV TOOLCHAIN_ARCHS="i686 x86_64 armv7 aarch64"
+
 
 # Build everything and clean up, in one step
 COPY *.sh ./
