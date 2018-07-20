@@ -8,6 +8,9 @@ RUN apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file unzip libtool pkg-config cmake build-essential \
     automake yasm gettext autopoint vim python git-svn ninja-build libwine-dev \
     flex ragel bison nasm zip dos2unix p7zip-full && \
+    echo "deb http://archive.ubuntu.com/ubuntu cosmic universe" > /etc/apt/sources.list.d/cosmic.list && \
+    apt update -qq && apt install -y -t cosmic nsis && \
+    rm /etc/apt/sources.list.d/cosmic.list && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
 
