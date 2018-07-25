@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:20180419104422
 
-ENV IMAGE_DATE=201806121455
+ENV IMAGE_DATE=201807251459
 
 ENV TARGET_TUPLE=x86_64-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-${TARGET_TUPLE}
@@ -34,8 +34,8 @@ RUN set -x && \
     \
     GCC_VERSION=6.4.0 \
     GCC_SHA256=850bf21eafdfe5cd5f6827148184c08c4a0852a37ccf36ce69855334d2c914d4 \
-    BINUTILS_VERSION=2.27 \
-    BINUTILS_SHA256=369737ce51587f92466041a97ab7d2358c6d9e1b6490b3940eb09fb0a9a6ac88 \
+    BINUTILS_VERSION=2.31.1 \
+    BINUTILS_SHA256=ffcc382695bf947da6135e7436b8ed52d991cf270db897190f19d6f9838564d0 \
     MPFR_VERSION=3.1.6 \
     MPFR_SHA256=569ceb418aa935317a79e93b87eeb3f956cab1a97dfb2f3b5fd8ac2501011d62 \
     GMP_VERSION=6.1.1 \
@@ -56,7 +56,9 @@ RUN set -x && \
     git clone --depth=1 --branch v5.0.3 git://git.code.sf.net/p/mingw-w64/mingw-w64 && \
     tar xf gcc-$GCC_VERSION.tar.xz && \
     tar xf binutils-$BINUTILS_VERSION.tar.bz2 && \
-    cd binutils-$BINUTILS_VERSION && mkdir build && cd build && \
+    cd binutils-$BINUTILS_VERSION && \
+    patch -p1 < /patches/binutils.patch && \
+    mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE \
                     --disable-werror --disable-multilib && make -j4 && make install-strip && \
     cd /build/mingw-w64/mingw-w64-headers && mkdir build && cd build && \
