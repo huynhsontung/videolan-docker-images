@@ -2,7 +2,7 @@ FROM ubuntu:bionic-20180821
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=201809071200
+ENV IMAGE_DATE=201809121200
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the jenkins user, we should not take an uid/gid
@@ -12,7 +12,7 @@ ENV IMAGE_DATE=201809071200
 ARG JENKINS_UID=499
 
 RUN apt-get update && \
-    apt-get install -y openssh-server openjdk-8-jdk lftp ca-certificates && \
+    apt-get install -y openssh-server openjdk-8-jdk lftp ca-certificates gnupg1 && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     sed -i 's|session    required     pam_loginuid.so|session    optional     pam_loginuid.so|g' /etc/pam.d/sshd && \
     sed -i 's,use_authtok ,,' /etc/pam.d/common-password && \
