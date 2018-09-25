@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-sid:20180419103824
 
-IMAGE_DATE=201809251718
+ENV IMAGE_DATE=201809251718
 
 RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
