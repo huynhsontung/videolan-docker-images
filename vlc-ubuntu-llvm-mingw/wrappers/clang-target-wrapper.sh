@@ -1,30 +1,21 @@
-#!/usr/bin/env bash
-DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+#!/bin/sh
+DIR="$(cd "$(dirname "$0")" && pwd)"
 TARGET="$(basename $0 | sed 's/-[^-]*$//')"
 EXE=$(basename $0 | sed 's/.*-\([^-]*\)/\1/')
 case $EXE in
-clang*)
-    ;;
-gcc)
-    EXE=clang
-    ;;
-g++)
-    EXE=clang++
+clang++|g++)
+    DRIVER_MODE=--driver-mode=g++
     ;;
 esac
 ARCH=$(echo $TARGET | sed 's/-.*//')
-SYSROOT="$(cd "$DIR"/../$TARGET && pwd)"
 case $ARCH in
 i686)
-    # Dwarf is the default for i686, but currently there's an issue
-    # in libunwind with unwinding clang generated dwarf opcodes on 32 bit
-    # x86, pending resolution at https://reviews.llvm.org/D38680.
-    ARCH_FLAGS=-fsjlj-exceptions
+    # Dwarf is the default here.
+    ARCH_FLAGS=
     ;;
 x86_64)
-    # Explicitly request dwarf on x86_64; SEH is the default there but
-    # libcxxabi lacks support for it.
-    ARCH_FLAGS=-fdwarf-exceptions
+    # SEH is the default here.
+    ARCH_FLAGS=
     ;;
 armv7)
     # Dwarf is the default here.
@@ -39,4 +30,4 @@ esac
 if [ -n "$CCACHE" ]; then
     CCACHE=ccache
 fi
-$CCACHE $DIR/$EXE -target $TARGET -rtlib=compiler-rt -stdlib=libc++ -fuse-ld=lld --sysroot="$SYSROOT" $ARCH_FLAGS -Qunused-arguments "$@"
+$CCACHE $DIR/clang $DRIVER_MODE -target $TARGET -rtlib=compiler-rt -stdlib=libc++ -fuse-ld=lld -fuse-cxa-atexit $ARCH_FLAGS -Qunused-arguments "$@"

@@ -2,11 +2,22 @@
 
 set -e
 
-if [ $# -lt 1 ]; then
-    echo $0 dest
+ASSERTS=ON
+BUILDDIR=build
+
+while [ $# -gt 0 ]; do
+    if [ "$1" = "--disable-asserts" ]; then
+        ASSERTS=OFF
+        BUILDDIR=build-noasserts
+    else
+        PREFIX="$1"
+    fi
+    shift
+done
+if [ -z "$PREFIX" ]; then
+    echo $0 [--disable-asserts] dest
     exit 1
 fi
-PREFIX="$1"
 
 : ${CORES:=4}
 
@@ -37,13 +48,13 @@ fi
 if [ -n "$SYNC" ] || [ -n "$CHECKOUT" ]; then
     cd llvm
     [ -z "$SYNC" ] || git fetch
-    git checkout 29475f1bf8ec6d0bd19c245fb8679448d513af98
+    git checkout 3e090e5aa550f55ab68927d18022c4e244733ab8
     cd tools/clang
     [ -z "$SYNC" ] || git fetch
-    git checkout 94cbbb825727057c7378c573b4093c58b667da80
+    git checkout 1bc73590ad1335313e8f262393547b8af67c9167
     cd ../lld
     [ -z "$SYNC" ] || git fetch
-    git checkout f3bc2b404cf547c08cc43840efd2373e8a0c7e66
+    git checkout 4ea826e45cf92d005bf9b1655920897ffc82f366
     cd ../../..
 fi
 
@@ -53,14 +64,16 @@ if [ "$(which ninja)" != "" ]; then
 fi
 
 cd llvm
-mkdir -p build
-cd build
+mkdir -p $BUILDDIR
+cd $BUILDDIR
 cmake \
     $CMAKE_GENERATOR \
     -DCMAKE_INSTALL_PREFIX="$PREFIX" \
     -DCMAKE_BUILD_TYPE=Release \
-    -DLLVM_ENABLE_ASSERTIONS=ON \
+    -DLLVM_ENABLE_ASSERTIONS=$ASSERTS \
     -DLLVM_TARGETS_TO_BUILD="ARM;AArch64;X86" \
+    -DLLVM_INSTALL_TOOLCHAIN_ONLY=ON \
+    -DLLVM_TOOLCHAIN_TOOLS="llvm-ar;llvm-ranlib;llvm-objdump;llvm-rc;llvm-cvtres;llvm-nm;llvm-strings;llvm-readobj;llvm-dlltool;llvm-pdbutil" \
     ..
 if [ -n "$NINJA" ]; then
     ninja install/strip

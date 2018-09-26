@@ -22,13 +22,13 @@ fi
 # Add a symlink for i386 -> i686; we normally name the toolchain
 # i686-w64-mingw32, but due to the compiler-rt cmake peculiarities, we
 # need to refer to it as i386 at this stage.
-ln -sf i686-w64-mingw32 $PREFIX/i386-w64-mingw32
+ln -sfn i686-w64-mingw32 $PREFIX/i386-w64-mingw32 || true
 
 cd compiler-rt
 
 if [ -n "$SYNC" ] || [ -n "$CHECKOUT" ]; then
     [ -z "$SYNC" ] || git fetch
-    git checkout 97adb78eaae40595d052cfa76514db8256063bea
+    git checkout 3a468fa7bb7cc79eca0320230b4201e84a43c1e6
 fi
 
 for arch in $ARCHS; do

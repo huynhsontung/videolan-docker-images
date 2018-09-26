@@ -1,9 +1,14 @@
 #!/bin/sh
 
+DIR="$(cd "$(dirname "$0")" && pwd)"
+export PATH=$DIR:$PATH
+
 if [ "$1" = "--help" ]; then
     cat<<EOF
 GNU ld impersonation
-We don't support --enable-auto-import, but libtool may look for this flag.
+We don't support the --enable-auto-import flag (it's enabled by default just
+like it is in GNU ld), but we do support the feature itself. Libtool may
+look for this flag.
 EOF
     exit 0
 fi
