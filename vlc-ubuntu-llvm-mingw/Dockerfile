@@ -7,7 +7,7 @@ ENV IMAGE_DATE=201807191635
 RUN apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file unzip libtool pkg-config cmake build-essential \
     automake yasm gettext autopoint vim python git-svn ninja-build libwine-dev \
-    flex ragel bison nasm zip dos2unix p7zip-full && \
+    flex ragel bison nasm zip dos2unix p7zip-full subversion && \
     echo "deb http://archive.ubuntu.com/ubuntu cosmic universe" > /etc/apt/sources.list.d/cosmic.list && \
     apt update -qq && apt install -y -t cosmic nsis && \
     rm /etc/apt/sources.list.d/cosmic.list && \
@@ -51,7 +51,6 @@ RUN ./build-libcxx.sh $TOOLCHAIN_PREFIX && \
     rm -rf /build
 
 # Build libssp
-RUN apt update && apt install -y subversion
 COPY build-libssp.sh libssp-Makefile ./
 RUN ./build-libssp.sh $TOOLCHAIN_PREFIX && \
     rm -rf /build
