@@ -14,6 +14,13 @@ RUN apt-get update -qq && apt-get install -qqy \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
 
+# Disable statx for the time being to fix Qt build
+# https://bugreports.qt.io/browse/QTBUG-64490
+RUN for f in /usr/include/sys/syscall.h /usr/include/$(gcc -print-multiarch)/sys/syscall.h; do \
+    if [ -f $f ]; then \
+      echo "#undef SYS_statx" >> $f; \
+    fi; \
+    done
 
 RUN git config --global user.name "LLVM MinGW" && \
     git config --global user.email root@localhost
