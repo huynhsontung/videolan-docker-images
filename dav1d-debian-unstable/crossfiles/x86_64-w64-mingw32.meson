@@ -5,6 +5,9 @@ ar = 'x86_64-w64-mingw32-ar'
 strip = 'x86_64-w64-mingw32-strip'
 pkgconfig = 'pkg-config'
 
+[properties]
+c_link_args = ['-static-libgcc']
+
 [host_machine]
 system = 'windows'
 cpu_family = 'x86_64'

@@ -4,6 +4,9 @@ cpp = 'i686-w64-mingw32-g++'
 ar = 'i686-w64-mingw32-ar'
 strip = 'i686-w64-mingw32-strip'
 
+[properties]
+c_link_args = ['-static-libgcc']
+
 [host_machine]
 system = 'windows'
 cpu_family = 'x86'
