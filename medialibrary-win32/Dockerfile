@@ -1,6 +1,6 @@
-FROM registry.videolan.org:5000/vlc-ubuntu-llvm-mingw:20181001122044
+FROM registry.videolan.org:5000/vlc-ubuntu-llvm-mingw:20181001155627
 
-ENV IMAGE_DATE=201810011426
+ENV IMAGE_DATE=201810011801
 
 RUN TARGET_TRIPLE=i686-w64-mingw32 \
     SQLITE_VERSION=sqlite-autoconf-3140000 \
