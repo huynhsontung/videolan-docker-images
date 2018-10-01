@@ -11,17 +11,20 @@ RUN TARGET_TRIPLE=x86_64-w64-mingw32 \
     RAPIDJSON_SHA256=c3711ed2b3c76a5565ee9f0128bb4ec6753dbcc23450b713842df8f236d08666 \
     PATH=/opt/gcc-$TARGET_TRIPLE/bin:$PATH && \
     mkdir /build && cd /build && \
-    git clone --depth=1 https://git.videolan.org/git/vlc/vlc-3.0.git && \
-    cd vlc-3.0 && \
+    git clone --depth=1 https://git.videolan.org/git/vlc.git && \
+    cd vlc && \
     cd extras/tools && ./bootstrap && make -j`nproc` && \
     export PATH=`pwd`/build/bin:$PATH && cd ../../ && \
     cd contrib && mkdir win64 && cd win64 && \
     ../bootstrap --host=$TARGET_TRIPLE --disable-qt --disable-skins2 \
-        --disable-lua --disable-protobuf --disable-gettext && make -j`nproc` && \
-    cd /build/vlc-3.0 && ./bootstrap && mkdir build && cd build && \
+        --disable-lua --disable-protobuf --disable-gettext \
+        --disable-qtdeclarative --disable-qtgraphicaleffects --disable-qtquickcontrols \
+        --disable-qtquickcontrols2 --disable-qtsvg && \
+        make -j`nproc` && \
+    cd /build/vlc && ./bootstrap && mkdir build && cd build && \
     ../configure --host=$TARGET_TRIPLE \
         --disable-lua --disable-qt --disable-skins2 \
-        --disable-nls \
+        --disable-nls --disable-aom \
         --prefix=/prefix && \
     make -j`nproc` && make install && \
     mkdir -p /prefix/dll && \
