@@ -7,7 +7,7 @@ ENV IMAGE_DATE=201810011239
 RUN apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file unzip libtool pkg-config cmake build-essential \
     automake yasm gettext autopoint vim python git-svn ninja-build libwine-dev \
-    wine flex ragel bison zip dos2unix p7zip-full subversion && \
+    wine flex ragel bison zip dos2unix p7zip-full subversion gperf && \
     echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list.d/testing.list && \
     apt update -qq && apt install -y -t testing nsis nasm && \
     rm /etc/apt/sources.list.d/testing.list && \
