@@ -121,13 +121,15 @@ while [ $# != 0 ]; do
         "-I"*)
             INCLUDE="${INCLUDE} ${1#-I}";;
         "-c"|"--codepage")
-            CODEPAGE="${1#*=}";;
-        "-c="*|"--codepage="*)
             CODEPAGE="${2}"; shift;;
+        "-c="*|"--codepage="*)
+            CODEPAGE="${1#*=}";;
         "--preprocessor")
             error "ENOSYS";;
+        "--preprocessor-arg="*)
+            CPP_OPTIONS="$CPP_OPTIONS ${1#*=}";;
         "--preprocessor-arg")
-            error "ENOSYS";;
+            CPP_OPTIONS="$CPP_OPTIONS $2"; shift;;
         "-D"*)
             CPP_OPTIONS="$CPP_OPTIONS $1";;
         "-D"|"--define")
