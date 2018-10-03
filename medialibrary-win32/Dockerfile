@@ -1,4 +1,4 @@
-FROM registry.videolan.org:5000/vlc-ubuntu-llvm-mingw:20181003134058
+FROM registry.videolan.org:5000/vlc-debian-llvm-mingw:20181003134058
 
 ENV IMAGE_DATE=201810031546
 
