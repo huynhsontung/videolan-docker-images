@@ -2,20 +2,23 @@
 
 set -e
 
-ASSERTS=ON
+ASSERTS=OFF
 BUILDDIR=build
 
 while [ $# -gt 0 ]; do
     if [ "$1" = "--disable-asserts" ]; then
         ASSERTS=OFF
-        BUILDDIR=build-noasserts
+        BUILDDIR=build
+    elif [ "$1" = "--enable-asserts" ]; then
+        ASSERTS=ON
+        BUILDDIR=build-asserts
     else
         PREFIX="$1"
     fi
     shift
 done
 if [ -z "$PREFIX" ]; then
-    echo $0 [--disable-asserts] dest
+    echo $0 [--enable-asserts] dest
     exit 1
 fi
 
@@ -48,19 +51,52 @@ fi
 if [ -n "$SYNC" ] || [ -n "$CHECKOUT" ]; then
     cd llvm
     [ -z "$SYNC" ] || git fetch
-    git checkout 3e090e5aa550f55ab68927d18022c4e244733ab8
+    git checkout 5877e4ed63ba21fb57f2c7fb4ed4950288e2a28c
     cd tools/clang
     [ -z "$SYNC" ] || git fetch
-    git checkout 1bc73590ad1335313e8f262393547b8af67c9167
+    git checkout a866fe7bf7c577b698229106f0ddc2d31b285de8
     cd ../lld
     [ -z "$SYNC" ] || git fetch
-    git checkout 4ea826e45cf92d005bf9b1655920897ffc82f366
+    git checkout df3e3050ef26292a8c7d2d16b073588eba28db6c
     cd ../../..
 fi
 
-if [ "$(which ninja)" != "" ]; then
+if [ -n "$(which ninja)" ]; then
     CMAKE_GENERATOR="-G Ninja"
     NINJA=1
+fi
+
+if [ -n "$HOST" ]; then
+    CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_NAME=Windows"
+    CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_CROSSCOMPILE=1"
+    CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_C_COMPILER=$HOST-gcc"
+    CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_CXX_COMPILER=$HOST-g++"
+    CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_RC_COMPILER=$HOST-windres"
+    if [ -d llvm/build/bin ]; then
+        native=$(pwd)/llvm/build/bin
+    elif [ -d llvm/build-asserts/bin ]; then
+        native=$(pwd)/llvm/build-asserts/bin
+    elif [ -d llvm/build-noasserts/bin ]; then
+        native=$(pwd)/llvm/build-noasserts/bin
+    else
+        native=$(dirname $(which llvm-tblgen))
+    fi
+    CMAKEFLAGS="$CMAKEFLAGS -DLLVM_TABLEGEN=$native/llvm-tblgen"
+    CMAKEFLAGS="$CMAKEFLAGS -DCLANG_TABLEGEN=$native/clang-tblgen"
+    CMAKEFLAGS="$CMAKEFLAGS -DLLVM_CONFIG_PATH=$native/llvm-config"
+    CROSS_ROOT=$(cd $(dirname $(which $HOST-gcc))/../$HOST && pwd)
+    CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_FIND_ROOT_PATH=$CROSS_ROOT"
+    CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER"
+    CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY"
+    CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY"
+
+    # Custom, llvm-mingw specific defaults. We normally set these in
+    # the frontend wrappers, but this makes sure they are enabled by
+    # default if that wrapper is bypassed as well.
+    CMAKEFLAGS="$CMAKEFLAGS -DCLANG_DEFAULT_RTLIB=compiler-rt"
+    CMAKEFLAGS="$CMAKEFLAGS -DCLANG_DEFAULT_CXX_STDLIB=libc++"
+    CMAKEFLAGS="$CMAKEFLAGS -DCLANG_DEFAULT_LINKER=lld"
+    BUILDDIR=$BUILDDIR-$HOST
 fi
 
 cd llvm
@@ -74,6 +110,7 @@ cmake \
     -DLLVM_TARGETS_TO_BUILD="ARM;AArch64;X86" \
     -DLLVM_INSTALL_TOOLCHAIN_ONLY=ON \
     -DLLVM_TOOLCHAIN_TOOLS="llvm-ar;llvm-ranlib;llvm-objdump;llvm-rc;llvm-cvtres;llvm-nm;llvm-strings;llvm-readobj;llvm-dlltool;llvm-pdbutil" \
+    $CMAKEFLAGS \
     ..
 if [ -n "$NINJA" ]; then
     ninja install/strip

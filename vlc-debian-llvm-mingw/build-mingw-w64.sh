@@ -21,7 +21,7 @@ cd mingw-w64
 
 if [ -n "$SYNC" ] || [ -n "$CHECKOUT" ]; then
     [ -z "$SYNC" ] || git fetch
-    git checkout 55e067dc48ad4aededf7a858b15a3039e8088ed4
+    git checkout 1b29d1bc58910a4c21ff2c5c804bf06821032348
 fi
 
 cd mingw-w64-headers
@@ -63,12 +63,5 @@ for arch in $ARCHS; do
 done
 cd ..
 
-cd mingw-w64-tools/widl
-for arch in $ARCHS; do
-    mkdir -p build-$arch
-    cd build-$arch
-    ../configure --prefix=$PREFIX --target=$arch-w64-mingw32 INSTALL="install -s"
-    make -j$CORES
-    make install
-    cd ..
-done
+cd ..
+./build-mingw-w64-widl.sh "$PREFIX"

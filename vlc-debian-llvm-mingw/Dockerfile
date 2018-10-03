@@ -42,7 +42,7 @@ RUN ./build-llvm.sh $TOOLCHAIN_PREFIX && \
     ./strip-llvm.sh $TOOLCHAIN_PREFIX && \
     rm -rf /build
 
-ENV TOOLCHAIN_ARCHS="i686 x86_64 armv7 aarch64"
+ARG TOOLCHAIN_ARCHS="i686 x86_64 armv7 aarch64"
 
 # Install the usual $TUPLE-clang binaries
 COPY wrappers/*.sh wrappers/*.c ./wrappers/
@@ -51,7 +51,7 @@ RUN ./install-wrappers.sh $TOOLCHAIN_PREFIX && \
     rm -rf /build
 
 # Build MinGW-w64, compiler-rt and mingw-w64's extra libraries
-COPY build-mingw-w64.sh build-compiler-rt.sh build-mingw-w64-libraries.sh ./
+COPY build-mingw-w64.sh build-mingw-w64-widl.sh build-compiler-rt.sh build-mingw-w64-libraries.sh ./
 RUN ./build-mingw-w64.sh $TOOLCHAIN_PREFIX && \
     ./build-compiler-rt.sh $TOOLCHAIN_PREFIX && \
     ./build-mingw-w64-libraries.sh $TOOLCHAIN_PREFIX && \
@@ -60,6 +60,11 @@ RUN ./build-mingw-w64.sh $TOOLCHAIN_PREFIX && \
 # Build libunwind/libcxxabi/libcxx
 COPY build-libcxx.sh merge-archives.sh ./
 RUN ./build-libcxx.sh $TOOLCHAIN_PREFIX && \
+    rm -rf /build
+
+# Build sanitizers
+COPY build-compiler-rt.sh .
+RUN ./build-compiler-rt.sh $TOOLCHAIN_PREFIX --build-sanitizers && \
     rm -rf /build
 
 # Build libssp
