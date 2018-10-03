@@ -93,4 +93,19 @@ RUN chmod +x /opt/wine/wait_process.sh && \
     echo $WINE_MONO_SHA256 /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi | sha256sum -c && \
     chmod +x /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi
 
+USER jenkins
+RUN wine wineboot --init && \
+    /opt/wine/wait_process.sh wineserver && \
+    /opt/wine/winetricks --unattended dotnet40 dotnet_verifier && \
+    /opt/wine/wait_process.sh wineserver && \
+    wget -q https://download.videolan.org/contrib/wix/wix-3.5.msi -O ~/wix.msi && \
+    WIX_SHA256=621b70e8761d5b940d8c32a42b0e92fd55767f8908a9b32e06bb3d12a30bc47b && \
+    echo $WIX_SHA256 ~/wix.msi | sha256sum -c && \
+    wine msiexec /i ~/wix.msi && \
+    cd ~/ && \
+    rm -f ~/wix.msi && \
+    rm -rf ~/.cache/winetricks
+
+USER root
+
 ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
