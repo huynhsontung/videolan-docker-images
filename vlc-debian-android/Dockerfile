@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:20180419104422
 
-ENV IMAGE_DATE=201712151145
+ENV IMAGE_DATE=201810231805
 
 ENV ANDROID_NDK="/sdk/android-ndk" \
     ANDROID_SDK="/sdk/android-sdk-linux"
@@ -21,12 +21,12 @@ RUN set -x && \
     echo "export ANDROID_NDK=${ANDROID_NDK}" >> /etc/profile.d/vlc_env.sh && \
     echo "export ANDROID_SDK=${ANDROID_SDK}" >> /etc/profile.d/vlc_env.sh && \
     mkdir sdk && cd sdk && \
-    wget -q https://dl.google.com/android/repository/android-ndk-r14b-linux-x86_64.zip && \
-    ANDROID_NDK_SHA256=0ecc2017802924cf81fffc0f51d342e3e69de6343da892ac9fa1cd79bc106024 && \
-    echo $ANDROID_NDK_SHA256 android-ndk-r14b-linux-x86_64.zip | sha256sum -c && \
-    unzip android-ndk-r14b-linux-x86_64.zip && \
-    rm -f android-ndk-r14b-linux-x86_64.zip && \
-    ln -s android-ndk-r14b android-ndk && \
+    wget -q https://dl.google.com/android/repository/android-ndk-r18b-linux-x86_64.zip && \
+    ANDROID_NDK_SHA256=4f61cbe4bbf6406aa5ef2ae871def78010eed6271af72de83f8bd0b07a9fd3fd && \
+    echo $ANDROID_NDK_SHA256 android-ndk-r18b-linux-x86_64.zip | sha256sum -c && \
+    unzip android-ndk-r18b-linux-x86_64.zip && \
+    rm -f android-ndk-r18b-linux-x86_64.zip && \
+    ln -s android-ndk-r18b android-ndk && \
     mkdir android-sdk-linux && \
     cd android-sdk-linux && \
     mkdir "licenses" && \
