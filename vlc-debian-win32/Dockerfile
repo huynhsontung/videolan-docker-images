@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:20180419104422
 
-ENV IMAGE_DATE=201808271131
+ENV IMAGE_DATE=201811071550
 
 ENV TARGET_TUPLE=i686-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
@@ -24,7 +24,7 @@ RUN set -x && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install wine32 && \
     echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list.d/testing.list && \
-    apt-get update && apt-get -y -t testing install nasm nsis && \
+    apt-get update && apt-get -y -t testing install nasm nsis meson && \
     rm -f /etc/apt/sources.list.d/testing.list && \
     echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backports.list && \
     apt-get update && apt-get -y -t stretch-backports install cmake && \
