@@ -1,6 +1,8 @@
 FROM registry.videolan.org:5000/videolan-base-xenial:20180529123029
 
-ENV IMAGE_DATE=201811072050
+ENV IMAGE_DATE=201811081920
+
+ENV PATH=$PATH:/usr/sbin
 
 RUN echo "deb http://archive.neon.kde.org/user xenial main" >> /etc/apt/sources.list.d/neon.list && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E6D4736255751E5D && \
@@ -21,6 +23,7 @@ RUN echo "deb http://archive.neon.kde.org/user xenial main" >> /etc/apt/sources.
     && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     locale-gen en_US.UTF-8 && \
-    /usr/sbin/update-locale LANG=en_US.UTF-8
+    /usr/sbin/update-locale LANG=en_US.UTF-8 && \
+    echo "export PATH=\$PATH:/usr/sbin" >> /etc/profile.d/vlc_env.sh
 
 ENV LANG=en_US.UTF-8
