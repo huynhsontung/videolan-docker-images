@@ -7,7 +7,8 @@ ENV IMAGE_DATE=201810031156
 RUN apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file unzip libtool pkg-config cmake build-essential \
     automake yasm gettext autopoint vim python git-svn ninja-build libwine-dev \
-    wine flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm && \
+    wine flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm \
+    python3 && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install wine32 && \
     apt-get clean -y && \
