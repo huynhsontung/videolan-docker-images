@@ -7,13 +7,7 @@ ENV IMAGE_DATE=201810031156
 RUN apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file unzip libtool pkg-config cmake build-essential \
     automake yasm gettext autopoint vim python git-svn ninja-build libwine-dev \
-    wine flex ragel bison zip dos2unix p7zip-full subversion gperf && \
-    echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list.d/testing.list && \
-    apt update -qq && apt install -y -t testing nsis nasm && \
-    rm /etc/apt/sources.list.d/testing.list && \
-    echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backports.list && \
-    apt-get update && apt-get -y -t stretch-backports install cmake && \
-    rm -f /etc/apt/sources.list.d/stretch-backports.list && \
+    wine flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install wine32 && \
     apt-get clean -y && \
