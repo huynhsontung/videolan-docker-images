@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-xenial:20180529123029
 
-ENV IMAGE_DATE=201811091430
+ENV IMAGE_DATE=201811091450
 
 ENV PATH=$PATH:/usr/sbin
 
