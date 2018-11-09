@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-xenial:20180529123029
 
-ENV IMAGE_DATE=201811081920
+ENV IMAGE_DATE=201811091430
 
 ENV PATH=$PATH:/usr/sbin
 
@@ -19,7 +19,7 @@ RUN echo "deb http://archive.neon.kde.org/user xenial main" >> /etc/apt/sources.
       libxcb-randr0-dev libxcb-shm0-dev libxcb-xfixes0-dev libxcb-xv0-dev libxcb1-dev \
       libxext-dev libxi-dev libxinerama-dev libxml2-dev libxpm-dev libzvbi-dev \
       locales lua5.2 make pkg-config qtbase5-dev qtbase5-private-dev ragel snapcraft \
-      vim xz-utils yasm zlib1g-dev libxkbcommon-x11-dev meson \
+      vim xz-utils yasm zlib1g-dev libxkbcommon-x11-dev meson libvulkan-dev \
     && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     locale-gen en_US.UTF-8 && \
