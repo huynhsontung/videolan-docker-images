@@ -2,7 +2,7 @@ FROM registry.videolan.org:5000/videolan-base-stretch:20180419104422
 
 MAINTAINER Hugo Beauzée-Luyssen <hugo@beauzee.fr>
 
-ENV IMAGE_DATE=201807121146
+ENV IMAGE_DATE=201811120943
 
 ENV TARGET_TUPLE=i686-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
@@ -45,7 +45,9 @@ RUN set -x && \
     echo $GCC_SHA256 gcc-$GCC_VERSION.tar.xz | sha256sum -c && \
     git config --global user.name "VideoLAN Buildbot" && \
     git config --global user.email buildbot@videolan.org && \
-    git clone --depth=1 git://git.code.sf.net/p/mingw-w64/mingw-w64 && \
+    git clone git://git.code.sf.net/p/mingw-w64/mingw-w64 && \
+    cd mingw-w64 && git reset --hard 092d0ad0d8fb658a349c996b4f29b6eb1ab2b13f && \
+    cd /build && \
     tar xf gcc-$GCC_VERSION.tar.xz && \
     tar xf binutils-$BINUTILS_VERSION.tar.bz2 && \
     cd binutils-$BINUTILS_VERSION && mkdir build && cd build && \
