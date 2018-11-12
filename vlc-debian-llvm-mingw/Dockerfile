@@ -2,7 +2,7 @@
 #
 FROM registry.videolan.org:5000/videolan-base-sid:20180419103824
  
-ENV IMAGE_DATE=20181108230
+ENV IMAGE_DATE=201811122123
 
 RUN apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file unzip libtool pkg-config cmake build-essential \
@@ -35,7 +35,7 @@ ENV TOOLCHAIN_PREFIX=/opt/llvm-mingw
 COPY build-llvm.sh strip-llvm.sh ./
 RUN ./build-llvm.sh $TOOLCHAIN_PREFIX && \
     ./strip-llvm.sh $TOOLCHAIN_PREFIX && \
-    rm -rf /build
+    rm -rf /build/*
 
 ARG TOOLCHAIN_ARCHS="i686 x86_64 armv7 aarch64"
 
@@ -43,29 +43,29 @@ ARG TOOLCHAIN_ARCHS="i686 x86_64 armv7 aarch64"
 COPY wrappers/*.sh wrappers/*.c ./wrappers/
 COPY install-wrappers.sh .
 RUN ./install-wrappers.sh $TOOLCHAIN_PREFIX && \
-    rm -rf /build
+    rm -rf /build/*
 
 # Build MinGW-w64, compiler-rt and mingw-w64's extra libraries
-COPY build-mingw-w64.sh build-mingw-w64-widl.sh build-compiler-rt.sh build-mingw-w64-libraries.sh ./
+COPY build-mingw-w64.sh build-compiler-rt.sh build-mingw-w64-libraries.sh ./
 RUN ./build-mingw-w64.sh $TOOLCHAIN_PREFIX && \
     ./build-compiler-rt.sh $TOOLCHAIN_PREFIX && \
     ./build-mingw-w64-libraries.sh $TOOLCHAIN_PREFIX && \
-    rm -rf /build
+    rm -rf /build/*
 
 # Build libunwind/libcxxabi/libcxx
 COPY build-libcxx.sh merge-archives.sh ./
 RUN ./build-libcxx.sh $TOOLCHAIN_PREFIX && \
-    rm -rf /build
+    rm -rf /build/*
 
 # Build sanitizers
 COPY build-compiler-rt.sh .
 RUN ./build-compiler-rt.sh $TOOLCHAIN_PREFIX --build-sanitizers && \
-    rm -rf /build
+    rm -rf /build/*
 
 # Build libssp
 COPY build-libssp.sh libssp-Makefile ./
 RUN ./build-libssp.sh $TOOLCHAIN_PREFIX && \
-    rm -rf /build
+    rm -rf /build/*
 
 # Cheating: Pull strip and objcopy from the normal binutils package.
 RUN apt-get update -qq && \

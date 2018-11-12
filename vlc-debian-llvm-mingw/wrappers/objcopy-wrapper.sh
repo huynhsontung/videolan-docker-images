@@ -3,9 +3,14 @@
 set -e
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-TARGET="$(basename $0 | sed 's/-[^-]*$//')"
-EXE=$(basename $0 | sed 's/.*-\([^-]*\)/\1/')
-ARCH=$(echo $TARGET | sed 's/-.*//')
+BASENAME="$(basename "$0")"
+TARGET="${BASENAME%-*}"
+DEFAULT_TARGET=x86_64-w64-mingw32
+if [ "$TARGET" = "$BASENAME" ]; then
+    TARGET=$DEFAULT_TARGET
+fi
+EXE="${BASENAME##*-}"
+ARCH="${TARGET%%-*}"
 
 IN=""
 OUT=""
