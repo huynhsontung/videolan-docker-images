@@ -2,7 +2,7 @@ FROM registry.videolan.org:5000/videolan-base-stretch:20180419104422
 
 MAINTAINER Hugo Beauzée-Luyssen <hugo@beauzee.fr>
 
-ENV IMAGE_DATE=201811120943
+ENV IMAGE_DATE=201811201850
 
 ENV TARGET_TUPLE=i686-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
@@ -54,7 +54,8 @@ RUN set -x && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE \
                     --disable-werror --disable-multilib && make -j4 && make install-strip  && \
     cd /build/mingw-w64/mingw-w64-headers && mkdir build && cd build && \
-    ../configure --prefix=$MINGW_PREFIX \
+    ../configure --prefix=$MINGW_PREFIX --enable-secure-api --enable-idl \
+                    --with-default-win32-winnt=0x600 --with-default-msvcrt=ucrt \
                     --host=$TARGET_TUPLE && make install && \
     cd /build && \
     wget -q https://ftp.gnu.org/gnu/mpfr/mpfr-$MPFR_VERSION.tar.gz && \
@@ -81,7 +82,8 @@ RUN set -x && \
     cd /build/mingw-w64/mingw-w64-crt && \
     mkdir build && cd build && \
     ../configure --prefix=$MINGW_PREFIX \
-                    --host=$TARGET_TUPLE && \
+                 --with-default-msvcrt=ucrt \
+                 --host=$TARGET_TUPLE && \
     make -j4 && \
     make install && \
     cd /build/gcc-$GCC_VERSION/build && \
