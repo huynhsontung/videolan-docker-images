@@ -14,6 +14,7 @@ ARG JENKINS_UID=499
 RUN echo "deb http://ftp.fr.debian.org/debian/ sid main" > /etc/apt/sources.list && \
     echo "deb-src http://ftp.fr.debian.org/debian/ sid main" >> /etc/apt/sources.list && \
     apt-get update && \
+    mkdir -p /usr/share/man/man1 && \
     apt-get install -y openssh-server openjdk-8-jdk lftp ca-certificates curl && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     sed -i 's|session    required     pam_loginuid.so|session    optional     pam_loginuid.so|g' /etc/pam.d/sshd && \
