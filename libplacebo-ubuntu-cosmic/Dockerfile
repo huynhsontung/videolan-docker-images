@@ -1,6 +1,6 @@
 FROM ubuntu:cosmic-20181114
 
-ENV IMAGE_DATE=201812020400
+ENV IMAGE_DATE=201812031700
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -41,11 +41,10 @@ RUN set -x && \
         -DSHADERC_SKIP_TESTS=1 \
         .. && \
     ninja && \
-    cd .. && \
-    install -m644 build/libshaderc*/libshaderc*.a  /usr/local/lib && \
-    install -m755 build/libshaderc*/libshaderc*.so /usr/local/lib && \
-    cp -a libshaderc*/include /usr/local && \
-    cd .. && \
+    cp -a libshaderc*/libshaderc*.a   /usr/local/lib && \
+    cp -a libshaderc*/libshaderc*.so* /usr/local/lib && \
+    cp -a ../libshaderc*/include /usr/local && \
+    cd /root && \
     rm -rf shaderc
 
 COPY crossfiles/ /opt/crossfiles/
