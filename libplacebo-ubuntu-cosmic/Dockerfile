@@ -1,6 +1,6 @@
 FROM ubuntu:cosmic-20181114
 
-ENV IMAGE_DATE=201812042200
+ENV IMAGE_DATE=201812042230
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -25,7 +25,8 @@ RUN set -x && \
         python python3-pip python3-setuptools python3-wheel \
         gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 gcc-mingw-w64-i686 \
         g++-mingw-w64-i686 mingw-w64-tools glslang-dev libvulkan-dev \
-        vulkan-validationlayers mesa-vulkan-drivers vulkan-tools && \
+        vulkan-validationlayers mesa-vulkan-drivers vulkan-tools \
+        liblcms2-dev && \
     pip3 install meson ninja gcovr && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     cd /root && \
