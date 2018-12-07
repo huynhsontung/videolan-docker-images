@@ -1,4 +1,5 @@
 FROM golang:1.10
+ENV IMAGE_DATE=201812073506
 WORKDIR /go/src/github.com/GoogleContainerTools
 RUN git clone https://github.com/GoogleContainerTools/kaniko && cd kaniko && make GOARCH=amd64
 
