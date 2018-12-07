@@ -1,4 +1,4 @@
-FROM docker:1.11
+FROM docker:18.09
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
