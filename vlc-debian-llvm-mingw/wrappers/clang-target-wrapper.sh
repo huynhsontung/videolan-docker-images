@@ -48,9 +48,7 @@ i686)
     FLAGS="$FLAGS -fsjlj-exceptions"
     ;;
 x86_64)
-    # SEH is the default here, but it doesn't work yet
-    # Fallback to SJLJ for the time being
-    FLAGS="$FLAGS -fsjlj-exceptions"
+    # SEH is the default here.
     ;;
 armv7)
     # Dwarf is the default here.

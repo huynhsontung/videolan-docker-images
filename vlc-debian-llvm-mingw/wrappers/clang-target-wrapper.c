@@ -291,9 +291,7 @@ int _tmain(int argc, TCHAR* argv[]) {
         // still issues with it).
         exec_argv[arg++] = _T("-fsjlj-exceptions");
     } else if (!_tcscmp(arch, _T("x86_64"))) {
-        // SEH is the default here, but doesn't work yet.
-        // Fallback to sjlj for the time being
-        exec_argv[arg++] = _T("-fsjlj-exceptions");
+        // SEH is the default here.
     } else if (!_tcscmp(arch, _T("armv7"))) {
         // Dwarf is the default here.
     } else if (!_tcscmp(arch, _T("aarch64"))) {
