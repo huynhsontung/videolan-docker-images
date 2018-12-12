@@ -22,6 +22,9 @@ if [ -z "$PREFIX" ]; then
     exit 1
 fi
 
+mkdir -p "$PREFIX"
+PREFIX="$(cd "$PREFIX" && pwd)"
+
 : ${CORES:=$(nproc 2>/dev/null)}
 : ${CORES:=$(sysctl -n hw.ncpu 2>/dev/null)}
 : ${CORES:=4}
@@ -64,8 +67,16 @@ if [ -n "$SYNC" ] || [ -n "$CHECKOUT" ]; then
 fi
 
 if [ -n "$(which ninja)" ]; then
-    CMAKE_GENERATOR="-G Ninja"
+    CMAKE_GENERATOR="Ninja"
     NINJA=1
+else
+    case $(uname) in
+    MINGW*)
+        CMAKE_GENERATOR="MSYS Makefiles"
+        ;;
+    *)
+        ;;
+    esac
 fi
 
 if [ -n "$HOST" ]; then
@@ -120,7 +131,7 @@ cd llvm
 mkdir -p $BUILDDIR
 cd $BUILDDIR
 cmake \
-    $CMAKE_GENERATOR \
+    ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
     -DCMAKE_INSTALL_PREFIX="$PREFIX" \
     -DCMAKE_BUILD_TYPE=Release \
     -DLLVM_ENABLE_ASSERTIONS=$ASSERTS \

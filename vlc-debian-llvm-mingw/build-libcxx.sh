@@ -23,6 +23,10 @@ if [ -z "$PREFIX" ]; then
     echo $0 [--disable-shared] [--disable-static] dest
     exit 1
 fi
+
+mkdir -p "$PREFIX"
+PREFIX="$(cd "$PREFIX" && pwd)"
+
 export PATH=$PREFIX/bin:$PATH
 
 : ${CORES:=$(nproc 2>/dev/null)}
@@ -45,7 +49,7 @@ fi
 if [ -n "$SYNC" ] || [ -n "$CHECKOUT_LIBUNWIND" ]; then
     cd libunwind
     [ -z "$SYNC" ] || git fetch
-    git checkout 1f89d78bb488bc71cfdee8281fc0834e9fbe5dce
+    git checkout 03a10740898eeb2b0c7a7c6bea3e293a221309a1
     cd ..
 fi
 if [ -n "$SYNC" ] || [ -n "$CHECKOUT_LIBCXXABI" ]; then
@@ -63,6 +67,14 @@ fi
 
 LIBCXX=$(pwd)/libcxx
 MERGE_ARCHIVES=$(pwd)/merge-archives.sh
+
+case $(uname) in
+MINGW*)
+    CMAKE_GENERATOR="MSYS Makefiles"
+    ;;
+*)
+    ;;
+esac
 
 build_all() {
     type="$1"
@@ -82,6 +94,7 @@ build_all() {
         # to the compiler flags; manually add it here to avoid noisy warnings
         # that normally are suppressed.
         cmake \
+            ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INSTALL_PREFIX=$PREFIX/$arch-w64-mingw32 \
             -DCMAKE_C_COMPILER=$arch-w64-mingw32-clang \
@@ -107,6 +120,7 @@ build_all() {
         make -j$CORES
         make install
         if [ "$type" = "shared" ]; then
+            mkdir -p $PREFIX/$arch-w64-mingw32/bin
             cp lib/libunwind.dll $PREFIX/$arch-w64-mingw32/bin
         else
             # Merge libpsapi.a into the static library libunwind.a, to
@@ -132,6 +146,7 @@ build_all() {
             LIBCXXABI_VISIBILITY_FLAGS="-D_LIBCPP_DISABLE_VISIBILITY_ANNOTATIONS"
         fi
         cmake \
+            ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INSTALL_PREFIX=$PREFIX/$arch-w64-mingw32 \
             -DCMAKE_C_COMPILER=$arch-w64-mingw32-clang \
@@ -169,6 +184,7 @@ build_all() {
             LIBCXX_VISIBILITY_FLAGS="-D_LIBCXXABI_DISABLE_VISIBILITY_ANNOTATIONS"
         fi
         cmake \
+            ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INSTALL_PREFIX=$PREFIX/$arch-w64-mingw32 \
             -DCMAKE_C_COMPILER=$arch-w64-mingw32-clang \
@@ -192,7 +208,6 @@ build_all() {
             -DLIBCXX_ENABLE_EXPERIMENTAL_LIBRARY=OFF \
             -DLIBCXX_ENABLE_FILESYSTEM=OFF \
             -DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=TRUE \
-            -DLIBCXX_ABI_UNSTABLE=TRUE \
             -DLIBCXX_CXX_ABI=libcxxabi \
             -DLIBCXX_CXX_ABI_INCLUDE_PATHS=../../libcxxabi/include \
             -DLIBCXX_CXX_ABI_LIBRARY_PATH=../../libcxxabi/build-$arch-$type/lib \

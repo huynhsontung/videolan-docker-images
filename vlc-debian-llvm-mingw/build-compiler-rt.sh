@@ -19,6 +19,9 @@ if [ -z "$PREFIX" ]; then
     echo $0 [--build-sanitizers] dest
     exit 1
 fi
+
+mkdir -p "$PREFIX"
+PREFIX="$(cd "$PREFIX" && pwd)"
 export PATH=$PREFIX/bin:$PATH
 
 : ${CORES:=$(nproc 2>/dev/null)}
@@ -42,7 +45,7 @@ cd compiler-rt
 
 if [ -n "$SYNC" ] || [ -n "$CHECKOUT" ]; then
     [ -z "$SYNC" ] || git fetch
-    git checkout 0492c25c247e31fe23570fe0cf6e9801301ab069
+    git checkout 8b2ba6185b1df7b9ebaae91cc831c9be16eeefa0
 fi
 
 for arch in $ARCHS; do
@@ -67,9 +70,19 @@ for arch in $ARCHS; do
         libarchname=i386
         ;;
     esac
+
+    case $(uname) in
+    MINGW*)
+        CMAKE_GENERATOR="MSYS Makefiles"
+        ;;
+    *)
+        ;;
+    esac
+
     mkdir -p build-$arch$BUILD_SUFFIX
     cd build-$arch$BUILD_SUFFIX
     cmake \
+        ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_C_COMPILER=$arch-w64-mingw32-clang \
         -DCMAKE_CXX_COMPILER=$arch-w64-mingw32-clang++ \

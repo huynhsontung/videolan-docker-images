@@ -7,6 +7,8 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 PREFIX="$1"
+mkdir -p "$PREFIX"
+PREFIX="$(cd "$PREFIX" && pwd)"
 
 : ${ARCHS:=${TOOLCHAIN_ARCHS-i686 x86_64 armv7 aarch64}}
 
@@ -65,15 +67,16 @@ for arch in $ARCHS; do
     done
 done
 if [ -n "$EXEEXT" ]; then
-    if [ ! -L clang$EXEEXT ]; then
+    if [ ! -L clang$EXEEXT ] && [ -f clang$EXEEXT ] && [ ! -f clang-$CLANG_MAJOR$EXEEXT ]; then
         mv clang$EXEEXT clang-$CLANG_MAJOR$EXEEXT
     fi
-    if [ -n "$HOST" ]; then
-        for exec in clang clang++ gcc g++ cc c99 c11 c++ ar ranlib nm strings widl windres; do
-            ln -sf $HOST-$exec$EXEEXT $exec$EXEEXT
-        done
-        for exec in ld objdump dlltool objcopy strip; do
-            ln -sf $HOST-$exec $exec
-        done
+    if [ -z "$HOST" ]; then
+        HOST=$(./clang-$CLANG_MAJOR -dumpmachine | sed 's/-.*//')-w64-mingw32
     fi
+    for exec in clang clang++ gcc g++ cc c99 c11 c++ ar ranlib nm strings widl windres; do
+        ln -sf $HOST-$exec$EXEEXT $exec$EXEEXT
+    done
+    for exec in ld objdump dlltool objcopy strip; do
+        ln -sf $HOST-$exec $exec
+    done
 fi

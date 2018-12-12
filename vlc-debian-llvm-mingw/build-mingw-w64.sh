@@ -14,6 +14,10 @@ if [ -z "$PREFIX" ]; then
     echo $0 [--skip-include-triplet-prefix] dest
     exit 1
 fi
+
+mkdir -p "$PREFIX"
+PREFIX="$(cd "$PREFIX" && pwd)"
+
 if [ -z "$HOST" ]; then
     # The newly built toolchain isn't crosscompiled; add it to the path.
     export PATH=$PREFIX/bin:$PATH
@@ -95,6 +99,14 @@ if [ -n "$HOST" ]; then
     CONFIGFLAGS="$CONFIGFLAGS --host=$HOST"
     CROSS_NAME=$HOST-
     EXEEXT=.exe
+else
+    case $(uname) in
+    MINGW*)
+        EXEEXT=.exe
+        ;;
+    *)
+        ;;
+    esac
 fi
 if [ -n "$SKIP_INCLUDE_TRIPLET_PREFIX" ]; then
     CONFIGFLAGS="$CONFIGFLAGS --with-widl-includedir=$PREFIX/include"
