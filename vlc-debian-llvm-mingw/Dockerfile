@@ -99,7 +99,8 @@ RUN wine wineboot --init && \
     wine msiexec /i ~/wix.msi && \
     cd ~/ && \
     rm -f ~/wix.msi && \
-    rm -rf ~/.cache/winetricks
+    rm -rf ~/.cache/winetricks && \
+    rm -rf /tmp/wine-*
 
 USER root
 
