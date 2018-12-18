@@ -6,7 +6,7 @@ strip = 'strip'
 windres = 'windres'
 
 [properties]
-c_link_args = ['-m32']
+c_link_args = ['-m32', '-Wl,-z,text'] # treat text relocations as error
 c_args = ['-m32']
 
 [host_machine]
