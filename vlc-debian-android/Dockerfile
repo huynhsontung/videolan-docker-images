@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:20181221164748
 
-ENV IMAGE_DATE=201812211600
+ENV IMAGE_DATE=201812211700
 
 ENV ANDROID_NDK="/sdk/android-ndk" \
     ANDROID_SDK="/sdk/android-sdk-linux"
