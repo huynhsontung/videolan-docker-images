@@ -5,7 +5,8 @@ ENV IMAGE_DATE=201810231805
 ENV ANDROID_NDK="/sdk/android-ndk" \
     ANDROID_SDK="/sdk/android-sdk-linux"
 
-RUN dpkg --add-architecture i386 && apt-get update && \
+RUN set -x && \
+    dpkg --add-architecture i386 && apt-get update && \
     apt-get install -y autoconf m4 automake ant autopoint bison flex \
     build-essential libtool libtool-bin patch pkg-config ragel subversion \
     git rpm2cpio libwebkitgtk-1.0-0 yasm ragel g++ protobuf-compiler gettext \
@@ -14,10 +15,7 @@ RUN dpkg --add-architecture i386 && apt-get update && \
     echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backports.list && \
     apt-get update && apt-get -y -t stretch-backports install cmake && \
     rm -f /etc/apt/sources.list.d/stretch-backports.list && \
-    apt-get clean -y && rm -rf /var/lib/apt/lists/*
-
-# install android sdk
-RUN set -x && \
+    apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     echo "export ANDROID_NDK=${ANDROID_NDK}" >> /etc/profile.d/vlc_env.sh && \
     echo "export ANDROID_SDK=${ANDROID_SDK}" >> /etc/profile.d/vlc_env.sh && \
     mkdir sdk && cd sdk && \
