@@ -1,8 +1,8 @@
-FROM debian:stretch
+FROM debian:stretch-20181112
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=201712141608
+ENV IMAGE_DATE=201812161600
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the jenkins user, we should not take an uid/gid
@@ -12,11 +12,8 @@ ENV IMAGE_DATE=201712141608
 ARG JENKINS_UID=499
 
 RUN echo "deb http://ftp.fr.debian.org/debian/ stretch main" > /etc/apt/sources.list && \
-    echo "deb-src http://ftp.fr.debian.org/debian/ stretch main" >> /etc/apt/sources.list && \
     echo "deb http://ftp.fr.debian.org/debian stretch-updates main" >> /etc/apt/sources.list && \
-    echo "deb-src http://ftp.fr.debian.org/debian stretch-updates main" >> /etc/apt/sources.list && \
     echo "deb http://security.debian.org stretch/updates main" >> /etc/apt/sources.list && \
-    echo "deb-src http://security.debian.org stretch/updates main" >> /etc/apt/sources.list && \
     apt-get update && \
     apt-get install -y openssh-server openjdk-8-jdk lftp ca-certificates && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
