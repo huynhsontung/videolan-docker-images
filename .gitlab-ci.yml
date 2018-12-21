@@ -16,7 +16,7 @@
   for d in $DIRS; do
     [ -d "$d" ] || continue
     DATE=`date +'%Y%m%d%H%M%S'`
-    /kaniko/executor --context `pwd`/$d --dockerfile Dockerfile --destination registry.videolan.org:5000/$d:$DATE
+    /kaniko/executor --context `pwd`/$d --dockerfile Dockerfile --destination registry.videolan.org:5000/$d:$DATE --single-snapshot --snapshotMode=full
   done
 
 build:
