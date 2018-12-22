@@ -22,7 +22,7 @@
 build:
   stage: build
   image:
-    name: registry.videolan.org:5000/videolan-kaniko:20181207114741
+    name: registry.videolan.org:5000/videolan-kaniko:20181222174354
     entrypoint: [""]
   script:
     - *build-images
