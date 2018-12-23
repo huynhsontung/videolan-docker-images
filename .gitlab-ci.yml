@@ -1,6 +1,5 @@
 .build-images: &build-images |
   set -x
-  echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
   DIRS=""
   CHANGED=$(for i in `git log --name-only --pretty=oneline --full-index $CI_COMMIT_BEFORE_SHA..$CI_COMMIT_SHA | grep -vE '^[0-9a-f]{40} '`; do echo `dirname $i`; done | sort | uniq)
   for dir in $CHANGED; do
@@ -16,13 +15,13 @@
   for d in $DIRS; do
     [ -d "$d" ] || continue
     DATE=`date +'%Y%m%d%H%M%S'`
-    /kaniko/executor --context `pwd`/$d --dockerfile Dockerfile --destination registry.videolan.org:5000/$d:$DATE --single-snapshot --snapshotMode=full
+    docker build -t registry.videolan.org:5000/$d:$DATE $d/
+    docker push registry.videolan.org:5000/$d:$DATE
   done
 
 build:
   stage: build
   image:
-    name: registry.videolan.org:5000/videolan-kaniko:20181222174354
-    entrypoint: [""]
+    name: registry.videolan.org:5000/videolan-base-dind:20181207113351
   script:
     - *build-images
