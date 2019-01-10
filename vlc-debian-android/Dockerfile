@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:20181223103250
 
-ENV IMAGE_DATE=201812231030
+ENV IMAGE_DATE=201901101642
 
 ENV ANDROID_NDK="/sdk/android-ndk" \
     ANDROID_SDK="/sdk/android-sdk-linux"
@@ -10,12 +10,13 @@ RUN set -x && \
     apt-get install -y autoconf m4 automake ant autopoint bison flex \
     build-essential libtool libtool-bin patch pkg-config ragel subversion \
     git rpm2cpio libwebkitgtk-1.0-0 yasm ragel g++ protobuf-compiler gettext \
-    libgsm1-dev wget expect unzip python python3 \
+    libgsm1-dev wget expect unzip python python3 locales \
     zlib1g:i386 libstdc++6:i386 libc6:i386 && \
     echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backports.list && \
     apt-get update && apt-get -y -t stretch-backports install cmake && \
     rm -f /etc/apt/sources.list.d/stretch-backports.list && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
+    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
     echo "export ANDROID_NDK=${ANDROID_NDK}" >> /etc/profile.d/vlc_env.sh && \
     echo "export ANDROID_SDK=${ANDROID_SDK}" >> /etc/profile.d/vlc_env.sh && \
     mkdir sdk && cd sdk && \
@@ -37,3 +38,5 @@ RUN set -x && \
     rm -f sdk-tools-linux-3859397.zip && \
     tools/bin/sdkmanager "build-tools;26.0.1" "platform-tools" "platforms;android-26" && \
     chown -R jenkins /sdk
+
+ENV LANG en_US.UTF-8
