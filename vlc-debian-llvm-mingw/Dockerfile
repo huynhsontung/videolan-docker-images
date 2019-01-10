@@ -2,7 +2,7 @@
 #
 FROM registry.videolan.org:5000/videolan-base-sid:20181128112333
  
-ENV IMAGE_DATE=201812131007
+ENV IMAGE_DATE=201901101117
 
 RUN apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file unzip libtool pkg-config cmake build-essential \
@@ -53,7 +53,7 @@ RUN ./build-mingw-w64.sh $TOOLCHAIN_PREFIX && \
     rm -rf /build/*
 
 # Build libunwind/libcxxabi/libcxx
-COPY build-libcxx.sh merge-archives.sh ./
+COPY build-libcxx.sh ./
 RUN ./build-libcxx.sh $TOOLCHAIN_PREFIX && \
     rm -rf /build/*
 

@@ -49,7 +49,7 @@ fi
 if [ -n "$SYNC" ] || [ -n "$CHECKOUT_LIBUNWIND" ]; then
     cd libunwind
     [ -z "$SYNC" ] || git fetch
-    git checkout 03a10740898eeb2b0c7a7c6bea3e293a221309a1
+    git checkout 9defb52f575beff21b646e60e63f72ad1ac7cf54
     cd ..
 fi
 if [ -n "$SYNC" ] || [ -n "$CHECKOUT_LIBCXXABI" ]; then
@@ -66,7 +66,6 @@ if [ -n "$SYNC" ] || [ -n "$CHECKOUT_LIBCXX" ]; then
 fi
 
 LIBCXX=$(pwd)/libcxx
-MERGE_ARCHIVES=$(pwd)/merge-archives.sh
 
 case $(uname) in
 MINGW*)
@@ -125,7 +124,7 @@ build_all() {
         else
             # Merge libpsapi.a into the static library libunwind.a, to
             # avoid having to specify -lpsapi when linking to it.
-            $MERGE_ARCHIVES \
+            llvm-ar qcsL \
                 $PREFIX/$arch-w64-mingw32/lib/libunwind.a \
                 $PREFIX/$arch-w64-mingw32/lib/libpsapi.a
         fi
@@ -212,6 +211,7 @@ build_all() {
             -DLIBCXX_CXX_ABI_INCLUDE_PATHS=../../libcxxabi/include \
             -DLIBCXX_CXX_ABI_LIBRARY_PATH=../../libcxxabi/build-$arch-$type/lib \
             -DLIBCXX_LIBDIR_SUFFIX="" \
+            -DLIBCXX_INCLUDE_TESTS=FALSE \
             -DCMAKE_CXX_FLAGS="$LIBCXX_VISIBILITY_FLAGS" \
             -DCMAKE_SHARED_LINKER_FLAGS="-lunwind -Wl,--export-all-symbols" \
             -DLIBCXX_ENABLE_ABI_LINKER_SCRIPT=FALSE \
@@ -219,12 +219,12 @@ build_all() {
         make -j$CORES
         make install
         if [ "$type" = "shared" ]; then
-            $MERGE_ARCHIVES \
+            llvm-ar qcsL \
                 $PREFIX/$arch-w64-mingw32/lib/libc++.dll.a \
                 $PREFIX/$arch-w64-mingw32/lib/libunwind.dll.a
             cp lib/libc++.dll $PREFIX/$arch-w64-mingw32/bin
         else
-            $MERGE_ARCHIVES \
+            llvm-ar qcsL \
                 $PREFIX/$arch-w64-mingw32/lib/libc++.a \
                 $PREFIX/$arch-w64-mingw32/lib/libunwind.a
         fi
