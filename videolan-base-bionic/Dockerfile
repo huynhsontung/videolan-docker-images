@@ -1,8 +1,8 @@
-FROM ubuntu:bionic-20180821
+FROM ubuntu:bionic-20181204
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=201809121200
+ENV IMAGE_DATE=201901142030
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the jenkins user, we should not take an uid/gid
