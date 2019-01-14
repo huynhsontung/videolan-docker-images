@@ -2,17 +2,20 @@
 #
 FROM registry.videolan.org:5000/videolan-base-sid:20181128112333
  
-ENV IMAGE_DATE=201901101117
+ENV IMAGE_DATE=201901141530
 
 RUN apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file unzip libtool pkg-config cmake build-essential \
     automake yasm gettext autopoint vim python git-svn ninja-build libwine-dev \
     wine flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm \
-    python3 && \
+    python3 locales && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install wine32 && \
     apt-get clean -y && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+
+ENV LANG=en_US.UTF-8
 
 # Disable statx for the time being to fix Qt build
 # https://bugreports.qt.io/browse/QTBUG-64490
