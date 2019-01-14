@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/vlc-debian-llvm-mingw:20190110102256
 
-ENV IMAGE_DATE=201901141200
+ENV IMAGE_DATE=201901141252
 
 RUN TARGET_TRIPLE=x86_64-w64-mingw32 \
     SQLITE_VERSION=sqlite-autoconf-3260000 \
@@ -29,7 +29,7 @@ RUN TARGET_TRIPLE=x86_64-w64-mingw32 \
     mkdir -p /prefix/dll && \
     cp src/.libs/libvlccore.dll /prefix/dll/ && \
     cp lib/.libs/libvlc.dll /prefix/dll && \
-    cd /build && wget -q https://www.sqlite.org/2016/$SQLITE_VERSION.tar.gz && \
+    cd /build && wget -q https://www.sqlite.org/2018/$SQLITE_VERSION.tar.gz && \
     echo $SQLITE_SHA256 $SQLITE_VERSION.tar.gz | sha256sum -c && \
     tar xzf $SQLITE_VERSION.tar.gz && cd $SQLITE_VERSION && \
     ./configure --prefix=/prefix --host=$TARGET_TRIPLE --disable-shared && \
