@@ -108,3 +108,6 @@ RUN wine wineboot --init && \
 USER root
 
 ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
+
+COPY crossfiles /opt/crossfiles
+
