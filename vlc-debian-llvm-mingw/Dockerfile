@@ -2,7 +2,7 @@
 #
 FROM registry.videolan.org:5000/videolan-base-sid:20181128112333
  
-ENV IMAGE_DATE=201901141530
+ENV IMAGE_DATE=201901171202
 
 RUN apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file unzip libtool pkg-config cmake build-essential \
