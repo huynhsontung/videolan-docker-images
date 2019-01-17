@@ -10,6 +10,6 @@ c_link_args = ['-static-libgcc']
 
 [host_machine]
 system = 'windows'
-cpu_family = 'x86_64'
-cpu = 'x86_64'
+cpu_family = 'aarch64'
+cpu = 'aarch64'
 endian = 'little'
