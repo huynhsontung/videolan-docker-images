@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/vlc-debian-llvm-mingw:20190121090533
 
-ENV IMAGE_DATE=201901211209
+ENV IMAGE_DATE=201901211321
 
 RUN TARGET_TRIPLE=i686-w64-mingw32 \
     SQLITE_VERSION=sqlite-autoconf-3260000 \
