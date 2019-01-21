@@ -7,8 +7,8 @@ RUN TARGET_TRIPLE=x86_64-w64-mingw32 \
     SQLITE_SHA256=5daa6a3fb7d1e8c767cd59c4ded8da6e4b00c61d3b466d0685e35c4dd6d7bf5d \
     JPEGTURBO_VERSION=1.5.0 \
     JPEGTURBO_SHA256=9f397c31a67d2b00ee37597da25898b03eb282ccd87b135a50a69993b6a2035f \
-    RAPIDJSON_VERSION=1.0.2 \
-    RAPIDJSON_SHA256=c3711ed2b3c76a5565ee9f0128bb4ec6753dbcc23450b713842df8f236d08666 && \
+    RAPIDJSON_VERSION=1.1.0 \
+    RAPIDJSON_SHA256=bf7ced29704a1e696fbccf2a2b4ea068e7774fa37f6d7dd4039d0787f8bed98e && \
     mkdir -p /build && cd /build && \
     git clone --depth=1 https://git.videolan.org/git/vlc.git && \
     cd vlc && \
@@ -42,7 +42,7 @@ RUN TARGET_TRIPLE=x86_64-w64-mingw32 \
     make -j`nproc` && make install && \
     cd /build && wget -q https://github.com/miloyip/rapidjson/archive/v$RAPIDJSON_VERSION.tar.gz && \
     echo $RAPIDJSON_SHA256 v$RAPIDJSON_VERSION.tar.gz | sha256sum -c && \
-    tar xzf v1.0.2.tar.gz && cd rapidjson-1.0.2/ && \
+    tar xzf v1.1.0.tar.gz && cd rapidjson-1.1.0/ && \
     cmake -DCMAKE_INSTALL_PREFIX=/prefix -DRAPIDJSON_BUILD_DOC=OFF \
         -DRAPIDJSON_BUILD_EXAMPLES=OFF -DRAPIDJSON_BUILD_TESTS=OFF . && \
     make install && \
