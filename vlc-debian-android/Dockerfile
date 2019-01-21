@@ -1,6 +1,6 @@
 FROM registry.videolan.org:5000/videolan-base-stretch:20181223103250
 
-ENV IMAGE_DATE=201901101642
+ENV IMAGE_DATE=201901211705
 
 ENV ANDROID_NDK="/sdk/android-ndk" \
     ANDROID_SDK="/sdk/android-sdk-linux"
@@ -29,7 +29,7 @@ RUN set -x && \
     mkdir android-sdk-linux && \
     cd android-sdk-linux && \
     mkdir "licenses" && \
-    echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > "licenses/android-sdk-license" && \
+    echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "licenses/android-sdk-license" && \
     echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> "licenses/android-sdk-license" && \
     wget -q https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip && \
     SDK_TOOLS_SHA256=444e22ce8ca0f67353bda4b85175ed3731cae3ffa695ca18119cbacef1c1bea0 && \
