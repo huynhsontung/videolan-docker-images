@@ -17,13 +17,12 @@ ARG VIDEOLAN_CI_UID=499
 RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
     adduser --quiet --uid ${VIDEOLAN_CI_UID} --ingroup videolan videolan && \
     echo "videolan:videolan" | chpasswd && \
-    dpkg --add-architecture i386 && apt-get update && \
+    apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
     openjdk-8-jdk-headless ca-certificates autoconf m4 automake ant autopoint bison \
     flex build-essential libtool libtool-bin patch pkg-config ragel subversion \
     git rpm2cpio libwebkitgtk-1.0-0 yasm ragel g++ protobuf-compiler gettext \
-    libgsm1-dev wget expect unzip python python3 locales libltdl-dev \
-    zlib1g:i386 libstdc++6:i386 libc6:i386 && \
+    libgsm1-dev wget expect unzip python python3 locales libltdl-dev && \
     echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backports.list && \
     apt-get update && apt-get -y -t stretch-backports install cmake && \
     rm -f /etc/apt/sources.list.d/stretch-backports.list && \
