@@ -1,16 +1,28 @@
-FROM registry.videolan.org:5000/videolan-base-stretch:20181223103250
+FROM debian:stretch-20190204
 
-ENV IMAGE_DATE=201901211705
+MAINTAINER VideoLAN roots <roots@videolan.org>
+
+ENV IMAGE_DATE=201902081630
 
 ENV ANDROID_NDK="/sdk/android-ndk" \
     ANDROID_SDK="/sdk/android-sdk-linux"
 
-RUN set -x && \
+# If someone wants to use VideoLAN docker images on a local machine and does
+# not want to be disturbed by the videolan user, we should not take an uid/gid
+# in the user range of main distributions, which means:
+# - Debian based: <1000
+# - RPM based: <500 (CentOS, RedHat, etc.)
+ARG VIDEOLAN_CI_UID=499
+
+RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
+    adduser --quiet --uid ${VIDEOLAN_CI_UID} --ingroup videolan videolan && \
+    echo "videolan:videolan" | chpasswd && \
     dpkg --add-architecture i386 && apt-get update && \
-    apt-get install -y autoconf m4 automake ant autopoint bison flex \
-    build-essential libtool libtool-bin patch pkg-config ragel subversion \
+    apt-get install --no-install-suggests --no-install-recommends -y \
+    openjdk-8-jdk-headless ca-certificates autoconf m4 automake ant autopoint bison \
+    flex build-essential libtool libtool-bin patch pkg-config ragel subversion \
     git rpm2cpio libwebkitgtk-1.0-0 yasm ragel g++ protobuf-compiler gettext \
-    libgsm1-dev wget expect unzip python python3 locales \
+    libgsm1-dev wget expect unzip python python3 locales libltdl-dev \
     zlib1g:i386 libstdc++6:i386 libc6:i386 && \
     echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backports.list && \
     apt-get update && apt-get -y -t stretch-backports install cmake && \
@@ -37,6 +49,6 @@ RUN set -x && \
     unzip sdk-tools-linux-3859397.zip && \
     rm -f sdk-tools-linux-3859397.zip && \
     tools/bin/sdkmanager "build-tools;26.0.1" "platform-tools" "platforms;android-26" && \
-    chown -R jenkins /sdk
+    chown -R videolan /sdk
 
 ENV LANG en_US.UTF-8
