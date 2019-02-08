@@ -52,3 +52,4 @@ RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
     chown -R videolan /sdk
 
 ENV LANG en_US.UTF-8
+USER videolan
