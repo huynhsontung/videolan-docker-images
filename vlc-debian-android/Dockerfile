@@ -2,7 +2,7 @@ FROM debian:stretch-20190204
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=201902081630
+ENV IMAGE_DATE=2019020131307
 
 ENV ANDROID_NDK="/sdk/android-ndk" \
     ANDROID_SDK="/sdk/android-sdk-linux"
