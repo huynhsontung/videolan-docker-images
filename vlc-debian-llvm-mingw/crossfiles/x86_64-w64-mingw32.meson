@@ -4,9 +4,11 @@ cpp = 'x86_64-w64-mingw32-clang++'
 ar = 'x86_64-w64-mingw32-ar'
 strip = 'x86_64-w64-mingw32-strip'
 windres = 'x86_64-w64-mingw32-windres'
+exe_wrapper = ['wine']
 
 [properties]
 c_link_args = ['-static-libgcc']
+needs_exe_wrapper = true
 
 [host_machine]
 system = 'windows'
