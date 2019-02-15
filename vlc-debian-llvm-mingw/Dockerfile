@@ -88,7 +88,19 @@ RUN wget -q https://raw.githubusercontent.com/Winetricks/winetricks/d30478da6981
     echo $WINE_MONO_SHA256 /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi | sha256sum -c && \
     chmod +x /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi
 
-USER jenkins
+# If someone wants to use VideoLAN docker images on a local machine and does
+# not want to be disturbed by the videolan user, we should not take an uid/gid
+# in the user range of main distributions, which means:
+# - Debian based: <1000
+# - RPM based: <500 (CentOS, RedHat, etc.)
+# 499 is already used by jenkins.
+ARG VIDEOLAN_UID=498
+
+RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
+    adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
+    echo "videolan:videolan" | chpasswd
+
+USER videolan
 RUN wine wineboot --init && \
     /opt/wine/wait_process.sh wineserver && \
     /opt/wine/winetricks --unattended dotnet40 dotnet_verifier && \
