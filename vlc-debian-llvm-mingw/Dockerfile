@@ -114,8 +114,6 @@ RUN wine wineboot --init && \
     rm -rf ~/.cache/winetricks && \
     rm -rf /tmp/wine-*
 
-USER root
-
 ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
 
 COPY crossfiles /opt/crossfiles
