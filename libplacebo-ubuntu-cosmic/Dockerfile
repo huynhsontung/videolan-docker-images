@@ -1,6 +1,6 @@
 FROM ubuntu:cosmic-20181114
 
-ENV IMAGE_DATE=201812042230
+ENV IMAGE_DATE=201903180225
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -26,7 +26,7 @@ RUN set -x && \
         gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 gcc-mingw-w64-i686 \
         g++-mingw-w64-i686 mingw-w64-tools glslang-dev libvulkan-dev \
         vulkan-validationlayers mesa-vulkan-drivers vulkan-tools \
-        liblcms2-dev && \
+        liblcms2-dev gdb systemd-coredump && \
     pip3 install meson ninja gcovr && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     cd /root && \
@@ -37,7 +37,7 @@ RUN set -x && \
     git clone --depth 1 -b ${SPIRV_HEADERS_BRANCH}   https://github.com/KhronosGroup/SPIRV-Headers.git   third_party/spirv-headers && \
     mkdir build && cd build && \
     cmake -GNinja \
-        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_BUILD_TYPE=RelWithDebInfo \
         -DCMAKE_INSTALL_PREFIX=/usr/local \
         -DSHADERC_SKIP_TESTS=1 \
         .. && \
