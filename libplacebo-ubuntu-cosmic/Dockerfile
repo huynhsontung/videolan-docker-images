@@ -1,6 +1,6 @@
 FROM ubuntu:cosmic-20181114
 
-ENV IMAGE_DATE=201903180225
+ENV IMAGE_DATE=201904021030
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
