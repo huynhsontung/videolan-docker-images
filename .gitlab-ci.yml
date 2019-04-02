@@ -15,8 +15,8 @@
   for d in $DIRS; do
     [ -d "$d" ] || continue
     DATE=`date +'%Y%m%d%H%M%S'`
-    docker build -t registry.videolan.org:5000/$d:$DATE $d/
-    docker push registry.videolan.org:5000/$d:$DATE
+    docker build -t registry.videolan.org/$d:$DATE $d/
+    docker push registry.videolan.org/$d:$DATE
   done
 
 variables:
