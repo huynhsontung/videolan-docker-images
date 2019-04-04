@@ -1,12 +1,30 @@
-FROM registry.videolan.org:5000/videolan-base-stretch:20180419104422
+FROM debian:sid-20181112-slim
 
-ENV IMAGE_DATE=201809251403
+MAINTAINER VideoLAN roots <roots@videolan.org>
 
-RUN apt-get update && apt-get -y install \
-    gcc make git \
-    gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 \
-    gcc-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64-tools \
-    libavformat-dev libswscale-dev curl && \
-    echo "deb http://deb.debian.org/debian unstable main" > /etc/apt/sources.list.d/unst.list && \
-    apt-get update && apt-get -y -t unstable install nasm && \
+ENV IMAGE_DATE=201812181400
+
+# If someone wants to use VideoLAN docker images on a local machine and does
+# not want to be disturbed by the videolan user, we should not take an uid/gid
+# in the user range of main distributions, which means:
+# - Debian based: <1000
+# - RPM based: <500 (CentOS, RedHat, etc.)
+ARG VIDEOLAN_UID=499
+
+RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
+    adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
+    echo "videolan:videolan" | chpasswd && \
+    dpkg --add-architecture i386 && \
+    apt-get update && \
+    apt-get install --no-install-suggests --no-install-recommends -y \
+      lftp gcc make git curl nasm wine wine32 wine64 procps \
+      ca-certificates libc-dev bzip2 \
+      gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 \
+      gcc-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64-tools && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
+
+USER videolan
+
+COPY scripts/wait_process.sh /opt/wine/
+RUN wine wineboot --init && \
+    /opt/wine/wait_process.sh wineserver
