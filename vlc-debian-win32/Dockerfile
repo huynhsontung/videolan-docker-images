@@ -1,6 +1,6 @@
 FROM registry.videolan.org/videolan-base-stretch:20190408162131
 
-ENV IMAGE_DATE=201904081620
+ENV IMAGE_DATE=201904081720
 
 ENV TARGET_TUPLE=i686-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
@@ -16,18 +16,18 @@ RUN set -x && \
     echo "export MINGW_PREFIX=${MINGW_PREFIX}" >> /etc/profile.d/vlc_env.sh && \
     echo "export PATH=${TOOLCHAIN_PREFIX}/bin:\$PATH" >> /etc/profile.d/vlc_env.sh && \
     mkdir /build/ && \
-    apt-get update -qq && apt-get install -qqy \
+    apt-get update -qq && apt-get install -qqy --no-install-suggests --no-install-recommends \
     git wget bzip2 file libwine-dev unzip libtool libtool-bin pkg-config ant \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
     gettext dos2unix zip wine nsis curl gperf flex bison \
     libcurl4-gnutls-dev python3 python3-requests && \
     dpkg --add-architecture i386 && \
-    apt-get update && apt-get -y install wine32 && \
+    apt-get update && apt-get -y install --no-install-suggests --no-install-recommends wine32 && \
     echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list.d/testing.list && \
-    apt-get update && apt-get -y -t testing install nasm nsis meson && \
+    apt-get update && apt-get -y -t testing --no-install-suggests --no-install-recommends install nasm nsis meson && \
     rm -f /etc/apt/sources.list.d/testing.list && \
     echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backports.list && \
-    apt-get update && apt-get -y -t stretch-backports install cmake && \
+    apt-get update && apt-get -y -t stretch-backports --no-install-suggests --no-install-recommends install cmake && \
     rm -f /etc/apt/sources.list.d/stretch-backports.list && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     update-alternatives --install /usr/bin/python python /usr/bin/python3.5 1 && \
