@@ -1,6 +1,6 @@
-FROM registry.videolan.org:5000/videolan-base-stretch:20180419104422
+FROM registry.videolan.org/videolan-base-stretch:20190408162131
 
-ENV IMAGE_DATE=201811071550
+ENV IMAGE_DATE=201904081620
 
 ENV TARGET_TUPLE=i686-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
