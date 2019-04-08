@@ -1,6 +1,6 @@
-FROM registry.videolan.org:5000/videolan-base-stretch:20180419104422
+FROM registry.videolan.org/videolan-base-stretch:20190408162131
 
-ENV IMAGE_DATE=201811071550
+ENV IMAGE_DATE=201904081620
 
 ENV TARGET_TUPLE=x86_64-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-${TARGET_TUPLE}
@@ -20,7 +20,7 @@ RUN set -x && \
     apt-get update -qq && apt-get install -qqy \
     git wget bzip2 file libwine-dev unzip libtool libtool-bin pkg-config ant \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
-    gettext dos2unix zip wine nsis g++-mingw-w64-i686 gperf flex bison \
+    gettext dos2unix zip wine nsis g++-mingw-w64-i686 curl gperf flex bison \
     libcurl4-gnutls-dev python3 python3-requests && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install wine32 && \
