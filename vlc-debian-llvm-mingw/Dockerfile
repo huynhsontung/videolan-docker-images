@@ -1,14 +1,14 @@
-FROM registry.videolan.org:5000/videolan-base-sid:20181128112333
+FROM registry.videolan.org/videolan-base-sid:20190408171718
  
-ENV IMAGE_DATE=201901211004
+ENV IMAGE_DATE=201904081700
 
-RUN apt-get update -qq && apt-get install -qqy \
+RUN apt-get update -qq && apt-get install -qqy --no-install-suggests --no-install-recommends \
     git wget bzip2 file unzip libtool pkg-config cmake build-essential \
     automake yasm gettext autopoint vim python git-svn ninja-build libwine-dev \
     wine flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm \
     python3 locales meson && \
     dpkg --add-architecture i386 && \
-    apt-get update && apt-get -y install wine32 && \
+    apt-get update && apt-get -y install --no-install-suggests --no-install-recommends wine32 && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/* && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
@@ -70,7 +70,7 @@ RUN ./build-libssp.sh $TOOLCHAIN_PREFIX && \
 
 # Cheating: Pull strip and objcopy from the normal binutils package.
 RUN apt-get update -qq && \
-    apt-get install -qqy binutils-mingw-w64-x86-64 && \
+    apt-get install -qqy binutils-mingw-w64-x86-64 --no-install-suggests --no-install-recommends && \
     cp /usr/bin/x86_64-w64-mingw32-strip $TOOLCHAIN_PREFIX/bin/binutils-strip && \
     cp /usr/bin/x86_64-w64-mingw32-objcopy $TOOLCHAIN_PREFIX/bin/binutils-objcopy && \
     apt-get remove -qqy binutils-mingw-w64-x86-64 && \
