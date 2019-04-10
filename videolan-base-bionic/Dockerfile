@@ -12,7 +12,8 @@ ENV IMAGE_DATE=201904101550
 ARG JENKINS_UID=499
 
 RUN apt-get update && \
-    apt-get install -y openssh-server openjdk-8-jdk lftp ca-certificates gnupg1 && \
+    apt-get install -y --no-install-suggests --no-install-recommends \
+    openssh-server openjdk-8-jdk lftp ca-certificates gnupg1 && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     sed -i 's|session    required     pam_loginuid.so|session    optional     pam_loginuid.so|g' /etc/pam.d/sshd && \
     sed -i 's,use_authtok ,,' /etc/pam.d/common-password && \
