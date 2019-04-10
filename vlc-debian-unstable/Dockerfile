@@ -11,6 +11,9 @@ RUN apt-get update && apt-get build-dep -y vlc && \
     libavformat-dev libavresample-dev libavutil-dev libpostproc-dev \
     libswscale-dev wayland-protocols qtbase5-private-dev libarchive-dev \
     libmicrodns-dev libmpg123-dev libnfs-dev curl libltdl-dev libqt5svg5-dev \
+    qtdeclarative5-dev qtquickcontrols2-5-dev qml-module-qtquick-controls2 \
+    qml-module-qtquick-layouts qml-module-qtquick-templates2 \
+    qml-module-qtgraphicaleffects \
     flex bison libxkbcommon-x11-dev libplacebo-dev meson && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     echo "IMAGE_DATE=20180419103824" >> /etc/environment
