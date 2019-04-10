@@ -1,6 +1,6 @@
 FROM registry.videolan.org/videolan-base-stretch:20190408162131
 
-ENV IMAGE_DATE=201904081720
+ENV IMAGE_DATE=201904101711
 
 ENV TARGET_TUPLE=i686-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
@@ -17,7 +17,7 @@ RUN set -x && \
     echo "export PATH=${TOOLCHAIN_PREFIX}/bin:\$PATH" >> /etc/profile.d/vlc_env.sh && \
     mkdir /build/ && \
     apt-get update -qq && apt-get install -qqy --no-install-suggests --no-install-recommends \
-    git wget bzip2 file libwine-dev unzip libtool libtool-bin pkg-config ant \
+    git wget bzip2 file libwine-dev unzip libtool libtool-bin libltdl-dev pkg-config ant \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
     gettext dos2unix zip wine nsis curl gperf flex bison \
     libcurl4-gnutls-dev python3 python3-requests && \
