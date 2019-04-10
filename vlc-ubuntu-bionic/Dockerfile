@@ -1,6 +1,6 @@
-FROM registry.videolan.org:5000/videolan-base-bionic:20190114193819
+FROM registry.videolan.org/videolan-base-bionic:20190410145346
 
-ENV IMAGE_DATE=201901142040
+ENV IMAGE_DATE=201904101550
 
 ENV PATH=$PATH:/usr/sbin
 
@@ -21,7 +21,9 @@ RUN echo "deb http://archive.neon.kde.org/user bionic main" >> /etc/apt/sources.
       locales lua5.2 make pkg-config qtbase5-dev qtbase5-private-dev ragel snapcraft \
       vim xz-utils yasm zlib1g-dev libxkbcommon-x11-dev meson lftp ca-certificates \
       curl git-core build-essential python3-pip python3-setuptools python3-wheel \
-      nasm clang libvulkan-dev \
+      nasm clang libvulkan-dev qtdeclarative5-dev qtquickcontrols2-5-dev \
+      qml-module-qtquick-controls2 qml-module-qtquick-layouts qml-module-qtquick-templates2 \
+      qml-module-qtgraphicaleffects \
       && \
     pip3 install meson ninja && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
