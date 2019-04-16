@@ -38,7 +38,7 @@ RUN set -x && \
       curl build-essential python3-pip python3-setuptools python3-wheel \
       nasm clang libvulkan-dev qtdeclarative5-dev qtquickcontrols2-5-dev \
       qml-module-qtquick-controls2 qml-module-qtquick-layouts qml-module-qtquick-templates2 \
-      qml-module-qtgraphicaleffects gnupg1 ca-certificates lftp openjdk-8-jdk \
+      qml-module-qtgraphicaleffects gnupg1 ca-certificates lftp openjdk-11-jdk \
       && \
     pip3 install meson ninja && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
