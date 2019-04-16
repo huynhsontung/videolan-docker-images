@@ -17,6 +17,8 @@ RUN set -x && \
     addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
     echo "videolan:videolan" | chpasswd && \
+    apt-get update && apt-get install -y --no-install-suggests --no-install-recommends \
+      gnupg1 &&
     echo "deb http://archive.neon.kde.org/user bionic main" >> /etc/apt/sources.list.d/neon.list && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E6D4736255751E5D && \
     apt-get update && \
