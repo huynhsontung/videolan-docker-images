@@ -1,6 +1,15 @@
-FROM registry.videolan.org/videolan-base-stretch:20190408162131
+FROM debian:stretch-20190326-slim
 
-ENV IMAGE_DATE=201904101711
+# If someone wants to use VideoLAN docker images on a local machine and does
+# not want to be disturbed by the videolan user, we should not take an uid/gid
+# in the user range of main distributions, which means:
+# - Debian based: <1000
+# - RPM based: <500 (CentOS, RedHat, etc.)
+ARG VIDEOLAN_UID=499
+# 8 cores ought to be enough for anybody
+ARG CORES=8
+
+ENV IMAGE_DATE=201904161740
 
 ENV TARGET_TUPLE=x86_64-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-${TARGET_TUPLE}
@@ -12,16 +21,21 @@ COPY patches /patches
 
 # We still need an i686 cross compiler to build the installer
 RUN set -x && \
+    mkdir -p /usr/share/man/man1 && \
+    addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
+    adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
+    echo "videolan:videolan" | chpasswd && \
     echo "export TARGET_TUPLE=${TARGET_TUPLE}" >> /etc/profile.d/vlc_env.sh && \
     echo "export TOOLCHAIN_PREFIX=${TOOLCHAIN_PREFIX}" >> /etc/profile.d/vlc_env.sh && \
     echo "export MINGW_PREFIX=${MINGW_PREFIX}" >> /etc/profile.d/vlc_env.sh && \
     echo "export PATH=${TOOLCHAIN_PREFIX}/bin:\$PATH" >> /etc/profile.d/vlc_env.sh && \
-    mkdir /build/ && \
     apt-get update -qq && apt-get install -qqy --no-install-suggests --no-install-recommends \
     git wget bzip2 file libwine-dev unzip libtool libtool-bin libltdl-dev pkg-config ant \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
     gettext dos2unix zip wine nsis g++-mingw-w64-i686 curl gperf flex bison \
-    libcurl4-gnutls-dev python3 python3-requests && \
+    libcurl4-gnutls-dev python3 python3-requests lftp gcc make procps ca-certificates \
+    openjdk-8-jdk-headless \
+    && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install --no-install-suggests --no-install-recommends wine32 && \
     echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list.d/testing.list && \
@@ -44,6 +58,7 @@ RUN set -x && \
     MPC_VERSION=1.0.3 \
     MPC_SHA256=617decc6ea09889fb08ede330917a00b16809b8db88c29c31bfbb49cbf88ecc3 \
     && \
+    mkdir /build/ && \
     cd /build && \
     mkdir $TOOLCHAIN_PREFIX && \
     mkdir $MINGW_PREFIX && \
@@ -59,7 +74,7 @@ RUN set -x && \
     tar xf binutils-$BINUTILS_VERSION.tar.bz2 && \
     cd binutils-$BINUTILS_VERSION && mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE \
-                    --disable-werror --disable-multilib && make -j4 && make install-strip && \
+                    --disable-werror --disable-multilib && make -j$CORES && make install-strip && \
     cd /build/mingw-w64/mingw-w64-headers && mkdir build && cd build && \
     ../configure --prefix=$MINGW_PREFIX \
                     --host=$TARGET_TUPLE --enable-secure-api && make install && \
@@ -89,26 +104,26 @@ RUN set -x && \
                     --enable-lto \
                     --disable-shared \
                     --disable-multilib && \
-                    make -j4 all-gcc && \
+                    make -j$CORES all-gcc && \
                     make install-gcc && \
     cd /build/mingw-w64/mingw-w64-crt && \
     mkdir build && cd build && \
     ../configure --prefix=$MINGW_PREFIX \
                     --host=$TARGET_TUPLE && \
-    make -j4 && \
+    make -j$CORES && \
     make install && \
     cd /build/gcc-$GCC_VERSION/build && \
-    make -j4 && \
+    make -j$CORES && \
     make install-strip && \
     cd /build/mingw-w64/mingw-w64-tools/widl && \
     mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE && \
-    make -j4 && \
+    make -j$CORES && \
     make install && \
     cd /build/ && git clone --recursive https://code.videolan.org/videolan/breakpad.git && \
     cd breakpad && autoreconf -vif && mkdir build && cd build && \
     ../configure --enable-tools --disable-processor --prefix=/opt/breakpad && \
-    make -j4 && make install && \
+    make -j$CORES && make install && \
     \
     chmod +x /opt/wine/wait_process.sh && \
     wget -q https://raw.githubusercontent.com/Winetricks/winetricks/d30478da6981e0842956e5b326339b52540efaec/src/winetricks -O /opt/wine/winetricks && \
@@ -122,7 +137,7 @@ RUN set -x && \
     chmod +x /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi && \
     cd / && rm -rf /build
 
-USER jenkins
+USER videolan
 RUN wine wineboot --init && \
     /opt/wine/wait_process.sh wineserver && \
     /opt/wine/winetricks --unattended dotnet40 dotnet_verifier && \
@@ -134,5 +149,3 @@ RUN wine wineboot --init && \
     cd ~/ && \
     rm -f ~/wix.msi && \
     rm -rf ~/.cache/winetricks
-
-USER root
