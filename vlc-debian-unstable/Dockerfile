@@ -1,19 +1,37 @@
-FROM registry.videolan.org/videolan-base-sid:20190408171718
+FROM debian:sid-20190326-slim
 
-ENV IMAGE_DATE=201904101518
+MAINTAINER VideoLAN roots <roots@videolan.org>
 
-RUN apt-get update && apt-get build-dep -y vlc && \
-    apt-get install -y git-core libtool automake autoconf autopoint make \
-    ninja-build python3 \
-    gettext pkg-config subversion cmake cvs zip bzip2 p7zip-full wget \
-    dos2unix ragel yasm g++ g++-7 protobuf-compiler m4 ant build-essential \
-    libtool-bin libavcodec-dev gdb \
+ENV IMAGE_DATE=201904162000
+
+# If someone wants to use VideoLAN docker images on a local machine and does
+# not want to be disturbed by the videolan user, we should not take an uid/gid
+# in the user range of main distributions, which means:
+# - Debian based: <1000
+# - RPM based: <500 (CentOS, RedHat, etc.)
+ARG VIDEOLAN_UID=499
+
+RUN set -x &&
+    ddgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
+    adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
+    echo "videolan:videolan" | chpasswd && \
+    mkdir -p /usr/share/man/man1 && \
+    echo "deb http://ftp.fr.debian.org/debian/ sid main" > /etc/apt/sources.list && \
+    echo "deb-src http://ftp.fr.debian.org/debian/ sid main" >> /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get install -y --no-install-suggests --no-install-recommends \
+    openjdk-11-jdk lftp ca-certificates git-core libtool automake autoconf \
+    autopoint make  ninja-build python3 gettext pkg-config subversion cmake \
+    cvs zip bzip2 p7zip-full wget dos2unix ragel yasm g++ g++-7 \
+    protobuf-compiler m4 ant build-essential libtool-bin libavcodec-dev gdb \
     libavformat-dev libavresample-dev libavutil-dev libpostproc-dev \
     libswscale-dev wayland-protocols qtbase5-private-dev libarchive-dev \
     libmicrodns-dev libmpg123-dev libnfs-dev curl libltdl-dev libqt5svg5-dev \
     qtdeclarative5-dev qtquickcontrols2-5-dev qml-module-qtquick-controls2 \
     qml-module-qtquick-layouts qml-module-qtquick-templates2 \
-    qml-module-qtgraphicaleffects \
-    flex bison libxkbcommon-x11-dev libplacebo-dev meson && \
-    apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
-    echo "IMAGE_DATE=20180419103824" >> /etc/environment
+    qml-module-qtgraphicaleffects flex bison libxkbcommon-x11-dev libplacebo-dev \
+    meson && \
+    apt-get build-dep -y vlc && \
+    apt-get clean -y && rm -rf /var/lib/apt/lists/*
+
+USER videolan
