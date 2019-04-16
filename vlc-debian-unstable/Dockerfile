@@ -11,8 +11,8 @@ ENV IMAGE_DATE=201904162000
 # - RPM based: <500 (CentOS, RedHat, etc.)
 ARG VIDEOLAN_UID=499
 
-RUN set -x &&
-    ddgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
+RUN set -x && \
+    addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
     echo "videolan:videolan" | chpasswd && \
     mkdir -p /usr/share/man/man1 && \
