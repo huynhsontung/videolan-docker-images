@@ -2,7 +2,7 @@ FROM debian:stretch-20190204
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=2019020131307
+ENV IMAGE_DATE=201905061537
 
 ENV ANDROID_NDK="/sdk/android-ndk" \
     ANDROID_SDK="/sdk/android-sdk-linux"
@@ -17,6 +17,8 @@ ARG VIDEOLAN_CI_UID=499
 RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
     adduser --quiet --uid ${VIDEOLAN_CI_UID} --ingroup videolan videolan && \
     echo "videolan:videolan" | chpasswd && \
+    git config --global user.name "VLC Android" && \
+    git config --global user.email root@localhost && \
     apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
     openjdk-8-jdk-headless ca-certificates autoconf m4 automake ant autopoint bison \
