@@ -28,8 +28,6 @@ RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
     rm -f /etc/apt/sources.list.d/stretch-backports.list && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
-    git config --global user.name "VLC Android" && \
-    git config --global user.email root@localhost && \
     echo "export ANDROID_NDK=${ANDROID_NDK}" >> /etc/profile.d/vlc_env.sh && \
     echo "export ANDROID_SDK=${ANDROID_SDK}" >> /etc/profile.d/vlc_env.sh && \
     mkdir sdk && cd sdk && \
@@ -54,3 +52,6 @@ RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
 
 ENV LANG en_US.UTF-8
 USER videolan
+
+RUN git config --global user.name "VLC Android" && \
+    git config --global user.email buildbot@videolan.org
