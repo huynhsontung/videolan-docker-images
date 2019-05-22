@@ -3,7 +3,7 @@ FROM registry.videolan.org/videolan-base-sid:20190408171718
 ENV IMAGE_DATE=201904081700
 
 RUN apt-get update -qq && apt-get install -qqy --no-install-suggests --no-install-recommends \
-    git wget bzip2 file unzip libtool pkg-config cmake build-essential \
+    git wget bzip2 file unzip libtool-bin pkg-config cmake build-essential \
     automake yasm gettext autopoint vim python git-svn ninja-build libwine-dev \
     wine flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm \
     python3 locales meson && \
