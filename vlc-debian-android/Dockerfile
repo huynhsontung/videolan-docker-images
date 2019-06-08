@@ -26,6 +26,9 @@ RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
     echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backports.list && \
     apt-get update && apt-get -y -t stretch-backports install cmake && \
     rm -f /etc/apt/sources.list.d/stretch-backports.list && \
+    echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list.d/testing.list && \
+    apt-get update && apt-get -y -t testing --no-install-suggests --no-install-recommends install automake && \
+    rm -f /etc/apt/sources.list.d/testing.list && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
     echo "export ANDROID_NDK=${ANDROID_NDK}" >> /etc/profile.d/vlc_env.sh && \
