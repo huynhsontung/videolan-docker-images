@@ -2,6 +2,11 @@ FROM registry.videolan.org:5000/vlc-debian-llvm-mingw:20190522123109
 
 ENV IMAGE_DATE=201906211411
 
+USER root
+RUN mkdir -p /build && chown videolan /build && \
+    mkdir -p /prefix && chown videolan /prefix
+USER videolan
+
 RUN TARGET_TRIPLE=x86_64-w64-mingw32 \
     SQLITE_VERSION=sqlite-autoconf-3260000 \
     SQLITE_SHA256=5daa6a3fb7d1e8c767cd59c4ded8da6e4b00c61d3b466d0685e35c4dd6d7bf5d \
