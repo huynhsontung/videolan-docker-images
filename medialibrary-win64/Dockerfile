@@ -3,7 +3,8 @@ FROM registry.videolan.org:5000/vlc-debian-llvm-mingw:20190621125349
 ENV IMAGE_DATE=201906211545
 
 USER root
-RUN mkdir -p /prefix && chown videolan /prefix
+RUN mkdir /buildml && chown videolan /buildml && \
+    mkdir -p /prefix && chown videolan /prefix
 USER videolan
 
 RUN TARGET_TRIPLE=x86_64-w64-mingw32 \
