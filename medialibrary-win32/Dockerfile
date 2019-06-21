@@ -18,6 +18,7 @@ RUN TARGET_TRIPLE=i686-w64-mingw32 \
     git clone --depth=1 https://git.videolan.org/git/vlc.git && \
     cd vlc && \
     cd extras/tools && ./bootstrap && make -j`nproc` && \
+    make -j`nproc` .buildlibtool && \
     export PATH=`pwd`/build/bin:$PATH && cd ../../ && \
     cd contrib && mkdir win32 && cd win32 && \
     ../bootstrap --host=$TARGET_TRIPLE --disable-qt --disable-skins2 \
