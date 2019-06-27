@@ -2,7 +2,7 @@ FROM ubuntu:bionic-20190307
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=201904161025
+ENV IMAGE_DATE=201906271059
 ENV LANG=en_US.UTF-8
 ENV PATH=$PATH:/usr/sbin
 
@@ -44,7 +44,7 @@ RUN set -x && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     locale-gen en_US.UTF-8 && \
     /usr/sbin/update-locale LANG=en_US.UTF-8 && \
-    echo "export PATH=\$PATH:/usr/sbin" >> /etc/profile.d/vlc_env.sh
-
+    echo "export PATH=\$PATH:/usr/sbin" >> /etc/profile.d/vlc_env.sh && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3 10
 
 USER videolan
