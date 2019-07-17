@@ -2,7 +2,7 @@ FROM debian:stretch-20190506
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=201906072236
+ENV IMAGE_DATE=201907171600
 
 ENV ANDROID_NDK="/sdk/android-ndk" \
     ANDROID_SDK="/sdk/android-sdk-linux"
@@ -22,7 +22,7 @@ RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
     openjdk-8-jdk-headless ca-certificates autoconf m4 automake ant autopoint bison \
     flex build-essential libtool libtool-bin patch pkg-config ragel subversion \
     git rpm2cpio libwebkitgtk-1.0-0 yasm ragel g++ protobuf-compiler gettext \
-    libgsm1-dev wget expect unzip python python3 locales libltdl-dev && \
+    libgsm1-dev wget expect unzip python python3 locales libltdl-dev curl && \
     echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backports.list && \
     apt-get update && apt-get -y -t stretch-backports install cmake && \
     rm -f /etc/apt/sources.list.d/stretch-backports.list && \
