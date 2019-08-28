@@ -1,4 +1,4 @@
-FROM registry.videolan.org:5000/vlc-debian-llvm-mingw:20190621125349
+FROM registry.videolan.org/vlc-debian-llvm-mingw:20190621125349
 
 ENV IMAGE_DATE=201908281749
 
