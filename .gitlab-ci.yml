@@ -20,11 +20,11 @@
   done
 
 variables:
-  DOCKER_HOST: tcp://docker:2375/
   DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
 
 services:
-  - docker:19.03.0-dind
+  - docker:19.03.1-dind
 
 before_script:
   - docker info
@@ -33,6 +33,6 @@ before_script:
 build:
   stage: build
   image:
-    name: docker:stable
+    name: docker:19.03.1
   script:
     - *build-images
