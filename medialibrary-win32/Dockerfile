@@ -1,6 +1,6 @@
 FROM registry.videolan.org/vlc-debian-llvm-mingw:20190621125349
 
-ENV IMAGE_DATE=201908291920
+ENV IMAGE_DATE=201909191450
 
 USER root
 RUN mkdir -p /build/ml && chown videolan /build && chown videolan /build/ml && \
