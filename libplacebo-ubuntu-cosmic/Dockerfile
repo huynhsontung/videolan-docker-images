@@ -1,6 +1,6 @@
-FROM ubuntu:cosmic-20181114
+FROM ubuntu:cosmic-20190719
 
-ENV IMAGE_DATE=201904021030
+ENV IMAGE_DATE=201909221840
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -9,9 +9,9 @@ ENV IMAGE_DATE=201904021030
 # - RPM based: <500 (CentOS, RedHat, etc.)
 ARG VIDEOLAN_UID=499
 
-ENV SHADERC_BRANCH=v2018.0 \
-    GLSLANG_BRANCH=7.10.2984 \
-    SPIRV_TOOLS_BRANCH=v2018.6 \
+ENV SHADERC_BRANCH=v2019.0 \
+    GLSLANG_BRANCH=7.12.3352 \
+    SPIRV_TOOLS_BRANCH=v2019.2 \
     SPIRV_HEADERS_BRANCH=master
 
 RUN set -x && \
