@@ -1,6 +1,6 @@
-FROM registry.videolan.org/vlc-debian-llvm-mingw:20190621125349
+FROM registry.videolan.org/vlc-debian-llvm-mingw:20191022131035
 
-ENV IMAGE_DATE=201909231326
+ENV IMAGE_DATE=201910221554
 
 USER root
 RUN mkdir -p /build/ml && chown videolan /build && chown videolan /build/ml && \
@@ -24,7 +24,7 @@ RUN TARGET_TRIPLE=i686-w64-mingw32 \
     ../bootstrap --host=$TARGET_TRIPLE --disable-qt --disable-skins2 \
         --disable-lua --disable-protobuf --disable-gettext \
         --disable-qtdeclarative --disable-qtgraphicaleffects --disable-qtquickcontrols \
-        --disable-qtquickcontrols2 --disable-qtsvg && \
+        --disable-qtquickcontrols2 --disable-qtsvg --disable-libplacebo && \
         make -j`nproc` && \
     cd /build/ml/vlc && ./bootstrap && mkdir build && cd build && \
     ../configure --host=$TARGET_TRIPLE \
