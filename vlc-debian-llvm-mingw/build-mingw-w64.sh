@@ -2,22 +2,35 @@
 
 set -e
 
+DEFAULT_WIN32_WINNT=0x600
+DEFAULT_MSVCRT=ucrt
+
 while [ $# -gt 0 ]; do
-    if [ "$1" = "--skip-include-triplet-prefix" ]; then
+    case "$1" in
+    --skip-include-triplet-prefix)
         SKIP_INCLUDE_TRIPLET_PREFIX=1
-    else
+        ;;
+    --with-default-win32-winnt=*)
+        DEFAULT_WIN32_WINNT="${1#*=}"
+        ;;
+    --with-default-msvcrt=*)
+        DEFAULT_MSVCRT="${1#*=}"
+        ;;
+    *)
         PREFIX="$1"
-    fi
+        ;;
+    esac
     shift
 done
 if [ -z "$PREFIX" ]; then
-    echo $0 [--skip-include-triplet-prefix] dest
+    echo $0 [--skip-include-triplet-prefix] [--with-default-win32-winnt=0x600] [--with-default-msvcrt=ucrt] dest
     exit 1
 fi
 
 mkdir -p "$PREFIX"
 PREFIX="$(cd "$PREFIX" && pwd)"
 
+ORIGPATH="$PATH"
 if [ -z "$HOST" ]; then
     # The newly built toolchain isn't crosscompiled; add it to the path.
     export PATH=$PREFIX/bin:$PATH
@@ -41,7 +54,7 @@ cd mingw-w64
 
 if [ -n "$SYNC" ] || [ -n "$CHECKOUT" ]; then
     [ -z "$SYNC" ] || git fetch
-    git checkout dc348cb1b4673ff897507ea29c27adb1c750e4a7
+    git checkout 0a1d495478d8ed1a94fc77b9dbb428b7e0372588
 fi
 
 # If crosscompiling the toolchain itself, we already have a mingw-w64
@@ -57,13 +70,15 @@ if [ -z "$HOST" ]; then
     mkdir -p build
     cd build
     ../configure --prefix=$HEADER_ROOT \
-        --enable-secure-api --enable-idl --with-default-win32-winnt=0x600 --with-default-msvcrt=ucrt INSTALL="install -C"
+        --enable-idl --with-default-win32-winnt=$DEFAULT_WIN32_WINNT --with-default-msvcrt=$DEFAULT_MSVCRT INSTALL="install -C"
     make install
     cd ../..
     if [ -z "$SKIP_INCLUDE_TRIPLET_PREFIX" ]; then
         for arch in $ARCHS; do
             mkdir -p $PREFIX/$arch-w64-mingw32
-            ln -sfn ../generic-w64-mingw32/include $PREFIX/$arch-w64-mingw32/include
+            if [ ! -e $PREFIX/$arch-w64-mingw32/include ]; then
+                ln -sfn ../generic-w64-mingw32/include $PREFIX/$arch-w64-mingw32/include
+            fi
         done
     fi
 
@@ -85,9 +100,8 @@ if [ -z "$HOST" ]; then
             FLAGS="--disable-lib32 --enable-lib64"
             ;;
         esac
-        FLAGS="$FLAGS --with-default-msvcrt=ucrt"
-        ../configure --host=$arch-w64-mingw32 --prefix=$PREFIX/$arch-w64-mingw32 $FLAGS \
-            CC=$arch-w64-mingw32-clang AR=llvm-ar RANLIB=llvm-ranlib DLLTOOL=llvm-dlltool
+        FLAGS="$FLAGS --with-default-msvcrt=$DEFAULT_MSVCRT"
+        ../configure --host=$arch-w64-mingw32 --prefix=$PREFIX/$arch-w64-mingw32 $FLAGS
         make -j$CORES
         make install
         cd ..
@@ -116,6 +130,10 @@ if [ -n "$SKIP_INCLUDE_TRIPLET_PREFIX" ]; then
     ARCHS=x86_64
 fi
 
+# If building on windows, we've installed prefixless wrappers - these break
+# building widl, as the toolchain isn't functional yet. Restore the original
+# path.
+export PATH=$ORIGPATH
 cd mingw-w64-tools/widl
 for arch in $ARCHS; do
     mkdir -p build-$CROSS_NAME$arch
@@ -125,11 +143,17 @@ for arch in $ARCHS; do
     make install
     cd ..
 done
+cd $PREFIX/bin
 if [ -n "$SKIP_INCLUDE_TRIPLET_PREFIX" ]; then
-    cd $PREFIX/bin
     for arch in $ALL_ARCHS; do
         if [ "$arch" != "$ARCHS" ]; then
             ln -sf $ARCHS-w64-mingw32-widl$EXEEXT $arch-w64-mingw32-widl$EXEEXT
         fi
     done
+fi
+if [ -n "$EXEEXT" ]; then
+    if [ -z "$HOST" ]; then
+        HOST=$(./clang -dumpmachine | sed 's/-.*//')-w64-mingw32
+    fi
+    ln -sf $HOST-widl$EXEEXT widl$EXEEXT
 fi

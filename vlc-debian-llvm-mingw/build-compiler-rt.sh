@@ -31,22 +31,18 @@ export PATH=$PREFIX/bin:$PATH
 
 CLANG_VERSION=$(basename $(dirname $(dirname $(dirname $($PREFIX/bin/clang --print-libgcc-file-name -rtlib=compiler-rt)))))
 
-if [ ! -d compiler-rt ]; then
-    git clone -b master https://github.com/llvm-mirror/compiler-rt.git
-    CHECKOUT=1
+if [ ! -d llvm-project/compiler-rt ] || [ -n "$SYNC" ]; then
+    CHECKOUT_ONLY=1 ./build-llvm.sh
 fi
 
 # Add a symlink for i386 -> i686; we normally name the toolchain
 # i686-w64-mingw32, but due to the compiler-rt cmake peculiarities, we
 # need to refer to it as i386 at this stage.
-ln -sfn i686-w64-mingw32 $PREFIX/i386-w64-mingw32 || true
-
-cd compiler-rt
-
-if [ -n "$SYNC" ] || [ -n "$CHECKOUT" ]; then
-    [ -z "$SYNC" ] || git fetch
-    git checkout 8b2ba6185b1df7b9ebaae91cc831c9be16eeefa0
+if [ ! -e $PREFIX/i386-w64-mingw32 ]; then
+    ln -sfn i686-w64-mingw32 $PREFIX/i386-w64-mingw32 || true
 fi
+
+cd llvm-project/compiler-rt
 
 for arch in $ARCHS; do
     buildarchname=$arch
@@ -84,6 +80,7 @@ for arch in $ARCHS; do
     cmake \
         ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
         -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=$PREFIX/$arch-w64-mingw32 \
         -DCMAKE_C_COMPILER=$arch-w64-mingw32-clang \
         -DCMAKE_CXX_COMPILER=$arch-w64-mingw32-clang++ \
         -DCMAKE_SYSTEM_NAME=Windows \
@@ -106,5 +103,8 @@ for arch in $ARCHS; do
             cp $i $PREFIX/$arch-w64-mingw32/bin
         fi
     done
+    if [ -n "$SANITIZERS" ]; then
+        make install-compiler-rt-headers
+    fi
     cd ..
 done

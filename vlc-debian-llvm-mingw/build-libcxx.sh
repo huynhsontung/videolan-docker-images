@@ -34,36 +34,11 @@ export PATH=$PREFIX/bin:$PATH
 : ${CORES:=4}
 : ${ARCHS:=${TOOLCHAIN_ARCHS-i686 x86_64 armv7 aarch64}}
 
-if [ ! -d libunwind ]; then
-    git clone -b master https://github.com/llvm-mirror/libunwind.git
-    CHECKOUT_LIBUNWIND=1
+if [ ! -d llvm-project/libunwind ] || [ -n "$SYNC" ]; then
+    CHECKOUT_ONLY=1 ./build-llvm.sh
 fi
-if [ ! -d libcxxabi ]; then
-    git clone -b master https://github.com/llvm-mirror/libcxxabi.git
-    CHECKOUT_LIBCXXABI=1
-fi
-if [ ! -d libcxx ]; then
-    git clone -b master https://github.com/llvm-mirror/libcxx.git
-    CHECKOUT_LIBCXX=1
-fi
-if [ -n "$SYNC" ] || [ -n "$CHECKOUT_LIBUNWIND" ]; then
-    cd libunwind
-    [ -z "$SYNC" ] || git fetch
-    git checkout 90c7a8cc28b3f0718e0726eeec32cc4ebb454c7e
-    cd ..
-fi
-if [ -n "$SYNC" ] || [ -n "$CHECKOUT_LIBCXXABI" ]; then
-    cd libcxxabi
-    [ -z "$SYNC" ] || git fetch
-    git checkout 5f7425947f303be5ca9b1a6471471d92d209f498
-    cd ..
-fi
-if [ -n "$SYNC" ] || [ -n "$CHECKOUT_LIBCXX" ]; then
-    cd libcxx
-    [ -z "$SYNC" ] || git fetch
-    git checkout 8220dac54c22c42a5ec2a32a0ed50343a2ea4775
-    cd ..
-fi
+
+cd llvm-project
 
 LIBCXX=$(pwd)/libcxx
 
@@ -89,9 +64,10 @@ build_all() {
     for arch in $ARCHS; do
         mkdir -p build-$arch-$type
         cd build-$arch-$type
-        # If llvm-config and the llvm cmake files are available, -w gets added
-        # to the compiler flags; manually add it here to avoid noisy warnings
-        # that normally are suppressed.
+        # CXX_SUPPORTS_CXX11 is not strictly necessary here. But if building
+        # with a stripped llvm install, and the system happens to have an older
+        # llvm-config in /usr/bin, it can end up including older cmake files,
+        # and then CXX_SUPPORTS_CXX11 needs to be set.
         cmake \
             ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
             -DCMAKE_BUILD_TYPE=Release \
@@ -102,18 +78,18 @@ build_all() {
             -DCMAKE_SYSTEM_NAME=Windows \
             -DCMAKE_C_COMPILER_WORKS=TRUE \
             -DCMAKE_CXX_COMPILER_WORKS=TRUE \
+            -DLLVM_COMPILER_CHECKED=TRUE \
             -DCMAKE_AR=$PREFIX/bin/llvm-ar \
             -DCMAKE_RANLIB=$PREFIX/bin/llvm-ranlib \
-            -DLLVM_NO_OLD_LIBSTDCXX=TRUE \
             -DCXX_SUPPORTS_CXX11=TRUE \
+            -DCXX_SUPPORTS_CXX_STD=TRUE \
             -DLIBUNWIND_USE_COMPILER_RT=TRUE \
             -DLIBUNWIND_ENABLE_THREADS=TRUE \
             -DLIBUNWIND_ENABLE_SHARED=$SHARED \
             -DLIBUNWIND_ENABLE_STATIC=$STATIC \
             -DLIBUNWIND_ENABLE_CROSS_UNWINDING=FALSE \
-            -DLIBUNWIND_STANDALONE_BUILD=TRUE \
-            -DCMAKE_CXX_FLAGS="-nostdinc++ -I$LIBCXX/include -w" \
-            -DCMAKE_C_FLAGS="-w" \
+            -DCMAKE_CXX_FLAGS="-Wno-dll-attribute-on-redeclaration" \
+            -DCMAKE_C_FLAGS="-Wno-dll-attribute-on-redeclaration" \
             -DCMAKE_SHARED_LINKER_FLAGS="-lpsapi" \
             ..
         make -j$CORES
@@ -136,11 +112,8 @@ build_all() {
     for arch in $ARCHS; do
         mkdir -p build-$arch-$type
         cd build-$arch-$type
-        # If llvm-config and the llvm cmake files are available, -w gets added
-        # to the compiler flags; manually add it here to avoid noisy warnings
-        # that normally are suppressed.
         if [ "$type" = "shared" ]; then
-            LIBCXXABI_VISIBILITY_FLAGS="-D_LIBCPP_BUILDING_LIBRARY -U_LIBCXXABI_DISABLE_VISIBILITY_ANNOTATIONS"
+            LIBCXXABI_VISIBILITY_FLAGS="-D_LIBCPP_BUILDING_LIBRARY= -U_LIBCXXABI_DISABLE_VISIBILITY_ANNOTATIONS"
         else
             LIBCXXABI_VISIBILITY_FLAGS="-D_LIBCPP_DISABLE_VISIBILITY_ANNOTATIONS"
         fi
@@ -154,6 +127,7 @@ build_all() {
             -DCMAKE_SYSTEM_NAME=Windows \
             -DCMAKE_C_COMPILER_WORKS=TRUE \
             -DCMAKE_CXX_COMPILER_WORKS=TRUE \
+            -DLLVM_COMPILER_CHECKED=TRUE \
             -DCMAKE_AR=$PREFIX/bin/llvm-ar \
             -DCMAKE_RANLIB=$PREFIX/bin/llvm-ranlib \
             -DLIBCXXABI_USE_COMPILER_RT=ON \
@@ -164,9 +138,8 @@ build_all() {
             -DLIBCXXABI_LIBCXX_INCLUDES=../../libcxx/include \
             -DLIBCXXABI_LIBDIR_SUFFIX="" \
             -DLIBCXXABI_ENABLE_NEW_DELETE_DEFINITIONS=OFF \
-            -DLLVM_NO_OLD_LIBSTDCXX=TRUE \
-            -DCXX_SUPPORTS_CXX11=TRUE \
-            -DCMAKE_CXX_FLAGS="$LIBCXXABI_VISIBILITY_FLAGS -D_LIBCPP_HAS_THREAD_API_WIN32 -w" \
+            -DCXX_SUPPORTS_CXX_STD=TRUE \
+            -DCMAKE_CXX_FLAGS="$LIBCXXABI_VISIBILITY_FLAGS -D_LIBCPP_HAS_THREAD_API_WIN32" \
             ..
         make -j$CORES
         cd ..
@@ -192,6 +165,7 @@ build_all() {
             -DCMAKE_SYSTEM_NAME=Windows \
             -DCMAKE_C_COMPILER_WORKS=TRUE \
             -DCMAKE_CXX_COMPILER_WORKS=TRUE \
+            -DLLVM_COMPILER_CHECKED=TRUE \
             -DCMAKE_AR=$PREFIX/bin/llvm-ar \
             -DCMAKE_RANLIB=$PREFIX/bin/llvm-ranlib \
             -DLIBCXX_USE_COMPILER_RT=ON \
@@ -213,7 +187,7 @@ build_all() {
             -DLIBCXX_LIBDIR_SUFFIX="" \
             -DLIBCXX_INCLUDE_TESTS=FALSE \
             -DCMAKE_CXX_FLAGS="$LIBCXX_VISIBILITY_FLAGS" \
-            -DCMAKE_SHARED_LINKER_FLAGS="-lunwind -Wl,--export-all-symbols" \
+            -DCMAKE_SHARED_LINKER_FLAGS="-lunwind" \
             -DLIBCXX_ENABLE_ABI_LINKER_SCRIPT=FALSE \
             ..
         make -j$CORES

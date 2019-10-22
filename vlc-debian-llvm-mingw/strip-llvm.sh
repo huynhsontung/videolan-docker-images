@@ -9,6 +9,10 @@ fi
 PREFIX="$1"
 cd "$PREFIX"
 
+if [ -n "$FULL_LLVM" ]; then
+    exit 0
+fi
+
 case $(uname) in
 MINGW*)
     EXEEXT=.exe
@@ -18,7 +22,7 @@ MINGW*)
 esac
 
 cd bin
-for i in bugpoint c-index-test clang-* diagtool dsymutil git-clang-format hmaptool ld64.lld llc lli llvm-* obj2yaml opt sancov sanstats scan-build scan-view verify-uselistorder wasm-ld yaml2obj libclang.dll LTO.dll OptRemarks.dll *.bat; do
+for i in bugpoint c-index-test clang-* diagtool dsymutil git-clang-format hmaptool ld64.lld llc lli llvm-* obj2yaml opt sancov sanstats scan-build scan-view verify-uselistorder wasm-ld yaml2obj libclang.dll LTO.dll *Remarks.dll *.bat; do
     basename=$i
     if [ -n "$EXEEXT" ]; then
         # Some in the list are expanded globs, some are plain names we list.
@@ -47,7 +51,7 @@ for i in bugpoint c-index-test clang-* diagtool dsymutil git-clang-format hmapto
             rm -f $i
         fi
         ;;
-    llvm-ar|llvm-cvtres|llvm-dlltool|llvm-nm|llvm-objdump|llvm-ranlib|llvm-rc|llvm-readobj|llvm-strings|llvm-pdbutil)
+    llvm-ar|llvm-cvtres|llvm-dlltool|llvm-nm|llvm-objdump|llvm-ranlib|llvm-rc|llvm-readobj|llvm-strings|llvm-pdbutil|llvm-objcopy|llvm-strip|llvm-cov|llvm-profdata|llvm-addr2line|llvm-wrapper)
         ;;
     ld64.lld|wasm-ld)
         if [ -e $i ]; then
@@ -65,18 +69,18 @@ for i in bugpoint c-index-test clang-* diagtool dsymutil git-clang-format hmapto
     esac
 done
 if [ -n "$EXEEXT" ]; then
-    # Convert these two from symlinks to regular files, so we can remove
-    # the one they point to. On MSYS, and if packaging built toolchains
+    # Convert ld.lld from a symlink to a regular file, so we can remove
+    # the one it points to. On MSYS, and if packaging built toolchains
     # in a zip file, symlinks are converted into copies.
-    # lld-link isn't used normally, but can be useful for debugging/testing.
-    for i in ld.lld lld-link; do
-        if [ -L $i$EXEEXT ]; then
-            cp $i$EXEEXT tmp
-            rm $i$EXEEXT
-            mv tmp $i$EXEEXT
-        fi
-    done
-    rm -f lld$EXEEXT
+    if [ -L ld.lld$EXEEXT ]; then
+        cp ld.lld$EXEEXT tmp
+        rm ld.lld$EXEEXT
+        mv tmp ld.lld$EXEEXT
+    fi
+    # lld-link isn't used normally, but can be useful for debugging/testing,
+    # and is kept in unix setups. Removing it when packaging for windows,
+    # to conserve space.
+    rm -f lld$EXEEXT lld-link$EXEEXT
     # Remove superfluous frontends; these aren't really used.
     rm -f clang-cpp* clang++*
 fi

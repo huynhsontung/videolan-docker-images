@@ -8,6 +8,7 @@ if [ "$TARGET" = "$BASENAME" ]; then
     TARGET=$DEFAULT_TARGET
 fi
 ARCH="${TARGET%%-*}"
+TARGET_OS="${TARGET##*-}"
 
 # Check if trying to compile Ada; if we try to do this, invoking clang
 # would end up invoking <triplet>-gcc with the same arguments, which ends
@@ -36,25 +37,30 @@ clang++|g++|c++)
 esac
 case $ARCH in
 i686)
-    # Dwarf is the default for i686, but libunwind sometimes fails to
-    # to unwind correctly on i686. The issue can be reproduced with
-    # test/exception-locale.cpp. The issue might be related to
-    # DW_CFA_GNU_args_size, since it goes away if building
-    # libunwind/libcxxabi/libcxx and the test example with
-    # -mstack-alignment=16 -mstackrealign. (libunwind SVN r337312 fixed
-    # some handling relating to this dwarf opcode, which made
-    # test/hello-exception.cpp work properly, but apparently there are
-    # still issues with it).
-    FLAGS="$FLAGS -fsjlj-exceptions"
+    # Dwarf is the default for i686.
     ;;
 x86_64)
-    # SEH is the default here.
+    # SEH is the default for x86_64.
     ;;
 armv7)
-    # Dwarf is the default here.
+    # Dwarf is the default for armv7.
     ;;
 aarch64)
-    # Dwarf is the default here.
+    # SEH is the default for aarch64.
+    ;;
+esac
+case $TARGET_OS in
+mingw32uwp)
+    # the UWP target is for Windows 10
+    FLAGS="$FLAGS -D_WIN32_WINNT=0x0A00 -DWINVER=0x0A00"
+    # the UWP target can only use Windows Store APIs
+    FLAGS="$FLAGS -DWINAPI_FAMILY=WINAPI_FAMILY_APP"
+    # the Windows Store API only supports Windows Unicode (some rare ANSI ones are available)
+    FLAGS="$FLAGS -DUNICODE"
+    # add the minimum runtime to use for UWP targets
+    FLAGS="$FLAGS -Wl,-lmincore"
+    # This requires that the default crt is ucrt.
+    FLAGS="$FLAGS -Wl,-lvcruntime140_app"
     ;;
 esac
 
