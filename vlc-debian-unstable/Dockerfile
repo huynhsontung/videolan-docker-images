@@ -2,7 +2,7 @@ FROM debian:sid-20190326-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=201904162000
+ENV IMAGE_DATE=201910231340
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -30,7 +30,7 @@ RUN set -x && \
     qtdeclarative5-dev qtquickcontrols2-5-dev qml-module-qtquick-controls2 \
     qml-module-qtquick-layouts qml-module-qtquick-templates2 \
     qml-module-qtgraphicaleffects flex bison libxkbcommon-x11-dev libplacebo-dev \
-    meson && \
+    meson doxygen graphviz && \
     apt-get build-dep -y vlc && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
