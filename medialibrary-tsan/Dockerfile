@@ -1,6 +1,6 @@
 FROM registry.videolan.org/vlc-debian-unstable:20190416182140
 
-ENV IMAGE_DATE=201910181111
+ENV IMAGE_DATE=201910281207
 
 USER root
 
