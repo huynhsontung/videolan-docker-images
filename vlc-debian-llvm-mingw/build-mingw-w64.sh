@@ -2,8 +2,9 @@
 
 set -e
 
-DEFAULT_WIN32_WINNT=0x600
+DEFAULT_WIN32_WINNT=0x601
 DEFAULT_MSVCRT=ucrt
+unset HOST
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -16,6 +17,9 @@ while [ $# -gt 0 ]; do
     --with-default-msvcrt=*)
         DEFAULT_MSVCRT="${1#*=}"
         ;;
+    --host=*)
+        HOST="${1#*=}"
+        ;;
     *)
         PREFIX="$1"
         ;;
@@ -23,7 +27,7 @@ while [ $# -gt 0 ]; do
     shift
 done
 if [ -z "$PREFIX" ]; then
-    echo $0 [--skip-include-triplet-prefix] [--with-default-win32-winnt=0x600] [--with-default-msvcrt=ucrt] dest
+    echo $0 [--skip-include-triplet-prefix] [--with-default-win32-winnt=0x601] [--with-default-msvcrt=ucrt] dest
     exit 1
 fi
 
@@ -33,7 +37,7 @@ PREFIX="$(cd "$PREFIX" && pwd)"
 ORIGPATH="$PATH"
 if [ -z "$HOST" ]; then
     # The newly built toolchain isn't crosscompiled; add it to the path.
-    export PATH=$PREFIX/bin:$PATH
+    export PATH="$PREFIX/bin:$PATH"
 else
     # Crosscompiling the toolchain itself; the cross compiler is
     # expected to already be in $PATH.
@@ -133,7 +137,7 @@ fi
 # If building on windows, we've installed prefixless wrappers - these break
 # building widl, as the toolchain isn't functional yet. Restore the original
 # path.
-export PATH=$ORIGPATH
+export PATH="$ORIGPATH"
 cd mingw-w64-tools/widl
 for arch in $ARCHS; do
     mkdir -p build-$CROSS_NAME$arch

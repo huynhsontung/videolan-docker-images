@@ -2,15 +2,31 @@
 
 set -e
 
-if [ $# -lt 1 ]; then
+unset HOST
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+    --host=*)
+        HOST="${1#*=}"
+        ;;
+    *)
+        PREFIX="$1"
+        ;;
+    esac
+    shift
+done
+if [ -z "$PREFIX" ]; then
     echo $0 dir
     exit 1
 fi
-PREFIX="$1"
 cd "$PREFIX"
 
 if [ -n "$FULL_LLVM" ]; then
     exit 0
+fi
+
+if [ -n "$HOST" ]; then
+    EXEEXT=.exe
 fi
 
 case $(uname) in
@@ -51,7 +67,7 @@ for i in bugpoint c-index-test clang-* diagtool dsymutil git-clang-format hmapto
             rm -f $i
         fi
         ;;
-    llvm-ar|llvm-cvtres|llvm-dlltool|llvm-nm|llvm-objdump|llvm-ranlib|llvm-rc|llvm-readobj|llvm-strings|llvm-pdbutil|llvm-objcopy|llvm-strip|llvm-cov|llvm-profdata|llvm-addr2line|llvm-wrapper)
+    llvm-ar|llvm-cvtres|llvm-dlltool|llvm-nm|llvm-objdump|llvm-ranlib|llvm-rc|llvm-readobj|llvm-strings|llvm-pdbutil|llvm-objcopy|llvm-strip|llvm-cov|llvm-profdata|llvm-addr2line|llvm-symbolizer|llvm-wrapper)
         ;;
     ld64.lld|wasm-ld)
         if [ -e $i ]; then

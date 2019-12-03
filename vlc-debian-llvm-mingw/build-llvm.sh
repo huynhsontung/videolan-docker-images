@@ -4,28 +4,39 @@ set -e
 
 ASSERTS=OFF
 BUILDDIR=build
+unset HOST
 
 while [ $# -gt 0 ]; do
-    if [ "$1" = "--disable-asserts" ]; then
+    case "$1" in
+    --disable-asserts)
         ASSERTS=OFF
         BUILDDIR=build
-    elif [ "$1" = "--enable-asserts" ]; then
+        ;;
+    --enable-asserts)
         ASSERTS=ON
         BUILDDIR=build-asserts
-    elif [ "$1" = "--full-llvm" ]; then
+        ;;
+    --full-llvm)
         FULL_LLVM=1
-    else
+        ;;
+    --host=*)
+        HOST="${1#*=}"
+        ;;
+    *)
         PREFIX="$1"
-    fi
+        ;;
+    esac
     shift
 done
-if [ -z "$PREFIX" ]; then
-    echo $0 [--enable-asserts] [--full-llvm] dest
-    exit 1
-fi
+if [ -z "$CHECKOUT_ONLY" ]; then
+    if [ -z "$PREFIX" ]; then
+        echo $0 [--enable-asserts] [--full-llvm] dest
+        exit 1
+    fi
 
-mkdir -p "$PREFIX"
-PREFIX="$(cd "$PREFIX" && pwd)"
+    mkdir -p "$PREFIX"
+    PREFIX="$(cd "$PREFIX" && pwd)"
+fi
 
 : ${CORES:=$(nproc 2>/dev/null)}
 : ${CORES:=$(sysctl -n hw.ncpu 2>/dev/null)}
@@ -140,7 +151,7 @@ cmake \
     ${EXPLICIT_PROJECTS+-DLLVM_ENABLE_PROJECTS="clang;lld"} \
     -DLLVM_TARGETS_TO_BUILD="ARM;AArch64;X86" \
     -DLLVM_INSTALL_TOOLCHAIN_ONLY=$TOOLCHAIN_ONLY \
-    -DLLVM_TOOLCHAIN_TOOLS="llvm-ar;llvm-ranlib;llvm-objdump;llvm-rc;llvm-cvtres;llvm-nm;llvm-strings;llvm-readobj;llvm-dlltool;llvm-pdbutil;llvm-objcopy;llvm-strip;llvm-cov;llvm-profdata;llvm-addr2line" \
+    -DLLVM_TOOLCHAIN_TOOLS="llvm-ar;llvm-ranlib;llvm-objdump;llvm-rc;llvm-cvtres;llvm-nm;llvm-strings;llvm-readobj;llvm-dlltool;llvm-pdbutil;llvm-objcopy;llvm-strip;llvm-cov;llvm-profdata;llvm-addr2line;llvm-symbolizer" \
     ${HOST+-DLLVM_HOST_TRIPLE=$HOST} \
     $CMAKEFLAGS \
     ..

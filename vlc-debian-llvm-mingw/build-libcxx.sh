@@ -27,7 +27,7 @@ fi
 mkdir -p "$PREFIX"
 PREFIX="$(cd "$PREFIX" && pwd)"
 
-export PATH=$PREFIX/bin:$PATH
+export PATH="$PREFIX/bin:$PATH"
 
 : ${CORES:=$(nproc 2>/dev/null)}
 : ${CORES:=$(sysctl -n hw.ncpu 2>/dev/null)}
@@ -90,19 +90,12 @@ build_all() {
             -DLIBUNWIND_ENABLE_CROSS_UNWINDING=FALSE \
             -DCMAKE_CXX_FLAGS="-Wno-dll-attribute-on-redeclaration" \
             -DCMAKE_C_FLAGS="-Wno-dll-attribute-on-redeclaration" \
-            -DCMAKE_SHARED_LINKER_FLAGS="-lpsapi" \
             ..
         make -j$CORES
         make install
         if [ "$type" = "shared" ]; then
             mkdir -p $PREFIX/$arch-w64-mingw32/bin
             cp lib/libunwind.dll $PREFIX/$arch-w64-mingw32/bin
-        else
-            # Merge libpsapi.a into the static library libunwind.a, to
-            # avoid having to specify -lpsapi when linking to it.
-            llvm-ar qcsL \
-                $PREFIX/$arch-w64-mingw32/lib/libunwind.a \
-                $PREFIX/$arch-w64-mingw32/lib/libpsapi.a
         fi
         cd ..
     done
