@@ -24,6 +24,8 @@ ENV TOOLCHAIN_PREFIX=/opt/llvm-mingw
 
 ARG TOOLCHAIN_ARCHS="i686 x86_64 armv7 aarch64"
 
+ENV CORES=4
+
 # Build everything that uses the llvm monorepo. We need to build the mingw runtime before the compiler-rt/libunwind/libcxxabi/libcxx runtimes.
 COPY build-llvm.sh strip-llvm.sh install-wrappers.sh build-mingw-w64.sh build-compiler-rt.sh build-mingw-w64-libraries.sh build-libcxx.sh ./
 COPY wrappers/*.sh wrappers/*.c wrappers/*.h ./wrappers/
