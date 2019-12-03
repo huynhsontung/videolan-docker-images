@@ -1,6 +1,6 @@
-FROM registry.videolan.org/vlc-debian-llvm-mingw:20191022131035
+FROM registry.videolan.org/vlc-debian-llvm-mingw:20191203130943
 
-ENV IMAGE_DATE=201910281207
+ENV IMAGE_DATE=201912031633
 
 USER root
 RUN mkdir -p /build/ml && chown videolan /build && chown videolan /build/ml && \
@@ -18,7 +18,7 @@ RUN TARGET_TRIPLE=i686-w64-mingw32 \
     git clone --depth=1 https://git.videolan.org/git/vlc.git && \
     cd vlc && \
     cd extras/tools && ./bootstrap && make -j`nproc` && \
-    make -j`nproc` .buildlibtool && \
+    make -j`nproc` .buildlibtool .buildcmake && \
     export PATH=`pwd`/build/bin:$PATH && cd ../../ && \
     cd contrib && mkdir win32 && cd win32 && \
     ../bootstrap --host=$TARGET_TRIPLE --disable-qt --disable-skins2 \
