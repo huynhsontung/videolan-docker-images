@@ -1,11 +1,30 @@
 FROM registry.videolan.org/vlc-debian-unstable:20190416182140
 
-ENV IMAGE_DATE=201905311703
+ENV IMAGE_DATE=201912111339
 
 USER root
 
+COPY patches/ /patches/
+
 RUN apt-get update && apt-get install -yq --no-install-suggests --no-install-recommends \
-    rapidjson-dev libsqlite3-dev lcov vlc-plugin-base libvlc-dev && \
-    apt-get clean -y && rm -rf /var/lib/apt/lists/*
+    rapidjson-dev libsqlite3-dev lcov && \
+    apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
+    cd / && \
+    git clone https://git.videolan.org/git/vlc/vlc-3.0.git && \
+    cd vlc-3.0 && \
+    git config --global user.name 'VideoLAN CI' && \
+    git config --global user.email 'root@videolan.org' && \
+    git am /patches/*.patch && \
+    ./bootstrap && mkdir build && cd build && \
+    ../configure --disable-lua --disable-qt --disable-skins2 \
+        --disable-nls \
+        --prefix=/prefix && \
+    make -j4 && make install && \
+    git clone https://code.videolan.org/videolan/libvlcpp.git && \
+    cd libvlcpp && ./bootstrap && \
+    ./configure --prefix=/prefix/ && \
+    make -j4 && make install
+
+ENV PKG_CONFIG_PATH=/prefix/lib/pkgconfig 
 
 USER videolan
