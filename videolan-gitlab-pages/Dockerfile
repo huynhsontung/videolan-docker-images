@@ -18,7 +18,7 @@ RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     echo "deb http://ftp.fr.debian.org/debian/ buster main" > /etc/apt/sources.list && \
     echo "deb-src http://ftp.fr.debian.org/debian/ buster main" >> /etc/apt/sources.list && \
     apt-get update && \
-    apt-get install -y make jekyll ruby-jekyll-sass-converter sphinx && \
+    apt-get install -y make jekyll ruby-jekyll-sass-converter python3-sphinx && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 USER videolan
