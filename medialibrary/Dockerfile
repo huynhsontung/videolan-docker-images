@@ -4,8 +4,6 @@ ENV IMAGE_DATE=202002261615
 
 USER root
 
-COPY patches/ /patches/
-
 RUN apt-get update && apt-get install -yq --no-install-suggests --no-install-recommends \
     rapidjson-dev libsqlite3-dev lcov && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
