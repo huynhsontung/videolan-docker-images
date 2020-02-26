@@ -1,4 +1,4 @@
-FROM registry.videolan.org/vlc-debian-unstable:20190416182140
+FROM registry.videolan.org/vlc-debian-unstable:20191204094457
 
 ENV IMAGE_DATE=202002261615
 
