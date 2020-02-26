@@ -1,6 +1,6 @@
 FROM registry.videolan.org/vlc-debian-unstable:20190416182140
 
-ENV IMAGE_DATE=201912111339
+ENV IMAGE_DATE=202002261615
 
 USER root
 
@@ -14,7 +14,6 @@ RUN apt-get update && apt-get install -yq --no-install-suggests --no-install-rec
     cd vlc-3.0 && \
     git config --global user.name 'VideoLAN CI' && \
     git config --global user.email 'root@videolan.org' && \
-    git am /patches/*.patch && \
     ./bootstrap && mkdir build && cd build && \
     ../configure --disable-lua --disable-qt --disable-skins2 \
         --disable-nls \
