@@ -31,8 +31,8 @@ RUN set -x && \
     qml-module-qtquick-layouts qml-module-qtquick-templates2 \
     qml-module-qtgraphicaleffects flex bison libxkbcommon-x11-dev libplacebo-dev \
     meson doxygen graphviz libsqlite3-dev rapidjson-dev && \
-    apt-get build-dep -y vlc && \
-    apt-get remove libprotobuf-dev && \
+    apt-get build-dep --no-install-suggests --no-install-recommends -y vlc && \
+    apt-get remove -y libprotobuf-dev protobuf-compiler && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 USER videolan
