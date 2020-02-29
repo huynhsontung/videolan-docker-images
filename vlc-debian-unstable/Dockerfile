@@ -1,8 +1,8 @@
-FROM debian:sid-20191118-slim
+FROM debian:sid-20200224-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=20191
+ENV IMAGE_DATE=202002292010
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -23,7 +23,7 @@ RUN set -x && \
     openjdk-11-jdk lftp ca-certificates git-core libtool automake autoconf \
     autopoint make  ninja-build python3 gettext pkg-config subversion cmake \
     cvs zip bzip2 p7zip-full wget dos2unix ragel yasm g++ g++-7 \
-    protobuf-compiler m4 ant build-essential libtool-bin libavcodec-dev gdb \
+    m4 ant build-essential libtool-bin libavcodec-dev gdb \
     libavformat-dev libavresample-dev libavutil-dev libpostproc-dev \
     libswscale-dev wayland-protocols qtbase5-private-dev libarchive-dev \
     libmicrodns-dev libmpg123-dev libnfs-dev curl libltdl-dev libqt5svg5-dev \
@@ -32,6 +32,7 @@ RUN set -x && \
     qml-module-qtgraphicaleffects flex bison libxkbcommon-x11-dev libplacebo-dev \
     meson doxygen graphviz libsqlite3-dev rapidjson-dev && \
     apt-get build-dep -y vlc && \
+    apt-get remove libprotobuf-dev && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 USER videolan
