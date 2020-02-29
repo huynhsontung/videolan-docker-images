@@ -26,7 +26,7 @@ RUN set -x && \
     m4 ant build-essential libtool-bin libavcodec-dev gdb \
     libavformat-dev libavresample-dev libavutil-dev libpostproc-dev \
     libswscale-dev wayland-protocols qtbase5-private-dev libarchive-dev \
-    ibmpg123-dev libnfs-dev curl libltdl-dev libqt5svg5-dev \
+    libmpg123-dev libnfs-dev curl libltdl-dev libqt5svg5-dev \
     qtdeclarative5-dev qtquickcontrols2-5-dev qml-module-qtquick-controls2 \
     qml-module-qtquick-layouts qml-module-qtquick-templates2 \
     qml-module-qtgraphicaleffects flex bison libxkbcommon-x11-dev libplacebo-dev \
