@@ -18,7 +18,7 @@ RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     apt-get install --no-install-suggests --no-install-recommends -y \
         lftp ca-certificates curl git-core build-essential python3-pip \
         python3-setuptools python3-wheel nasm clang \
-        wine wine64 procps doxygen && \
+        wine wine64 procps doxygen graphviz && \
     pip3 install meson ninja && \
     dpkg --add-architecture i386 && \
     apt-get update && \
