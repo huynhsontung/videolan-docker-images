@@ -1,8 +1,8 @@
-FROM debian:stretch-20190506
+FROM debian:buster-20200224
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=201907171600
+ENV IMAGE_DATE=202003110812
 
 ENV ANDROID_NDK="/sdk/android-ndk" \
     ANDROID_SDK="/sdk/android-sdk-linux"
@@ -14,21 +14,17 @@ ENV ANDROID_NDK="/sdk/android-ndk" \
 # - RPM based: <500 (CentOS, RedHat, etc.)
 ARG VIDEOLAN_CI_UID=499
 
+ENV PATH=/usr/lib/jvm/java-8-openjdk-amd64/bin:$PATH
+
 RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
     adduser --quiet --uid ${VIDEOLAN_CI_UID} --ingroup videolan videolan && \
     echo "videolan:videolan" | chpasswd && \
     apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
-    openjdk-8-jdk-headless ca-certificates autoconf m4 automake ant autopoint bison \
+    ca-certificates autoconf m4 automake ant autopoint bison \
     flex build-essential libtool libtool-bin patch pkg-config ragel subversion \
-    git rpm2cpio libwebkitgtk-1.0-0 yasm ragel g++ protobuf-compiler gettext \
-    libgsm1-dev wget expect unzip python python3 locales libltdl-dev curl && \
-    echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backports.list && \
-    apt-get update && apt-get -y -t stretch-backports install cmake && \
-    rm -f /etc/apt/sources.list.d/stretch-backports.list && \
-    echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list.d/testing.list && \
-    apt-get update && apt-get -y -t testing --no-install-suggests --no-install-recommends install automake && \
-    rm -f /etc/apt/sources.list.d/testing.list && \
+    git rpm2cpio yasm ragel g++ protobuf-compiler gettext \
+    libgsm1-dev wget expect unzip python python3 locales libltdl-dev curl cmake automake && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
     echo "export ANDROID_NDK=${ANDROID_NDK}" >> /etc/profile.d/vlc_env.sh && \
@@ -52,6 +48,14 @@ RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
     echo $SDK_TOOLS_SHA256 sdk-tools-linux-3859397.zip | sha256sum -c && \
     unzip sdk-tools-linux-3859397.zip && \
     rm -f sdk-tools-linux-3859397.zip && \
+    cd / && \
+    wget -q https://github.com/AdoptOpenJDK/openjdk8-upstream-binaries/releases/download/jdk8u232-b09/OpenJDK8U-jdk_x64_linux_8u232b09.tar.gz && \
+    JDK_SHA256=c261f5e2776f4430249fcf6276649969a40f28262d1f224390aa764ae84464df && \
+    echo $JDK_SHA256 OpenJDK8U-jdk_x64_linux_8u232b09.tar.gz | sha256sum -c && \
+    mkdir -p /usr/lib/jvm/java-8-openjdk-amd64 && \
+    tar -C /usr/lib/jvm/java-8-openjdk-amd64 -xvzf OpenJDK8U-jdk_x64_linux_8u232b09.tar.gz --strip=1 && \
+    rm -f OpenJDK8U-jdk_x64_linux_8u232b09.tar.gz && \
+    cd sdk/android-sdk-linux && \
     tools/bin/sdkmanager "build-tools;26.0.1" "platform-tools" "platforms;android-26" && \
     chown -R videolan /sdk
 
