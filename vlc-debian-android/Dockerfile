@@ -23,8 +23,8 @@ RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
     apt-get install --no-install-suggests --no-install-recommends -y \
     ca-certificates autoconf m4 automake ant autopoint bison \
     flex build-essential libtool libtool-bin patch pkg-config ragel subversion \
-    git rpm2cpio yasm ragel g++ protobuf-compiler gettext \
-    libgsm1-dev wget expect unzip python python3 locales libltdl-dev curl cmake automake && \
+    git yasm ragel g++ protobuf-compiler gettext \
+    wget expect unzip python python3 locales libltdl-dev curl cmake automake && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
     echo "export ANDROID_NDK=${ANDROID_NDK}" >> /etc/profile.d/vlc_env.sh && \
