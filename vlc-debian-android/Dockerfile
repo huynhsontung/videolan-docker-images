@@ -4,6 +4,8 @@ MAINTAINER VideoLAN roots <roots@videolan.org>
 
 ENV IMAGE_DATE=202003110812
 
+COPY crossfiles/ /opt/crossfiles/
+
 ENV ANDROID_NDK="/sdk/android-ndk" \
     ANDROID_SDK="/sdk/android-sdk-linux"
 
@@ -23,7 +25,7 @@ RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
     apt-get install --no-install-suggests --no-install-recommends -y \
     ca-certificates autoconf m4 automake ant autopoint bison \
     flex build-essential libtool libtool-bin patch pkg-config ragel subversion \
-    git yasm ragel g++ protobuf-compiler gettext \
+    git yasm ragel g++ protobuf-compiler gettext meson ninja-build \
     wget expect unzip python python3 locales libltdl-dev curl cmake automake && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
