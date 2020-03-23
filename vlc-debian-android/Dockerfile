@@ -2,7 +2,7 @@ FROM debian:buster-20200224
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202003110812
+ENV IMAGE_DATE=202023031031
 
 COPY crossfiles/ /opt/crossfiles/
 
@@ -16,7 +16,7 @@ ENV ANDROID_NDK="/sdk/android-ndk" \
 # - RPM based: <500 (CentOS, RedHat, etc.)
 ARG VIDEOLAN_CI_UID=499
 
-ENV PATH=/usr/lib/jvm/java-8-openjdk-amd64/bin:$PATH
+ENV PATH=/usr/lib/jvm/java-8-openjdk-amd64/bin:/sdk/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/:$PATH
 
 RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
     adduser --quiet --uid ${VIDEOLAN_CI_UID} --ingroup videolan videolan && \
