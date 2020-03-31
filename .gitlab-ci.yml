@@ -13,7 +13,7 @@
   done
   echo "Changed images: '$DIRS'"
   for d in $DIRS; do
-    [ -d "$d" ] || continue
+    [ -d "$d" -a -f "$d/Dockerfile" ] || continue
     DATE=`date +'%Y%m%d%H%M%S'`
     docker build -t registry.videolan.org/$d:$DATE $d/
     docker push registry.videolan.org/$d:$DATE
