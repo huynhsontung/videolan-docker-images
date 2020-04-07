@@ -25,7 +25,7 @@ RUN set -x && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install --no-install-suggests --no-install-recommends wine32 && \
     echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list.d/testing.list && \
-    apt-get update && apt-get -y -t testing --no-install-suggests --no-install-recommends install nasm nsis meson cmake && \
+    apt-get update && apt-get -y -t testing --no-install-suggests --no-install-recommends install nasm nsis meson && \
     rm -f /etc/apt/sources.list.d/testing.list && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     update-alternatives --install /usr/bin/python python /usr/bin/python3.5 1 && \
