@@ -1,6 +1,6 @@
 FROM ubuntu:eoan-20200313
 
-ENV IMAGE_DATE=202004151100
+ENV IMAGE_DATE=202004151115
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -12,7 +12,7 @@ ARG VIDEOLAN_UID=499
 ENV SHADERC_BRANCH=v2020.0 \
     GLSLANG_BRANCH=SDK-candidate-2 \
     SPIRV_TOOLS_BRANCH=v2020.2 \
-    SPIRV_HEADERS_BRANCH=master
+    SPIRV_HEADERS_COMMIT=2ad0492fb00919d99500f1da74abf5ad3c870e4e
 
 RUN set -x && \
     addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
@@ -34,7 +34,8 @@ RUN set -x && \
     cd shaderc && \
     git clone --depth 1 -b ${GLSLANG_BRANCH}         https://github.com/KhronosGroup/glslang.git         third_party/glslang && \
     git clone --depth 1 -b ${SPIRV_TOOLS_BRANCH}     https://github.com/KhronosGroup/SPIRV-Tools.git     third_party/spirv-tools && \
-    git clone --depth 1 -b ${SPIRV_HEADERS_BRANCH}   https://github.com/KhronosGroup/SPIRV-Headers.git   third_party/spirv-headers && \
+    git clone https://github.com/KhronosGroup/SPIRV-Headers.git third_party/spirv-headers && \
+    cd third_party/spirv-headers && git checkout ${SPIRV_HEADERS_COMMIT} && cd ../.. && \
     mkdir build && cd build && \
     cmake -GNinja \
         -DCMAKE_BUILD_TYPE=RelWithDebInfo \
