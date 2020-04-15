@@ -1,6 +1,6 @@
-FROM ubuntu:eoan-20190916
+FROM ubuntu:eoan-20200313
 
-ENV IMAGE_DATE=202004061610
+ENV IMAGE_DATE=202004151100
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -9,9 +9,9 @@ ENV IMAGE_DATE=202004061610
 # - RPM based: <500 (CentOS, RedHat, etc.)
 ARG VIDEOLAN_UID=499
 
-ENV SHADERC_BRANCH=v2019.0 \
-    GLSLANG_BRANCH=7.11.3214 \
-    SPIRV_TOOLS_BRANCH=v2019.2 \
+ENV SHADERC_BRANCH=v2020.0 \
+    GLSLANG_BRANCH=SDK-candidate-2 \
+    SPIRV_TOOLS_BRANCH=v2020.2 \
     SPIRV_HEADERS_BRANCH=master
 
 RUN set -x && \
