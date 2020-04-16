@@ -3,6 +3,7 @@ c = 'aarch64-w64-mingw32-clang'
 cpp = 'aarch64-w64-mingw32-clang++'
 ar = 'aarch64-w64-mingw32-ar'
 strip = 'aarch64-w64-mingw32-strip'
+pkgconfig = 'pkg-config'
 windres = 'aarch64-w64-mingw32-windres'
 
 [properties]

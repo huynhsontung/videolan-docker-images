@@ -3,6 +3,7 @@ c = 'armv7-w64-mingw32-clang'
 cpp = 'armv7-w64-mingw32-clang++'
 ar = 'armv7-w64-mingw32-ar'
 strip = 'armv7-w64-mingw32-strip'
+pkgconfig = 'pkg-config'
 windres = 'armv7-w64-mingw32-windres'
 
 [properties]

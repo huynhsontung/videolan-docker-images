@@ -4,6 +4,7 @@ cpp = 'i686-w64-mingw32-clang++'
 ar = 'i686-w64-mingw32-ar'
 strip = 'i686-w64-mingw32-strip'
 windres = 'i686-w64-mingw32-windres'
+pkgconfig = 'pkg-config'
 exe_wrapper = ['wine']
 
 [properties]
