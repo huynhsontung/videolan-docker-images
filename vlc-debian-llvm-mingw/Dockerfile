@@ -1,12 +1,15 @@
-FROM registry.videolan.org/videolan-base-sid:20190408171718
- 
-ENV IMAGE_DATE=201910221159
+FROM debian:testing-20200414-slim
 
-RUN apt-get update -qq && apt-get install -qqy --no-install-suggests --no-install-recommends \
+MAINTAINER VideoLAN roots <roots@videolan.org>
+ 
+ENV IMAGE_DATE=202004161126
+
+RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
+    apt-get install -qqy --no-install-suggests --no-install-recommends \
     git wget bzip2 file unzip libtool-bin pkg-config cmake build-essential \
     automake yasm gettext autopoint vim python git-svn ninja-build libwine-development \
     wine-development flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm \
-    python3 locales meson libltdl-dev && \
+    python3 locales meson libltdl-dev ca-certificates curl default-jdk-headless && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install --no-install-suggests --no-install-recommends wine32-development && \
     apt-get clean -y && \
@@ -60,8 +63,7 @@ RUN wget -q https://raw.githubusercontent.com/Winetricks/winetricks/d30478da6981
 # in the user range of main distributions, which means:
 # - Debian based: <1000
 # - RPM based: <500 (CentOS, RedHat, etc.)
-# 499 is already used by jenkins.
-ARG VIDEOLAN_UID=498
+ARG VIDEOLAN_UID=499
 
 RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
