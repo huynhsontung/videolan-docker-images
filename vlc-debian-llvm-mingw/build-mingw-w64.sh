@@ -1,9 +1,24 @@
 #!/bin/sh
+#
+# Copyright (c) 2018 Martin Storsjo
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 set -e
 
-DEFAULT_WIN32_WINNT=0x601
-DEFAULT_MSVCRT=ucrt
+: ${DEFAULT_WIN32_WINNT:=0x601}
+: ${DEFAULT_MSVCRT:=ucrt}
+: ${MINGW_W64_VERSION:=823bc20b3c9aea724acbd60400a923c35757b08c}
 unset HOST
 
 while [ $# -gt 0 ]; do
@@ -27,8 +42,13 @@ while [ $# -gt 0 ]; do
     shift
 done
 if [ -z "$PREFIX" ]; then
-    echo $0 [--skip-include-triplet-prefix] [--with-default-win32-winnt=0x601] [--with-default-msvcrt=ucrt] dest
+    echo $0 [--skip-include-triplet-prefix] [--with-default-win32-winnt=0x601] [--with-default-msvcrt=ucrt] [--host=<triple>] dest
     exit 1
+fi
+
+MAKE=make
+if [ "$(which gmake)" != "" ]; then
+    MAKE=gmake
 fi
 
 mkdir -p "$PREFIX"
@@ -58,36 +78,38 @@ cd mingw-w64
 
 if [ -n "$SYNC" ] || [ -n "$CHECKOUT" ]; then
     [ -z "$SYNC" ] || git fetch
-    git checkout 0a1d495478d8ed1a94fc77b9dbb428b7e0372588
+    git checkout $MINGW_W64_VERSION
 fi
 
 # If crosscompiling the toolchain itself, we already have a mingw-w64
 # runtime and don't need to rebuild it.
 if [ -z "$HOST" ]; then
     if [ -z "$SKIP_INCLUDE_TRIPLET_PREFIX" ]; then
-        HEADER_ROOT=$PREFIX/generic-w64-mingw32
+        HEADER_ROOT="$PREFIX/generic-w64-mingw32"
     else
-        HEADER_ROOT=$PREFIX
+        HEADER_ROOT="$PREFIX"
     fi
 
     cd mingw-w64-headers
+    [ -z "$CLEAN" ] || rm -rf build
     mkdir -p build
     cd build
-    ../configure --prefix=$HEADER_ROOT \
+    ../configure --prefix="$HEADER_ROOT" \
         --enable-idl --with-default-win32-winnt=$DEFAULT_WIN32_WINNT --with-default-msvcrt=$DEFAULT_MSVCRT INSTALL="install -C"
-    make install
+    $MAKE install
     cd ../..
     if [ -z "$SKIP_INCLUDE_TRIPLET_PREFIX" ]; then
         for arch in $ARCHS; do
-            mkdir -p $PREFIX/$arch-w64-mingw32
-            if [ ! -e $PREFIX/$arch-w64-mingw32/include ]; then
-                ln -sfn ../generic-w64-mingw32/include $PREFIX/$arch-w64-mingw32/include
+            mkdir -p "$PREFIX/$arch-w64-mingw32"
+            if [ ! -e "$PREFIX/$arch-w64-mingw32/include" ]; then
+                ln -sfn ../generic-w64-mingw32/include "$PREFIX/$arch-w64-mingw32/include"
             fi
         done
     fi
 
     cd mingw-w64-crt
     for arch in $ARCHS; do
+        [ -z "$CLEAN" ] || rm -rf build-$arch
         mkdir -p build-$arch
         cd build-$arch
         case $arch in
@@ -105,9 +127,9 @@ if [ -z "$HOST" ]; then
             ;;
         esac
         FLAGS="$FLAGS --with-default-msvcrt=$DEFAULT_MSVCRT"
-        ../configure --host=$arch-w64-mingw32 --prefix=$PREFIX/$arch-w64-mingw32 $FLAGS
-        make -j$CORES
-        make install
+        ../configure --host=$arch-w64-mingw32 --prefix="$PREFIX/$arch-w64-mingw32" $FLAGS
+        $MAKE -j$CORES
+        $MAKE install
         cd ..
     done
     cd ..
@@ -140,14 +162,15 @@ fi
 export PATH="$ORIGPATH"
 cd mingw-w64-tools/widl
 for arch in $ARCHS; do
+    [ -z "$CLEAN" ] || rm -rf build-$CROSS_NAME$arch
     mkdir -p build-$CROSS_NAME$arch
     cd build-$CROSS_NAME$arch
-    ../configure --prefix=$PREFIX --target=$arch-w64-mingw32 $CONFIGFLAGS LDFLAGS="-Wl,-s"
-    make -j$CORES
-    make install
+    ../configure --prefix="$PREFIX" --target=$arch-w64-mingw32 $CONFIGFLAGS
+    $MAKE -j$CORES
+    $MAKE install-strip
     cd ..
 done
-cd $PREFIX/bin
+cd "$PREFIX/bin"
 if [ -n "$SKIP_INCLUDE_TRIPLET_PREFIX" ]; then
     for arch in $ALL_ARCHS; do
         if [ "$arch" != "$ARCHS" ]; then
@@ -156,8 +179,10 @@ if [ -n "$SKIP_INCLUDE_TRIPLET_PREFIX" ]; then
     done
 fi
 if [ -n "$EXEEXT" ]; then
-    if [ -z "$HOST" ]; then
+    if [ -z "$HOST" ] && [ -f clang$EXEEXT ]; then
         HOST=$(./clang -dumpmachine | sed 's/-.*//')-w64-mingw32
     fi
-    ln -sf $HOST-widl$EXEEXT widl$EXEEXT
+    if [ -n "$HOST" ]; then
+        ln -sf $HOST-widl$EXEEXT widl$EXEEXT
+    fi
 fi

@@ -1,12 +1,38 @@
 #!/bin/sh
+#
+# Copyright (c) 2018 Martin Storsjo
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 set -e
 
-if [ $# -lt 1 ]; then
-    echo $0 dest
+unset HOST
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+    --host=*)
+        HOST="${1#*=}"
+        ;;
+    *)
+        PREFIX="$1"
+        ;;
+    esac
+    shift
+done
+if [ -z "$PREFIX" ]; then
+    echo $0 [--host=<triple>] dest
     exit 1
 fi
-PREFIX="$1"
 mkdir -p "$PREFIX"
 PREFIX="$(cd "$PREFIX" && pwd)"
 
@@ -24,23 +50,27 @@ MINGW*)
     ;;
 esac
 
+if [ -n "$HOST" ]; then
+    EXEEXT=.exe
+fi
+
 if [ -n "$EXEEXT" ]; then
     CLANG_MAJOR=$(basename $(echo $PREFIX/lib/clang/* | awk '{print $NF}') | cut -f 1 -d .)
     WRAPPER_FLAGS="$WRAPPER_FLAGS -municode -DCLANG=\"clang-$CLANG_MAJOR\""
 fi
 
-mkdir -p $PREFIX/bin
-cp wrappers/*-wrapper.sh $PREFIX/bin
+mkdir -p "$PREFIX/bin"
+cp wrappers/*-wrapper.sh "$PREFIX/bin"
 if [ -n "$HOST" ]; then
     # TODO: If building natively on msys, pick up the default HOST value from there.
     WRAPPER_FLAGS="$WRAPPER_FLAGS -DDEFAULT_TARGET=\"$HOST\""
     for i in wrappers/*-wrapper.sh; do
-        cat $i | sed 's/^DEFAULT_TARGET=.*/DEFAULT_TARGET='$HOST/ > $PREFIX/bin/$(basename $i)
+        cat $i | sed 's/^DEFAULT_TARGET=.*/DEFAULT_TARGET='$HOST/ > "$PREFIX/bin/$(basename $i)"
     done
 fi
-$CC wrappers/clang-target-wrapper.c -o $PREFIX/bin/clang-target-wrapper$EXEEXT -O2 -Wl,-s $WRAPPER_FLAGS
-$CC wrappers/windres-wrapper.c -o $PREFIX/bin/windres-wrapper$EXEEXT -O2 -Wl,-s $WRAPPER_FLAGS
-$CC wrappers/llvm-wrapper.c -o $PREFIX/bin/llvm-wrapper$EXEEXT -O2 -Wl,-s $WRAPPER_FLAGS
+$CC wrappers/clang-target-wrapper.c -o "$PREFIX/bin/clang-target-wrapper$EXEEXT" -O2 -Wl,-s $WRAPPER_FLAGS
+$CC wrappers/windres-wrapper.c -o "$PREFIX/bin/windres-wrapper$EXEEXT" -O2 -Wl,-s $WRAPPER_FLAGS
+$CC wrappers/llvm-wrapper.c -o "$PREFIX/bin/llvm-wrapper$EXEEXT" -O2 -Wl,-s $WRAPPER_FLAGS
 if [ -n "$EXEEXT" ]; then
     # For Windows, we should prefer the executable wrapper, which also works
     # when invoked from outside of MSYS.
@@ -49,7 +79,7 @@ if [ -n "$EXEEXT" ]; then
 else
     CTW_SUFFIX=.sh
 fi
-cd $PREFIX/bin
+cd "$PREFIX/bin"
 for arch in $ARCHS; do
     for target_os in $TARGET_OSES; do
         for exec in clang clang++ gcc g++ cc c99 c11 c++; do
@@ -78,10 +108,17 @@ if [ -n "$EXEEXT" ]; then
     if [ -z "$HOST" ]; then
         HOST=$(./clang-$CLANG_MAJOR -dumpmachine | sed 's/-.*//')-w64-mingw32
     fi
-    for exec in clang clang++ gcc g++ cc c99 c11 c++ addr2line ar ranlib nm objcopy strings strip windres; do
-        ln -sf $HOST-$exec$EXEEXT $exec$EXEEXT
-    done
-    for exec in ld objdump dlltool; do
-        ln -sf $HOST-$exec $exec
-    done
+    HOST_ARCH="${HOST%%-*}"
+    # Install unprefixed wrappers if $HOST is one of the architectures
+    # we are installing wrappers for.
+    case $ARCHS in
+    *$HOST_ARCH*)
+        for exec in clang clang++ gcc g++ cc c99 c11 c++ addr2line ar ranlib nm objcopy strings strip windres; do
+            ln -sf $HOST-$exec$EXEEXT $exec$EXEEXT
+        done
+        for exec in ld objdump dlltool; do
+            ln -sf $HOST-$exec $exec
+        done
+        ;;
+    esac
 fi

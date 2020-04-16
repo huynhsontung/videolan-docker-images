@@ -1,7 +1,22 @@
 #!/bin/sh
+#
+# Copyright (c) 2018 Martin Storsjo
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 set -e
 
+: ${LLVM_VERSION:=llvmorg-10.0.0}
 ASSERTS=OFF
 BUILDDIR=build
 unset HOST
@@ -30,17 +45,13 @@ while [ $# -gt 0 ]; do
 done
 if [ -z "$CHECKOUT_ONLY" ]; then
     if [ -z "$PREFIX" ]; then
-        echo $0 [--enable-asserts] [--full-llvm] dest
+        echo $0 [--enable-asserts] [--full-llvm] [--host=<triple>] dest
         exit 1
     fi
 
     mkdir -p "$PREFIX"
     PREFIX="$(cd "$PREFIX" && pwd)"
 fi
-
-: ${CORES:=$(nproc 2>/dev/null)}
-: ${CORES:=$(sysctl -n hw.ncpu 2>/dev/null)}
-: ${CORES:=4}
 
 if [ ! -d llvm-project ]; then
     # When cloning master and checking out a pinned old hash, we can't use --depth=1.
@@ -51,7 +62,7 @@ fi
 if [ -n "$SYNC" ] || [ -n "$CHECKOUT" ]; then
     cd llvm-project
     [ -z "$SYNC" ] || git fetch
-    git checkout llvmorg-9.0.0
+    git checkout $LLVM_VERSION
     cd ..
 fi
 
@@ -60,7 +71,12 @@ fi
 if [ -n "$(which ninja)" ]; then
     CMAKE_GENERATOR="Ninja"
     NINJA=1
+    BUILDCMD=ninja
 else
+    : ${CORES:=$(nproc 2>/dev/null)}
+    : ${CORES:=$(sysctl -n hw.ncpu 2>/dev/null)}
+    : ${CORES:=4}
+
     case $(uname) in
     MINGW*)
         CMAKE_GENERATOR="MSYS Makefiles"
@@ -68,6 +84,7 @@ else
     *)
         ;;
     esac
+    BUILDCMD=make
 fi
 
 if [ -n "$HOST" ]; then
@@ -88,12 +105,13 @@ if [ -n "$HOST" ]; then
     CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_C_COMPILER=$HOST-gcc"
     CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_CXX_COMPILER=$HOST-g++"
     CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_RC_COMPILER=$HOST-windres"
-    CMAKEFLAGS="$CMAKEFLAGS -DCROSS_TOOLCHAIN_FLAGS_NATIVE="
+    CMAKEFLAGS="$CMAKEFLAGS -DCROSS_TOOLCHAIN_FLAGS_NATIVE=-DLLDB_ENABLE_LIBEDIT=OFF;-DLLDB_ENABLE_PYTHOFF=OFF;-DLLDB_ENABLE_CURSES=OFF;-DLLDB_ENABLE_LUA=OFF"
 
     native=$(find_native_tools)
     if [ -n "$native" ]; then
         CMAKEFLAGS="$CMAKEFLAGS -DLLVM_TABLEGEN=$native/llvm-tblgen"
         CMAKEFLAGS="$CMAKEFLAGS -DCLANG_TABLEGEN=$native/clang-tblgen"
+        CMAKEFLAGS="$CMAKEFLAGS -DLLDB_TABLEGEN=$native/lldb-tblgen"
         CMAKEFLAGS="$CMAKEFLAGS -DLLVM_CONFIG_PATH=$native/llvm-config"
     fi
     CROSS_ROOT=$(cd $(dirname $(which $HOST-gcc))/../$HOST && pwd)
@@ -132,7 +150,7 @@ MINGW*)
     # path names are included, in assert messages), allowing ccache to speed
     # up compilation.
     cd tools
-    for p in clang lld; do
+    for p in clang lld lldb; do
         if [ ! -e $p ]; then
             ln -s ../../$p .
         fi
@@ -141,23 +159,29 @@ MINGW*)
     ;;
 esac
 
+[ -z "$CLEAN" ] || rm -rf $BUILDDIR
 mkdir -p $BUILDDIR
 cd $BUILDDIR
+# Building LLDB for macOS fails unless building libc++ is enabled at the
+# same time, or unless the LLDB tests are disabled.
 cmake \
     ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
     -DCMAKE_INSTALL_PREFIX="$PREFIX" \
     -DCMAKE_BUILD_TYPE=Release \
     -DLLVM_ENABLE_ASSERTIONS=$ASSERTS \
-    ${EXPLICIT_PROJECTS+-DLLVM_ENABLE_PROJECTS="clang;lld"} \
+    ${EXPLICIT_PROJECTS+-DLLVM_ENABLE_PROJECTS="clang;lld;lldb"} \
     -DLLVM_TARGETS_TO_BUILD="ARM;AArch64;X86" \
     -DLLVM_INSTALL_TOOLCHAIN_ONLY=$TOOLCHAIN_ONLY \
     -DLLVM_TOOLCHAIN_TOOLS="llvm-ar;llvm-ranlib;llvm-objdump;llvm-rc;llvm-cvtres;llvm-nm;llvm-strings;llvm-readobj;llvm-dlltool;llvm-pdbutil;llvm-objcopy;llvm-strip;llvm-cov;llvm-profdata;llvm-addr2line;llvm-symbolizer" \
     ${HOST+-DLLVM_HOST_TRIPLE=$HOST} \
+    -DLLDB_ENABLE_LIBEDIT=OFF \
+    -DLLDB_ENABLE_PYTHON=OFF \
+    -DLLDB_ENABLE_CURSES=OFF \
+    -DLLDB_ENABLE_LUA=OFF \
+    -DLLDB_INCLUDE_TESTS=OFF \
     $CMAKEFLAGS \
     ..
 
-if [ -n "$NINJA" ]; then
-    ninja -j$CORES install/strip
-else
-    make -j$CORES install/strip
-fi
+$BUILDCMD ${CORES+-j$CORES} install/strip
+
+cp ../LICENSE.TXT $PREFIX

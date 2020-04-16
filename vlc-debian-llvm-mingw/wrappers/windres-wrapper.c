@@ -1,30 +1,20 @@
 /*
- * author: Josh de Kock <josh@itanimul.li>, Martin Storsjo <martin@martin.st>
+ * Copyright (c) 2018 Josh de Kock <josh@itanimul.li>
+ * Copyright (c) 2018 Martin Storsjo <martin@martin.st>
  *
- * This is free and unencumbered software released into the public domain.
+ * This file is part of llvm-mingw.
  *
- * Anyone is free to copy, modify, publish, use, compile, sell, or
- * distribute this software, either in source code form or as a compiled
- * binary, for any purpose, commercial or non-commercial, and by any
- * means.
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
  *
- * In jurisdictions that recognize copyright laws, the author or authors
- * of this software dedicate any and all copyright interest in the
- * software to the public domain. We make this dedication for the benefit
- * of the public at large and to the detriment of our heirs and
- * successors. We intend this dedication to be an overt act of
- * relinquishment in perpetuity of all present and future rights to this
- * software under copyright law.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
- * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
- * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
- *
- * For more information, please refer to <http://unlicense.org/>
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 #include "native-wrapper.h"
@@ -115,10 +105,10 @@ static void print_help(void) {
 "  res                        Binary Windows Resource\n"
 "  coff                       COFF object\n"
 "Targets:\n"
-"  armv7-w64-mingw32\n"
-"  aarch64-w64-mingw32\n"
-"  i686-w64-mingw32\n"
-"  x86_86-w64-mingw32\n"
+"  pe-x86-64\n"
+"  pei-x86-64\n"
+"  pe-i386\n"
+"  pei-i386\n"
     );
     exit(1);
 }
@@ -173,6 +163,8 @@ int _tmain(int argc, TCHAR* argv[]) {
 
 #define IF_MATCH_EITHER(short, long) \
     if (!_tcscmp(argv[i], _T(short)) || !_tcscmp(argv[i], _T(long)))
+#define IF_MATCH_THREE(first, second, third) \
+    if (!_tcscmp(argv[i], _T(first)) || !_tcscmp(argv[i], _T(second)) || !_tcscmp(argv[i], _T(third)))
 #define OPTION(short, long, var) \
     if (_tcsstart(argv[i], _T(short)) && argv[i][_tcslen_const(_T(short))]) { \
         var = argv[i] + _tcslen_const(_T(short)); \
@@ -203,9 +195,10 @@ int _tmain(int argc, TCHAR* argv[]) {
         else OPTION("-J", "--input-format", input_format)
         else OPTION("-O", "--output-format", output_format)
         else OPTION("-F", "--target", bfd_target)
-        else IF_MATCH_EITHER("-I", "--include-dir") {
+        else IF_MATCH_THREE("-I", "--include-dir", "--include") {
             SEPARATE_ARG(includes[nb_includes++]);
-        } else if (_tcsstart(argv[i], _T("--include-dir="))) {
+        } else if (_tcsstart(argv[i], _T("--include-dir=")) ||
+                   _tcsstart(argv[i], _T("--include="))) {
             includes[nb_includes++] = _tcschr(argv[i], '=') + 1;
         } else if (_tcsstart(argv[i], _T("-I"))) {
             includes[nb_includes++] = argv[i] + 2;
@@ -248,8 +241,8 @@ int _tmain(int argc, TCHAR* argv[]) {
             !_tcscmp(bfd_target, _T("pei-x86-64")))
             target = _T("x86_64-w64-mingw32");
         else if (!_tcscmp(bfd_target, _T("pe-i386")) ||
-                 !_tcscmp(bfd_target, _T("pei-x86-64")))
-            target = _T("x86_64-w64-mingw32");
+                 !_tcscmp(bfd_target, _T("pei-i386")))
+            target = _T("i686-w64-mingw32");
         else
             error(basename, _T("unsupported target: `"TS"'"), bfd_target);
     }
@@ -299,7 +292,7 @@ int _tmain(int argc, TCHAR* argv[]) {
     const TCHAR **exec_argv = malloc((max_arg + 1) * sizeof(*exec_argv));
     int arg = 0;
 
-    if (!_tcscmp(input_format, _T("rc"))) {
+    if (!_tcsicmp(input_format, _T("rc"))) {
         exec_argv[arg++] = concat(dir, CC);
         exec_argv[arg++] = _T("-E");
         for (int i = 0; i < nb_cpp_options; i++)
@@ -334,7 +327,7 @@ int _tmain(int argc, TCHAR* argv[]) {
         exec_argv[arg++] = _T("-c");
         exec_argv[arg++] = codepage;
         exec_argv[arg++] = _T("-fo");
-        if (!_tcscmp(output_format, _T("res")))
+        if (!_tcsicmp(output_format, _T("res")))
             exec_argv[arg++] = output;
         else
             exec_argv[arg++] = res;
@@ -355,9 +348,9 @@ int _tmain(int argc, TCHAR* argv[]) {
             return ret;
         }
 
-        if (!_tcscmp(output_format, _T("res"))) {
+        if (!_tcsicmp(output_format, _T("res"))) {
             // All done
-        } else if (!_tcscmp(output_format, _T("coff"))) {
+        } else if (!_tcsicmp(output_format, _T("coff"))) {
             arg = 0;
             exec_argv[arg++] = concat(dir, _T("llvm-cvtres"));
             exec_argv[arg++] = res;
@@ -381,7 +374,7 @@ int _tmain(int argc, TCHAR* argv[]) {
         } else {
             error(basename, _T("invalid output format: `"TS"'"), output_format);
         }
-    } else if (!_tcscmp(input_format, _T("res"))) {
+    } else if (!_tcsicmp(input_format, _T("res"))) {
         exec_argv[arg++] = concat(dir, _T("llvm-cvtres"));
         exec_argv[arg++] = input;
         exec_argv[arg++] = concat(_T("-machine:"), machine);

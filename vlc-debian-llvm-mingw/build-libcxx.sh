@@ -1,4 +1,18 @@
 #!/bin/sh
+#
+# Copyright (c) 2018 Martin Storsjo
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 set -e
 
@@ -29,9 +43,6 @@ PREFIX="$(cd "$PREFIX" && pwd)"
 
 export PATH="$PREFIX/bin:$PATH"
 
-: ${CORES:=$(nproc 2>/dev/null)}
-: ${CORES:=$(sysctl -n hw.ncpu 2>/dev/null)}
-: ${CORES:=4}
 : ${ARCHS:=${TOOLCHAIN_ARCHS-i686 x86_64 armv7 aarch64}}
 
 if [ ! -d llvm-project/libunwind ] || [ -n "$SYNC" ]; then
@@ -42,13 +53,24 @@ cd llvm-project
 
 LIBCXX=$(pwd)/libcxx
 
-case $(uname) in
-MINGW*)
-    CMAKE_GENERATOR="MSYS Makefiles"
-    ;;
-*)
-    ;;
-esac
+if [ -n "$(which ninja)" ]; then
+    CMAKE_GENERATOR="Ninja"
+    NINJA=1
+    BUILDCMD=ninja
+else
+    : ${CORES:=$(nproc 2>/dev/null)}
+    : ${CORES:=$(sysctl -n hw.ncpu 2>/dev/null)}
+    : ${CORES:=4}
+
+    case $(uname) in
+    MINGW*)
+        CMAKE_GENERATOR="MSYS Makefiles"
+        ;;
+    *)
+        ;;
+    esac
+    BUILDCMD=make
+fi
 
 build_all() {
     type="$1"
@@ -62,6 +84,7 @@ build_all() {
 
     cd libunwind
     for arch in $ARCHS; do
+        [ -z "$CLEAN" ] || rm -rf build-$arch-$type
         mkdir -p build-$arch-$type
         cd build-$arch-$type
         # CXX_SUPPORTS_CXX11 is not strictly necessary here. But if building
@@ -71,7 +94,7 @@ build_all() {
         cmake \
             ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
             -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_INSTALL_PREFIX=$PREFIX/$arch-w64-mingw32 \
+            -DCMAKE_INSTALL_PREFIX="$PREFIX/$arch-w64-mingw32" \
             -DCMAKE_C_COMPILER=$arch-w64-mingw32-clang \
             -DCMAKE_CXX_COMPILER=$arch-w64-mingw32-clang++ \
             -DCMAKE_CROSSCOMPILING=TRUE \
@@ -79,8 +102,8 @@ build_all() {
             -DCMAKE_C_COMPILER_WORKS=TRUE \
             -DCMAKE_CXX_COMPILER_WORKS=TRUE \
             -DLLVM_COMPILER_CHECKED=TRUE \
-            -DCMAKE_AR=$PREFIX/bin/llvm-ar \
-            -DCMAKE_RANLIB=$PREFIX/bin/llvm-ranlib \
+            -DCMAKE_AR="$PREFIX/bin/llvm-ar" \
+            -DCMAKE_RANLIB="$PREFIX/bin/llvm-ranlib" \
             -DCXX_SUPPORTS_CXX11=TRUE \
             -DCXX_SUPPORTS_CXX_STD=TRUE \
             -DLIBUNWIND_USE_COMPILER_RT=TRUE \
@@ -91,11 +114,11 @@ build_all() {
             -DCMAKE_CXX_FLAGS="-Wno-dll-attribute-on-redeclaration" \
             -DCMAKE_C_FLAGS="-Wno-dll-attribute-on-redeclaration" \
             ..
-        make -j$CORES
-        make install
+        $BUILDCMD ${CORES+-j$CORES}
+        $BUILDCMD install
         if [ "$type" = "shared" ]; then
-            mkdir -p $PREFIX/$arch-w64-mingw32/bin
-            cp lib/libunwind.dll $PREFIX/$arch-w64-mingw32/bin
+            mkdir -p "$PREFIX/$arch-w64-mingw32/bin"
+            cp lib/libunwind.dll "$PREFIX/$arch-w64-mingw32/bin"
         fi
         cd ..
     done
@@ -103,6 +126,7 @@ build_all() {
 
     cd libcxxabi
     for arch in $ARCHS; do
+        [ -z "$CLEAN" ] || rm -rf build-$arch-$type
         mkdir -p build-$arch-$type
         cd build-$arch-$type
         if [ "$type" = "shared" ]; then
@@ -113,7 +137,7 @@ build_all() {
         cmake \
             ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
             -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_INSTALL_PREFIX=$PREFIX/$arch-w64-mingw32 \
+            -DCMAKE_INSTALL_PREFIX="$PREFIX/$arch-w64-mingw32" \
             -DCMAKE_C_COMPILER=$arch-w64-mingw32-clang \
             -DCMAKE_CXX_COMPILER=$arch-w64-mingw32-clang++ \
             -DCMAKE_CROSSCOMPILING=TRUE \
@@ -121,8 +145,8 @@ build_all() {
             -DCMAKE_C_COMPILER_WORKS=TRUE \
             -DCMAKE_CXX_COMPILER_WORKS=TRUE \
             -DLLVM_COMPILER_CHECKED=TRUE \
-            -DCMAKE_AR=$PREFIX/bin/llvm-ar \
-            -DCMAKE_RANLIB=$PREFIX/bin/llvm-ranlib \
+            -DCMAKE_AR="$PREFIX/bin/llvm-ar" \
+            -DCMAKE_RANLIB="$PREFIX/bin/llvm-ranlib" \
             -DLIBCXXABI_USE_COMPILER_RT=ON \
             -DLIBCXXABI_ENABLE_EXCEPTIONS=ON \
             -DLIBCXXABI_ENABLE_THREADS=ON \
@@ -134,13 +158,14 @@ build_all() {
             -DCXX_SUPPORTS_CXX_STD=TRUE \
             -DCMAKE_CXX_FLAGS="$LIBCXXABI_VISIBILITY_FLAGS -D_LIBCPP_HAS_THREAD_API_WIN32" \
             ..
-        make -j$CORES
+        $BUILDCMD ${CORES+-j$CORES}
         cd ..
     done
     cd ..
 
     cd libcxx
     for arch in $ARCHS; do
+        [ -z "$CLEAN" ] || rm -rf build-$arch-$type
         mkdir -p build-$arch-$type
         cd build-$arch-$type
         if [ "$type" = "shared" ]; then
@@ -151,7 +176,7 @@ build_all() {
         cmake \
             ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
             -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_INSTALL_PREFIX=$PREFIX/$arch-w64-mingw32 \
+            -DCMAKE_INSTALL_PREFIX="$PREFIX/$arch-w64-mingw32" \
             -DCMAKE_C_COMPILER=$arch-w64-mingw32-clang \
             -DCMAKE_CXX_COMPILER=$arch-w64-mingw32-clang++ \
             -DCMAKE_CROSSCOMPILING=TRUE \
@@ -159,8 +184,8 @@ build_all() {
             -DCMAKE_C_COMPILER_WORKS=TRUE \
             -DCMAKE_CXX_COMPILER_WORKS=TRUE \
             -DLLVM_COMPILER_CHECKED=TRUE \
-            -DCMAKE_AR=$PREFIX/bin/llvm-ar \
-            -DCMAKE_RANLIB=$PREFIX/bin/llvm-ranlib \
+            -DCMAKE_AR="$PREFIX/bin/llvm-ar" \
+            -DCMAKE_RANLIB="$PREFIX/bin/llvm-ranlib" \
             -DLIBCXX_USE_COMPILER_RT=ON \
             -DLIBCXX_INSTALL_HEADERS=ON \
             -DLIBCXX_ENABLE_EXCEPTIONS=ON \
@@ -183,17 +208,17 @@ build_all() {
             -DCMAKE_SHARED_LINKER_FLAGS="-lunwind" \
             -DLIBCXX_ENABLE_ABI_LINKER_SCRIPT=FALSE \
             ..
-        make -j$CORES
-        make install
+        $BUILDCMD ${CORES+-j$CORES}
+        $BUILDCMD install
         if [ "$type" = "shared" ]; then
             llvm-ar qcsL \
-                $PREFIX/$arch-w64-mingw32/lib/libc++.dll.a \
-                $PREFIX/$arch-w64-mingw32/lib/libunwind.dll.a
-            cp lib/libc++.dll $PREFIX/$arch-w64-mingw32/bin
+                "$PREFIX/$arch-w64-mingw32/lib/libc++.dll.a" \
+                "$PREFIX/$arch-w64-mingw32/lib/libunwind.dll.a"
+            cp lib/libc++.dll "$PREFIX/$arch-w64-mingw32/bin"
         else
             llvm-ar qcsL \
-                $PREFIX/$arch-w64-mingw32/lib/libc++.a \
-                $PREFIX/$arch-w64-mingw32/lib/libunwind.a
+                "$PREFIX/$arch-w64-mingw32/lib/libc++.a" \
+                "$PREFIX/$arch-w64-mingw32/lib/libunwind.a"
         fi
         cd ..
     done
