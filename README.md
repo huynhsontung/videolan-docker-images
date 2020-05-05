@@ -7,7 +7,7 @@ On push, the Gitlab CI job will launch and figure out the images that need to
 be rebuilt.
 
 The results will be available on VideoLAN docker registry under
-registry.videolan.org:5000/$tag.
+registry.videolan.org/$tag.
 
 If you require a new Linux distro to be a base of your future image(-s), please
 put it under videolan-base-$distro directory.
