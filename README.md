@@ -9,6 +9,8 @@ be rebuilt.
 The results will be available on VideoLAN docker registry under
 registry.videolan.org/$tag.
 
+You can list the available tags for a given image by using get-docker-tags.sh image-name
+
 If you require a new Linux distro to be a base of your future image(-s), please
 put it under videolan-base-$distro directory.
 
