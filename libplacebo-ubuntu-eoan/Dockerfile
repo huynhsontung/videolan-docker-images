@@ -1,6 +1,6 @@
-FROM ubuntu:eoan-20200313
+FROM ubuntu:eoan-20200410
 
-ENV IMAGE_DATE=202005211230
+ENV IMAGE_DATE=202005211240
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -10,9 +10,9 @@ ENV IMAGE_DATE=202005211230
 ARG VIDEOLAN_UID=499
 
 ENV SHADERC_BRANCH=v2020.0 \
-    GLSLANG_BRANCH=SDK-candidate-2 \
+    GLSLANG_BRANCH=8.13.3743 \
     SPIRV_TOOLS_BRANCH=v2020.2 \
-    SPIRV_HEADERS_COMMIT=2ad0492fb00919d99500f1da74abf5ad3c870e4e
+    SPIRV_HEADERS_COMMIT=c0df742ec0b8178ad58c68cff3437ad4b6a06e26
 
 RUN set -x && \
     addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
