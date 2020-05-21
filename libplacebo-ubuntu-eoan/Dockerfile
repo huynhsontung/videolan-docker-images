@@ -1,6 +1,6 @@
 FROM ubuntu:eoan-20200313
 
-ENV IMAGE_DATE=202004151115
+ENV IMAGE_DATE=202005211230
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -26,7 +26,7 @@ RUN set -x && \
         gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 gcc-mingw-w64-i686 \
         g++-mingw-w64-i686 mingw-w64-tools glslang-dev libvulkan-dev \
         vulkan-validationlayers mesa-vulkan-drivers vulkan-tools \
-        liblcms2-dev libepoxy-dev gdb systemd-coredump && \
+        liblcms2-dev libepoxy-dev python3-mako gdb systemd-coredump && \
     pip3 install meson ninja gcovr && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     cd /root && \
