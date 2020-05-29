@@ -1,12 +1,13 @@
-FROM debian:testing-20200414-slim
+FROM debian:testing-20200514-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
  
 ENV IMAGE_DATE=202004161126
 
 RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
+    apt-get upgrade -y && \
     apt-get install -qqy --no-install-suggests --no-install-recommends \
-    git wget bzip2 file unzip libtool-bin pkg-config cmake build-essential \
+    git wget bzip2 file unzip libtool-bin pkg-config build-essential \
     automake yasm gettext autopoint vim python git-svn ninja-build libwine-development \
     wine-development flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm \
     python3 locales meson libltdl-dev ca-certificates curl default-jdk-headless && \
@@ -28,6 +29,17 @@ ENV TOOLCHAIN_PREFIX=/opt/llvm-mingw
 ARG TOOLCHAIN_ARCHS="i686 x86_64 armv7 aarch64"
 
 ENV CORES=4
+
+RUN CMAKE_VERSION=3.17.0 && \
+    CMAKE_SHA256=b74c05b55115eacc4fa2b77a814981dbda05cdc95a53e279fe16b7b272f00847 && \
+    wget -q http://www.cmake.org/files/v3.17/cmake-$CMAKE_VERSION.tar.gz && \
+    echo $CMAKE_SHA256 cmake-$CMAKE_VERSION.tar.gz | sha256sum -c && \
+    tar xzf cmake-$CMAKE_VERSION.tar.gz && \
+    cd cmake-$CMAKE_VERSION && ./configure --prefix=/opt/tools/ --parallel=$CORES --no-qt-gui -- \
+        -DCMAKE_USE_OPENSSL:BOOL=OFF -DBUILD_TESTING:BOOL=OFF && make -j$CORES && make install && \
+    rm -rf /build/*
+
+ENV PATH=/opt/tools/bin:$PATH
 
 # Build everything that uses the llvm monorepo. We need to build the mingw runtime before the compiler-rt/libunwind/libcxxabi/libcxx runtimes.
 COPY build-llvm.sh strip-llvm.sh install-wrappers.sh build-mingw-w64.sh build-compiler-rt.sh build-mingw-w64-libraries.sh build-libcxx.sh ./
