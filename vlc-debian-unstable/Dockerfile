@@ -11,6 +11,10 @@ ENV IMAGE_DATE=202005290919
 # - RPM based: <500 (CentOS, RedHat, etc.)
 ARG VIDEOLAN_UID=499
 
+ARG CORES=8
+
+ENV PATH=/opt/tools/bin:$PATH
+
 RUN set -x && \
     addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
@@ -21,7 +25,7 @@ RUN set -x && \
     apt-get update && \
     apt-get install -y --no-install-suggests --no-install-recommends \
     openjdk-11-jdk lftp ca-certificates git-core libtool automake autoconf \
-    autopoint make  ninja-build python3 gettext pkg-config subversion cmake \
+    autopoint make ninja-build python3 gettext pkg-config subversion \
     cvs zip bzip2 p7zip-full wget dos2unix ragel yasm g++ g++-7 \
     m4 ant build-essential libtool-bin libavcodec-dev gdb \
     libavformat-dev libavresample-dev libavutil-dev libpostproc-dev \
@@ -33,6 +37,15 @@ RUN set -x && \
     meson doxygen graphviz libsqlite3-dev rapidjson-dev nasm && \
     apt-get build-dep --no-install-suggests --no-install-recommends -y vlc && \
     apt-get remove -y libprotobuf-dev protobuf-compiler && \
-    apt-get clean -y && rm -rf /var/lib/apt/lists/*
+    apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
+    mkdir /build && cd /build && \
+    CMAKE_VERSION=3.17.0 && \
+    CMAKE_SHA256=b74c05b55115eacc4fa2b77a814981dbda05cdc95a53e279fe16b7b272f00847 && \
+    wget -q http://www.cmake.org/files/v3.17/cmake-$CMAKE_VERSION.tar.gz && \
+    echo $CMAKE_SHA256 cmake-$CMAKE_VERSION.tar.gz | sha256sum -c && \
+    tar xzf cmake-$CMAKE_VERSION.tar.gz && \
+    cd cmake-$CMAKE_VERSION && ./configure --prefix=/opt/tools/ --parallel=$CORES --no-qt-gui -- \
+        -DCMAKE_USE_OPENSSL:BOOL=OFF -DBUILD_TESTING:BOOL=OFF && make -j$CORES && make install && \
+    rm -rf /build
 
 USER videolan
