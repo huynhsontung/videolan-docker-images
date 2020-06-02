@@ -1,4 +1,18 @@
 #!/bin/sh
+#
+# Copyright (c) 2018 Martin Storsjo
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 set -e
 
@@ -16,7 +30,7 @@ while [ $# -gt 0 ]; do
     shift
 done
 if [ -z "$PREFIX" ]; then
-    echo $0 dir
+    echo $0 [--host=<triple>] dir
     exit 1
 fi
 cd "$PREFIX"
@@ -38,7 +52,7 @@ MINGW*)
 esac
 
 cd bin
-for i in bugpoint c-index-test clang-* diagtool dsymutil git-clang-format hmaptool ld64.lld llc lli llvm-* obj2yaml opt sancov sanstats scan-build scan-view verify-uselistorder wasm-ld yaml2obj libclang.dll LTO.dll *Remarks.dll *.bat; do
+for i in bugpoint c-index-test clang-* diagtool dsymutil git-clang-format hmaptool ld64.lld llc lldb-* lli llvm-* obj2yaml opt sancov sanstats scan-build scan-view verify-uselistorder wasm-ld yaml2obj libclang.dll LTO.dll *Remarks.dll *.bat; do
     basename=$i
     if [ -n "$EXEEXT" ]; then
         # Some in the list are expanded globs, some are plain names we list.
@@ -74,6 +88,8 @@ for i in bugpoint c-index-test clang-* diagtool dsymutil git-clang-format hmapto
             rm $i
         fi
         ;;
+    lldb|lldb-server|lldb-argdumper|lldb-instr)
+        ;;
     *)
         if [ -f $i ]; then
             rm $i
@@ -106,5 +122,13 @@ cd include
 rm -rf clang clang-c lld llvm llvm-c
 cd ..
 cd lib
-rm -rf lib*.a *.so* *.dylib* cmake
+for i in lib*.a *.so* *.dylib* cmake; do
+    case $i in
+    liblldb*)
+        ;;
+    *)
+        rm -rf $i
+        ;;
+    esac
+done
 cd ..
