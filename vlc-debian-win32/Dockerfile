@@ -43,8 +43,8 @@ RUN set -x && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     update-alternatives --install /usr/bin/python python /usr/bin/python3.5 1 && \
     \
-    GCC_VERSION=6.4.0 \
-    GCC_SHA256=850bf21eafdfe5cd5f6827148184c08c4a0852a37ccf36ce69855334d2c914d4 \
+    GCC_VERSION=10.1.0 \
+    GCC_SHA256=b6898a23844b656f1b68691c5c012036c2e694ac4b53a8918d4712ad876e7ea2 \
     BINUTILS_VERSION=2.27 \
     BINUTILS_SHA256=369737ce51587f92466041a97ab7d2358c6d9e1b6490b3940eb09fb0a9a6ac88 \
     MPFR_VERSION=3.1.6 \
@@ -62,7 +62,7 @@ RUN set -x && \
     ln -s $MINGW_PREFIX $TOOLCHAIN_PREFIX/mingw && \
     wget -q http://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.bz2 && \
     echo $BINUTILS_SHA256 binutils-$BINUTILS_VERSION.tar.bz2 | sha256sum -c && \
-    wget -q ftp://ftp.uvsq.fr/pub/gcc/releases/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.xz && \
+    wget -q https://ftp.gnu.org/gnu/gcc/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.xz && \
     echo $GCC_SHA256 gcc-$GCC_VERSION.tar.xz | sha256sum -c && \
     git config --global user.name "VideoLAN Buildbot" && \
     git config --global user.email buildbot@videolan.org && \
@@ -90,7 +90,6 @@ RUN set -x && \
     ln -s /build/gmp-$GMP_VERSION gcc-$GCC_VERSION/gmp && \
     ln -s /build/mpc-$MPC_VERSION gcc-$GCC_VERSION/mpc && \
     cd /build/gcc-$GCC_VERSION && patch -p0 < /patches/libstdcxx.patch && \
-    patch -p0 < /patches/gcc-configure-ac.patch && \
     autoreconf -vif && cd libstdc++-v3/ && autoreconf && \
     cd /build/gcc-$GCC_VERSION && \
     mkdir build && cd build && \
