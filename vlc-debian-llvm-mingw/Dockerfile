@@ -47,7 +47,7 @@ COPY wrappers/*.sh wrappers/*.c wrappers/*.h ./wrappers/
 RUN ./build-llvm.sh $TOOLCHAIN_PREFIX && \
     ./strip-llvm.sh $TOOLCHAIN_PREFIX && \
     ./install-wrappers.sh $TOOLCHAIN_PREFIX && \
-    ./build-mingw-w64.sh $TOOLCHAIN_PREFIX && \
+    ./build-mingw-w64.sh $TOOLCHAIN_PREFIX --with-default-msvcrt=msvcrt && \
     ./build-compiler-rt.sh $TOOLCHAIN_PREFIX && \
     ./build-mingw-w64-libraries.sh $TOOLCHAIN_PREFIX && \
     ./build-libcxx.sh $TOOLCHAIN_PREFIX && \
