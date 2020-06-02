@@ -1,7 +1,7 @@
 FROM debian:testing-20200514-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
- 
+
 ENV IMAGE_DATE=202004161126
 
 RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
@@ -28,7 +28,7 @@ ENV TOOLCHAIN_PREFIX=/opt/llvm-mingw
 
 ARG TOOLCHAIN_ARCHS="i686 x86_64 armv7 aarch64"
 
-ENV CORES=4
+ARG CORES=4
 
 RUN CMAKE_VERSION=3.17.0 && \
     CMAKE_SHA256=b74c05b55115eacc4fa2b77a814981dbda05cdc95a53e279fe16b7b272f00847 && \
