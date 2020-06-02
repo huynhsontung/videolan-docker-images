@@ -1,4 +1,4 @@
-FROM debian:stretch-20200422-slim
+FROM debian:stretch-20200514-slim
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -9,7 +9,7 @@ ARG VIDEOLAN_UID=499
 # 8 cores ought to be enough for anybody
 ARG CORES=8
 
-ENV IMAGE_DATE=202005141018
+ENV IMAGE_DATE=202006022000
 
 ENV TARGET_TUPLE=i686-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
