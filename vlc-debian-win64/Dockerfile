@@ -54,6 +54,7 @@ RUN set -x && \
     GMP_SHA256=d36e9c05df488ad630fff17edb50051d6432357f9ce04e34a09b3d818825e831 \
     MPC_VERSION=1.0.3 \
     MPC_SHA256=617decc6ea09889fb08ede330917a00b16809b8db88c29c31bfbb49cbf88ecc3 \
+    MINGW_W64_HASH=bb73d2e3a260d20e72fe4221411032f4175f58ec \
     && \
     mkdir /build/ && \
     cd /build && \
@@ -66,15 +67,16 @@ RUN set -x && \
     echo $GCC_SHA256 gcc-$GCC_VERSION.tar.xz | sha256sum -c && \
     git config --global user.name "VideoLAN Buildbot" && \
     git config --global user.email buildbot@videolan.org && \
-    git clone --depth=1 --branch v7.0.0 git://git.code.sf.net/p/mingw-w64/mingw-w64 && \
+    git clone -n --single-branch git://git.code.sf.net/p/mingw-w64/mingw-w64 && \
     tar xf gcc-$GCC_VERSION.tar.xz && \
     tar xf binutils-$BINUTILS_VERSION.tar.bz2 && \
     cd binutils-$BINUTILS_VERSION && mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE \
                     --disable-werror --disable-multilib && make -j$CORES && make install-strip && \
+    cd /build/mingw-w64 && git checkout $MINGW_W64_HASH && \
     cd /build/mingw-w64/mingw-w64-headers && mkdir build && cd build && \
     ../configure --prefix=$MINGW_PREFIX \
-                    --host=$TARGET_TUPLE --enable-secure-api && make install && \
+                    --host=$TARGET_TUPLE && make install && \
     cd /build && \
     wget -q https://ftp.gnu.org/gnu/mpfr/mpfr-$MPFR_VERSION.tar.gz && \
     echo $MPFR_SHA256 mpfr-$MPFR_VERSION.tar.gz | sha256sum -c && \
