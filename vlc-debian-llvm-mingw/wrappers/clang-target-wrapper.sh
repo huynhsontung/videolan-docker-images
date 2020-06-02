@@ -73,9 +73,11 @@ mingw32uwp)
     # the Windows Store API only supports Windows Unicode (some rare ANSI ones are available)
     FLAGS="$FLAGS -DUNICODE"
     # add the minimum runtime to use for UWP targets
-    FLAGS="$FLAGS -Wl,-lmincore"
+    FLAGS="$FLAGS -Wl,-lwindowsapp"
     # This requires that the default crt is ucrt.
-    FLAGS="$FLAGS -Wl,-lvcruntime140_app"
+    FLAGS="$FLAGS -Wl,-lucrtbase"
+    # Force the Universal C Runtime
+    FLAGS="$FLAGS -D__MSVCRT_VERSION__=0xE00"
     ;;
 esac
 
