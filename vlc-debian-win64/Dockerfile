@@ -82,7 +82,7 @@ RUN set -x && \
     echo $MPFR_SHA256 mpfr-$MPFR_VERSION.tar.gz | sha256sum -c && \
     wget -q https://download.videolan.org/contrib/gmp/gmp-$GMP_VERSION.tar.xz && \
     echo $GMP_SHA256 gmp-$GMP_VERSION.tar.xz | sha256sum -c && \
-    wget -q ftp://ftp.gnu.org/gnu/mpc/mpc-$MPC_VERSION.tar.gz && \
+    wget -q https://ftp.gnu.org/gnu/mpc/mpc-$MPC_VERSION.tar.gz && \
     echo $MPC_SHA256 mpc-$MPC_VERSION.tar.gz | sha256sum -c && \
     tar xf mpfr-$MPFR_VERSION.tar.gz && \
     tar xf gmp-$GMP_VERSION.tar.xz && \

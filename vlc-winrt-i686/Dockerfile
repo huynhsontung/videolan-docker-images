@@ -41,7 +41,7 @@ RUN set -x && \
     ln -s $MINGW_PREFIX $TOOLCHAIN_PREFIX/mingw && \
     wget -q http://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.bz2 && \
     echo $BINUTILS_SHA256 binutils-$BINUTILS_VERSION.tar.bz2 | sha256sum -c && \
-    wget -q ftp://ftp.uvsq.fr/pub/gcc/releases/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.xz && \
+    wget -q https://ftp.gnu.org/gnu/gcc/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.xz && \
     echo $GCC_SHA256 gcc-$GCC_VERSION.tar.xz | sha256sum -c && \
     git config --global user.name "VideoLAN Buildbot" && \
     git config --global user.email buildbot@videolan.org && \
@@ -62,7 +62,7 @@ RUN set -x && \
     echo $MPFR_SHA256 mpfr-$MPFR_VERSION.tar.gz | sha256sum -c && \
     wget -q https://gmplib.org/download/gmp/gmp-$GMP_VERSION.tar.xz && \
     echo $GMP_SHA256 gmp-$GMP_VERSION.tar.xz | sha256sum -c && \
-    wget -q ftp://ftp.gnu.org/gnu/mpc/mpc-$MPC_VERSION.tar.gz && \
+    wget -q https://ftp.gnu.org/gnu/mpc/mpc-$MPC_VERSION.tar.gz && \
     echo $MPC_SHA256 mpc-$MPC_VERSION.tar.gz | sha256sum -c && \
     tar xf mpfr-$MPFR_VERSION.tar.gz && \
     tar xf gmp-$GMP_VERSION.tar.xz && \
