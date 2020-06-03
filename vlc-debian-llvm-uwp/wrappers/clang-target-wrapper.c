@@ -193,9 +193,9 @@ int _tmain(int argc, TCHAR* argv[]) {
         // add the minimum runtime to use for UWP targets
         exec_argv[arg++] = _T("-Wl,-lwindowsapp");
         // This requires that the default crt is ucrt.
-        exec_argv[arg++] = _T("-Wl,-lucrtbase");
+        exec_argv[arg++] = _T("-Wl,-lvcruntime140_app");
         // force the user of Universal C Runtime
-        exec_argv[arg++] = _T("-D__MSVCRT_VERSION__=0xE00");
+        exec_argv[arg++] = _T("-D_UCRT");
     }
 
     exec_argv[arg++] = _T("-target");

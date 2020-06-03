@@ -34,7 +34,7 @@ esac
 FLAGS="-m $M"
 case $TARGET_OS in
 mingw32uwp)
-    FLAGS="$FLAGS -lwindowsapp -lucrtbase -lucrt"
+    FLAGS="$FLAGS -lwindowsapp -lvcruntime140_app"
     ;;
 esac
 ld.lld $FLAGS "$@"

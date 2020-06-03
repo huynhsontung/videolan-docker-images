@@ -75,9 +75,9 @@ mingw32uwp)
     # add the minimum runtime to use for UWP targets
     FLAGS="$FLAGS -Wl,-lwindowsapp"
     # This requires that the default crt is ucrt.
-    FLAGS="$FLAGS -Wl,-lucrtbase"
+    FLAGS="$FLAGS -Wl,-lvcruntime140_app"
     # Force the Universal C Runtime
-    FLAGS="$FLAGS -D__MSVCRT_VERSION__=0xE00"
+    FLAGS="$FLAGS -D_UCRT"
     ;;
 esac
 
