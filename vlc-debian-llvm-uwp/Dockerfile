@@ -44,11 +44,10 @@ ENV PATH=/opt/tools/bin:$PATH
 # Build everything that uses the llvm monorepo. We need to build the mingw runtime before the compiler-rt/libunwind/libcxxabi/libcxx runtimes.
 COPY build-llvm.sh strip-llvm.sh install-wrappers.sh build-mingw-w64.sh build-compiler-rt.sh build-mingw-w64-libraries.sh build-libcxx.sh ./
 COPY wrappers/*.sh wrappers/*.c wrappers/*.h ./wrappers/
-RUN MINGW_W64_HASH=bb73d2e3a260d20e72fe4221411032f4175f58ec \
-    ./build-llvm.sh $TOOLCHAIN_PREFIX && \
+RUN ./build-llvm.sh $TOOLCHAIN_PREFIX && \
     ./strip-llvm.sh $TOOLCHAIN_PREFIX && \
     ./install-wrappers.sh $TOOLCHAIN_PREFIX && \
-    MINGW_W64_VERSION=$MINGW_W64_HASH ./build-mingw-w64.sh $TOOLCHAIN_PREFIX --with-default-msvcrt=ucrt --with-default-win32-winnt=0xA00 && \
+    MINGW_W64_VERSION=bb73d2e3a260d20e72fe4221411032f4175f58ec ./build-mingw-w64.sh $TOOLCHAIN_PREFIX --with-default-msvcrt=ucrt --with-default-win32-winnt=0xA00 && \
     ./build-compiler-rt.sh $TOOLCHAIN_PREFIX && \
     ./build-mingw-w64-libraries.sh $TOOLCHAIN_PREFIX && \
     ./build-libcxx.sh $TOOLCHAIN_PREFIX && \
