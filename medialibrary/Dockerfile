@@ -2,7 +2,7 @@ FROM debian:sid-20200607-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202006171458
+ENV IMAGE_DATE=202006251733
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -37,10 +37,6 @@ RUN set -x && \
     ../configure --disable-lua --disable-qt --disable-skins2 \
         --disable-nls --disable-xcb --disable-alsa \
         --prefix=/prefix && \
-    make -j4 && make install && \
-    git clone https://code.videolan.org/videolan/libvlcpp.git && \
-    cd libvlcpp && ./bootstrap && \
-    ./configure --prefix=/prefix/ && \
     make -j4 && make install
 
 ENV PKG_CONFIG_PATH=/prefix/lib/pkgconfig 
