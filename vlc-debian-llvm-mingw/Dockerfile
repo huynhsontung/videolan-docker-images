@@ -2,7 +2,7 @@ FROM debian:testing-20200514-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202006031600
+ENV IMAGE_DATE=202007021001
 
 RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
     apt-get upgrade -y && \
@@ -47,7 +47,7 @@ COPY wrappers/*.sh wrappers/*.c wrappers/*.h ./wrappers/
 RUN ./build-llvm.sh $TOOLCHAIN_PREFIX && \
     ./strip-llvm.sh $TOOLCHAIN_PREFIX && \
     ./install-wrappers.sh $TOOLCHAIN_PREFIX && \
-    MINGW_W64_VERSION=bb73d2e3a260d20e72fe4221411032f4175f58ec ./build-mingw-w64.sh $TOOLCHAIN_PREFIX --with-default-msvcrt=msvcrt && \
+    MINGW_W64_VERSION=ceb3ac2f42d56504fae5bd5cfe7f681643baccd6 ./build-mingw-w64.sh $TOOLCHAIN_PREFIX --with-default-msvcrt=msvcrt && \
     ./build-compiler-rt.sh $TOOLCHAIN_PREFIX && \
     ./build-mingw-w64-libraries.sh $TOOLCHAIN_PREFIX && \
     ./build-libcxx.sh $TOOLCHAIN_PREFIX && \
