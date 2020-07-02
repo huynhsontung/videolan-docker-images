@@ -72,7 +72,7 @@ RUN set -x && \
     cd binutils-$BINUTILS_VERSION && mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE \
                     --disable-werror --disable-multilib && make -j$CORES && make install-strip && \
-    cd /build/mingw-w64 && git checkout $MINGW_W64_HASH && \
+    cd /build/mingw-w64 && git checkout $MINGW_W64_HASH && autoreconf -vif && \
     cd /build/mingw-w64/mingw-w64-headers && mkdir build && cd build && \
     ../configure --prefix=$MINGW_PREFIX \
                     --host=$TARGET_TUPLE && make install && \
