@@ -9,7 +9,7 @@ ARG VIDEOLAN_UID=499
 # 8 cores ought to be enough for anybody
 ARG CORES=8
 
-ENV IMAGE_DATE=202006021900
+ENV IMAGE_DATE=202007021001
 
 ENV TARGET_TUPLE=x86_64-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-${TARGET_TUPLE}
@@ -54,7 +54,7 @@ RUN set -x && \
     GMP_SHA256=d36e9c05df488ad630fff17edb50051d6432357f9ce04e34a09b3d818825e831 \
     MPC_VERSION=1.0.3 \
     MPC_SHA256=617decc6ea09889fb08ede330917a00b16809b8db88c29c31bfbb49cbf88ecc3 \
-    MINGW_W64_HASH=bb73d2e3a260d20e72fe4221411032f4175f58ec \
+    MINGW_W64_HASH=ceb3ac2f42d56504fae5bd5cfe7f681643baccd6 \
     && \
     mkdir /build/ && \
     cd /build && \
