@@ -79,6 +79,7 @@ cd mingw-w64
 if [ -n "$SYNC" ] || [ -n "$CHECKOUT" ]; then
     [ -z "$SYNC" ] || git fetch
     git checkout $MINGW_W64_VERSION
+    autoreconf -vif
 fi
 
 # If crosscompiling the toolchain itself, we already have a mingw-w64
