@@ -17,24 +17,11 @@ RUN TARGET_TRIPLE=i686-w64-mingw32 \
     mkdir -p /build/ml && cd /build/ml && \
     git clone --depth=1 https://git.videolan.org/git/vlc.git && \
     cd vlc && \
-    cd extras/tools && ./bootstrap && make -j`nproc` && \
-    make -j`nproc` .buildlibtool .buildcmake .buildmeson && \
-    export PATH=`pwd`/build/bin:$PATH && cd ../../ && \
-    cd contrib && mkdir win32 && cd win32 && \
-    ../bootstrap --host=$TARGET_TRIPLE --disable-qt --disable-skins2 \
-        --disable-lua --disable-protobuf --disable-gettext \
-        --disable-qtdeclarative --disable-qtgraphicaleffects --disable-qtquickcontrols \
-        --disable-qtquickcontrols2 --disable-qtsvg --disable-libplacebo && \
-        make -j`nproc` && \
-    cd /build/ml/vlc && ./bootstrap && mkdir build && cd build && \
-    ../configure --host=$TARGET_TRIPLE \
-        --disable-lua --disable-qt --disable-skins2 \
-        --disable-nls --disable-aom \
-        --prefix=/prefix && \
-    make -j`nproc` && make install && \
+    ./extras/package/win32/build.sh -z -a i686 -o /prefix/ && \
+    find /prefix/lib -name '*.la' -delete && \
     mkdir -p /prefix/dll && \
-    cp src/.libs/libvlccore.dll /prefix/dll/ && \
-    cp lib/.libs/libvlc.dll /prefix/dll && \
+    cp win32/src/.libs/libvlccore.dll /prefix/dll/ && \
+    cp win32/lib/.libs/libvlc.dll /prefix/dll && \
     cd /build/ml && wget -q https://www.sqlite.org/2018/$SQLITE_VERSION.tar.gz && \
     echo $SQLITE_SHA256 $SQLITE_VERSION.tar.gz | sha256sum -c && \
     tar xzf $SQLITE_VERSION.tar.gz && cd $SQLITE_VERSION && \
