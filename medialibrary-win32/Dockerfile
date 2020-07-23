@@ -11,7 +11,7 @@ RUN TARGET_TRIPLE=i686-w64-mingw32 \
     SQLITE_VERSION=sqlite-autoconf-3260000 \
     SQLITE_SHA256=5daa6a3fb7d1e8c767cd59c4ded8da6e4b00c61d3b466d0685e35c4dd6d7bf5d \
     JPEGTURBO_VERSION=1.5.0 \
-    JPEGTURBO_SHA256=9f397c31a67d2b00ee37597da25898b03eb282ccd87b135a50a69993b6a2035f \
+    JPEGTURBO_SHA256=232280e1c9c3e6a1de95fe99be2f7f9c0362ee08f3e3e48d50ee83b9a2ed955b \
     RAPIDJSON_VERSION=1.1.0 \
     RAPIDJSON_SHA256=bf7ced29704a1e696fbccf2a2b4ea068e7774fa37f6d7dd4039d0787f8bed98e && \
     mkdir -p /build/ml && cd /build/ml && \
@@ -41,10 +41,10 @@ RUN TARGET_TRIPLE=i686-w64-mingw32 \
     ./configure --prefix=/prefix --host=$TARGET_TRIPLE --disable-shared && \
     make -j`nproc` && make install && \
     cd /build/ml && \
-    wget -q https://downloads.sourceforge.net/project/libjpeg-turbo/1.5.0/libjpeg-turbo-$JPEGTURBO_VERSION.tar.gz && \
+    wget -q -O libjpeg-turbo-$JPEGTURBO_VERSION.tar.gz https://github.com/libjpeg-turbo/libjpeg-turbo/archive/$JPEGTURBO_VERSION.tar.gz && \
     echo $JPEGTURBO_SHA256 libjpeg-turbo-$JPEGTURBO_VERSION.tar.gz | sha256sum -c && \
     tar xzf libjpeg-turbo-$JPEGTURBO_VERSION.tar.gz && \
-    cd libjpeg-turbo-$JPEGTURBO_VERSION && ./configure --host=$TARGET_TRIPLE --prefix=/prefix --disable-shared && \
+    cd libjpeg-turbo-$JPEGTURBO_VERSION && autoreconf -vif && ./configure --host=$TARGET_TRIPLE --prefix=/prefix --disable-shared && \
     make -j`nproc` && make install && \
     cd /build/ml && wget -q https://github.com/miloyip/rapidjson/archive/v$RAPIDJSON_VERSION.tar.gz && \
     echo $RAPIDJSON_SHA256 v$RAPIDJSON_VERSION.tar.gz | sha256sum -c && \
