@@ -1,4 +1,4 @@
-FROM debian:stretch-20200514-slim
+FROM debian:buster-20200803-slim
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -33,16 +33,16 @@ RUN set -x && \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
     gettext dos2unix zip wine nsis curl gperf flex bison \
     libcurl4-gnutls-dev python3 python3-requests lftp gcc make procps ca-certificates \
-    openjdk-8-jdk-headless locales \
+    openjdk-11-jdk-headless locales nsis nasm \
     && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install --no-install-suggests --no-install-recommends wine32 && \
     echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list.d/testing.list && \
-    apt-get update && apt-get -y -t testing --no-install-suggests --no-install-recommends install nasm nsis meson && \
+    apt-get update && apt-get -y -t testing --no-install-suggests --no-install-recommends install nasm meson && \
     rm -f /etc/apt/sources.list.d/testing.list && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
-    update-alternatives --install /usr/bin/python python /usr/bin/python3.5 1 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1 && \
     \
     GCC_VERSION=10.1.0 \
     GCC_SHA256=b6898a23844b656f1b68691c5c012036c2e694ac4b53a8918d4712ad876e7ea2 \

@@ -2,7 +2,7 @@ FROM debian:testing-20200514-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202007021001
+ENV IMAGE_DATE=202008191706
 
 RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
     apt-get upgrade -y && \
