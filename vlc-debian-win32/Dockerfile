@@ -33,8 +33,9 @@ RUN set -x && \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
     gettext dos2unix zip wine nsis curl gperf flex bison \
     libcurl4-gnutls-dev python3 python3-requests lftp gcc make procps ca-certificates \
-    openjdk-8-jdk-headless \
+    openjdk-8-jdk-headless locales \
     && \
+    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install --no-install-suggests --no-install-recommends wine32 && \
     echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list.d/testing.list && \
@@ -148,6 +149,7 @@ RUN set -x && \
     ./configure --prefix=/opt/protobuf --disable-shared --enable-static && make -j$CORES && make install && \
     cd / && rm -rf /build
 
+ENV LANG=en_US.UTF-8
 USER videolan
 RUN wine wineboot --init && \
     /opt/wine/wait_process.sh wineserver && \
