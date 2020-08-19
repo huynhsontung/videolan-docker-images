@@ -63,6 +63,9 @@ if [ -n "$SYNC" ] || [ -n "$CHECKOUT" ]; then
     cd llvm-project
     [ -z "$SYNC" ] || git fetch
     git checkout $LLVM_VERSION
+    if [ -d ../patches ]; then
+        git am -3 ../patches/*.patch
+    fi
     cd ..
 fi
 

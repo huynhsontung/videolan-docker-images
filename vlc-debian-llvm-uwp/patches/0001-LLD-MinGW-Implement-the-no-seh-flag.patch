@@ -1,0 +1,158 @@
+From cc0c6782791c7d154a75bbc18c8cdd2c94f517da Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Martin=20Storsj=C3=B6?= <martin@martin.st>
+Date: Mon, 27 Jul 2020 23:44:41 +0300
+Subject: [PATCH] [LLD] [MinGW] Implement the --no-seh flag
+
+Previously this flag was just ignored. If set, set the
+IMAGE_DLL_CHARACTERISTICS_NO_SEH bit, regardless of the normal safeSEH
+machinery.
+
+In mingw configurations, the safeSEH bit might not be set in e.g. object
+files built from handwritten assembly, making it impossible to use the
+normal safeseh flag. As mingw setups don't generally use SEH on 32 bit
+x86 at all, it should be fine to set that flag bit though - hook up
+the existing GNU ld flag for controlling that.
+
+Differential Revision: https://reviews.llvm.org/D84701
+
+(cherry picked from commit 745eb02496b515cc8292dd7f9d7f0db43e162013)
+---
+ lld/COFF/Config.h          |  1 +
+ lld/COFF/Driver.cpp        |  7 ++++---
+ lld/COFF/Options.td        |  1 +
+ lld/COFF/Writer.cpp        |  2 +-
+ lld/MinGW/Driver.cpp       |  2 ++
+ lld/MinGW/Options.td       |  2 +-
+ lld/test/COFF/noseh.s      | 19 +++++++++++++++++++
+ lld/test/MinGW/driver.test |  4 ++++
+ 8 files changed, 33 insertions(+), 5 deletions(-)
+ create mode 100644 lld/test/COFF/noseh.s
+
+diff --git a/lld/COFF/Config.h b/lld/COFF/Config.h
+index 2690ea5c408..2975e33ef1b 100644
+--- a/lld/COFF/Config.h
++++ b/lld/COFF/Config.h
+@@ -139,6 +139,7 @@ struct Configuration {
+   bool safeSEH = false;
+   Symbol *sehTable = nullptr;
+   Symbol *sehCount = nullptr;
++  bool noSEH = false;
+ 
+   // Used for /opt:lldlto=N
+   unsigned ltoo = 2;
+diff --git a/lld/COFF/Driver.cpp b/lld/COFF/Driver.cpp
+index f770fff80bc..0567a1e3884 100644
+--- a/lld/COFF/Driver.cpp
++++ b/lld/COFF/Driver.cpp
+@@ -1657,9 +1657,10 @@ void LinkerDriver::link(ArrayRef<const char *> argsArr) {
+   config->wordsize = config->is64() ? 8 : 4;
+ 
+   // Handle /safeseh, x86 only, on by default, except for mingw.
+-  if (config->machine == I386 &&
+-      args.hasFlag(OPT_safeseh, OPT_safeseh_no, !config->mingw))
+-    config->safeSEH = true;
++  if (config->machine == I386) {
++    config->safeSEH = args.hasFlag(OPT_safeseh, OPT_safeseh_no, !config->mingw);
++    config->noSEH = args.hasArg(OPT_noseh);
++  }
+ 
+   // Handle /functionpadmin
+   for (auto *arg : args.filtered(OPT_functionpadmin, OPT_functionpadmin_opt))
+diff --git a/lld/COFF/Options.td b/lld/COFF/Options.td
+index 468e4da7d05..7dbdd2c32ac 100644
+--- a/lld/COFF/Options.td
++++ b/lld/COFF/Options.td
+@@ -189,6 +189,7 @@ def include_optional : Joined<["/", "-", "/?", "-?"], "includeoptional:">,
+     HelpText<"Add symbol as undefined, but allow it to remain undefined">;
+ def kill_at : F<"kill-at">;
+ def lldmingw : F<"lldmingw">;
++def noseh : F<"noseh">;
+ def output_def : Joined<["/", "-", "/?", "-?"], "output-def:">;
+ def pdb_source_path : P<"pdbsourcepath",
+     "Base path used to make relative source file path absolute in PDB">;
+diff --git a/lld/COFF/Writer.cpp b/lld/COFF/Writer.cpp
+index fcad7739d30..e515a7e1a88 100644
+--- a/lld/COFF/Writer.cpp
++++ b/lld/COFF/Writer.cpp
+@@ -1370,7 +1370,7 @@ template <typename PEHeaderTy> void Writer::writeHeader() {
+     pe->DLLCharacteristics |= IMAGE_DLL_CHARACTERISTICS_GUARD_CF;
+   if (config->integrityCheck)
+     pe->DLLCharacteristics |= IMAGE_DLL_CHARACTERISTICS_FORCE_INTEGRITY;
+-  if (setNoSEHCharacteristic)
++  if (setNoSEHCharacteristic || config->noSEH)
+     pe->DLLCharacteristics |= IMAGE_DLL_CHARACTERISTICS_NO_SEH;
+   if (config->terminalServerAware)
+     pe->DLLCharacteristics |= IMAGE_DLL_CHARACTERISTICS_TERMINAL_SERVER_AWARE;
+diff --git a/lld/MinGW/Driver.cpp b/lld/MinGW/Driver.cpp
+index 1a256b44efb..2859154e222 100644
+--- a/lld/MinGW/Driver.cpp
++++ b/lld/MinGW/Driver.cpp
+@@ -281,6 +281,8 @@ bool mingw::link(ArrayRef<const char *> argsArr, bool canExitEarly,
+     add("-kill-at");
+   if (args.hasArg(OPT_appcontainer))
+     add("-appcontainer");
++  if (args.hasArg(OPT_no_seh))
++    add("-noseh");
+ 
+   if (args.getLastArgValue(OPT_m) != "thumb2pe" &&
+       args.getLastArgValue(OPT_m) != "arm64pe" && !args.hasArg(OPT_dynamicbase))
+diff --git a/lld/MinGW/Options.td b/lld/MinGW/Options.td
+index 17a964c119b..2bcc0bc3848 100644
+--- a/lld/MinGW/Options.td
++++ b/lld/MinGW/Options.td
+@@ -47,6 +47,7 @@ defm minor_subsystem_version: EqLong<"minor-subsystem-version",
+      "Set the OS and subsystem minor version">;
+ def no_insert_timestamp: F<"no-insert-timestamp">,
+     HelpText<"Don't include PE header timestamp">;
++def no_seh: F<"no-seh">, HelpText<"Set the 'no SEH' flag in the executable">;
+ def no_whole_archive: F<"no-whole-archive">,
+     HelpText<"No longer include all object files for following archives">;
+ def large_address_aware: Flag<["--"], "large-address-aware">,
+@@ -100,7 +101,6 @@ def: Flag<["--"], "full-shutdown">;
+ def: F<"high-entropy-va">;
+ def: S<"major-image-version">;
+ def: S<"minor-image-version">;
+-def: F<"no-seh">;
+ def: F<"nxcompat">;
+ def: F<"pic-executable">;
+ def: S<"plugin">;
+diff --git a/lld/test/COFF/noseh.s b/lld/test/COFF/noseh.s
+new file mode 100644
+index 00000000000..44295228622
+--- /dev/null
++++ b/lld/test/COFF/noseh.s
+@@ -0,0 +1,19 @@
++# REQUIRES: x86
++# RUN: llvm-mc -triple i686-w64-mingw32 %s -filetype=obj -o %t.obj
++# RUN: lld-link -lldmingw %t.obj -out:%t.exe -entry:main
++# RUN: llvm-readobj --file-headers %t.exe | FileCheck %s --check-prefix=DEFAULT
++# RUN: lld-link -lldmingw %t.obj -out:%t.noseh.exe -entry:main -noseh
++# RUN: llvm-readobj --file-headers %t.noseh.exe | FileCheck %s --check-prefix=NOSEH
++
++# DEFAULT: Characteristics [
++# DEFAULT-NOT:   IMAGE_DLL_CHARACTERISTICS_NO_SEH
++# DEFAULT: ]
++
++# NOSEH: Characteristics [
++# NOSEH:   IMAGE_DLL_CHARACTERISTICS_NO_SEH
++# NOSEH: ]
++
++        .text
++        .globl  _main
++_main:
++        ret
+diff --git a/lld/test/MinGW/driver.test b/lld/test/MinGW/driver.test
+index cf3a223adb9..e7f316546f7 100644
+--- a/lld/test/MinGW/driver.test
++++ b/lld/test/MinGW/driver.test
+@@ -223,3 +223,7 @@ UNKNOWN_ARG: error: unknown argument: --foo
+ 
+ RUN: not ld.lld -m i386pep 2>&1 | FileCheck -check-prefix NO_INPUT_FILES %s
+ NO_INPUT_FILES: error: no input files
++
++RUN: ld.lld -### -m i386pe foo.o -no-seh | FileCheck -check-prefix NOSEH %s
++RUN: ld.lld -### -m i386pe foo.o --no-seh | FileCheck -check-prefix NOSEH %s
++NOSEH: -noseh
+-- 
+2.27.0.windows.1
+
