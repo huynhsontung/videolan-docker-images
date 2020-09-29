@@ -2,7 +2,7 @@ FROM golangci/golangci-lint:v1.26-alpine
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202005051145
+ENV IMAGE_DATE=202009291648
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -14,6 +14,6 @@ ARG VIDEOLAN_UID=499
 RUN addgroup -g ${VIDEOLAN_UID} videolan && \
     adduser -u ${VIDEOLAN_UID} -G videolan -h /home/videolan -D videolan && \
     echo "videolan:videolan" | chpasswd && \
-    apk --no-cache add build-base jq autoconf automake libtool pkgconfig jsoncpp-dev curl-dev sassc
+    apk --no-cache add build-base jq autoconf automake libtool pkgconfig jsoncpp-dev curl-dev sassc curl
 
 USER videolan
