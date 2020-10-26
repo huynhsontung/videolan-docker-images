@@ -1,4 +1,4 @@
-FROM debian:buster-20200803-slim
+FROM debian:buster-20201012-slim
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -9,7 +9,7 @@ ARG VIDEOLAN_UID=499
 # 8 cores ought to be enough for anybody
 ARG CORES=8
 
-ENV IMAGE_DATE=202008191820
+ENV IMAGE_DATE=202010261412
 
 ENV TARGET_TUPLE=i686-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
@@ -54,7 +54,7 @@ RUN set -x && \
     GMP_SHA256=d36e9c05df488ad630fff17edb50051d6432357f9ce04e34a09b3d818825e831 \
     MPC_VERSION=1.0.3 \
     MPC_SHA256=617decc6ea09889fb08ede330917a00b16809b8db88c29c31bfbb49cbf88ecc3 \
-    MINGW_W64_HASH=ceb3ac2f42d56504fae5bd5cfe7f681643baccd6 \
+    MINGW_W64_HASH=af56acd2c36af609e701fa4880f25c5f37abe502 \
     && \
     mkdir /build/ && \
     cd /build && \
