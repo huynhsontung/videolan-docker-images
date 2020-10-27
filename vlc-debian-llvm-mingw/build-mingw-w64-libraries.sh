@@ -30,8 +30,12 @@ export PATH="$PREFIX/bin:$PATH"
 : ${CORES:=4}
 : ${ARCHS:=${TOOLCHAIN_ARCHS-i686 x86_64 armv7 aarch64}}
 
+if [ ! -d mingw-w64 ] || [ -n "$SYNC" ]; then
+    CHECKOUT_ONLY=1 ./build-mingw-w64.sh
+fi
+
 cd mingw-w64/mingw-w64-libraries
-for lib in winpthreads winstorecompat; do
+for lib in winstorecompat; do
     cd $lib
     for arch in $ARCHS; do
         [ -z "$CLEAN" ] || rm -rf build-$arch
