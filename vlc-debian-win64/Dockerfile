@@ -2,7 +2,7 @@ FROM debian:buster-20201012-slim
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
-ENV IMAGE_DATE=202010261412
+ENV IMAGE_DATE=202010301729
 # in the user range of main distributions, which means:
 # - Debian based: <1000
 # - RPM based: <500 (CentOS, RedHat, etc.)
@@ -10,12 +10,17 @@ ARG VIDEOLAN_UID=499
 # 8 cores ought to be enough for anybody
 ARG CORES=8
 
-ENV IMAGE_DATE=202007021001
+ENV IMAGE_DATE=202010301729
 
 ENV TARGET_TUPLE=x86_64-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-${TARGET_TUPLE}
 ENV MINGW_PREFIX=$TOOLCHAIN_PREFIX/${TARGET_TUPLE}
 ENV PATH=$TOOLCHAIN_PREFIX/bin:/opt/cmake/bin:/opt/protobuf/bin:$PATH
+
+# The wine SDK path differs from version to version, starting from the one in buster, it's
+# located in /usr/include/wine/wine/windows/ instead of 
+# /usr/include/wine/windows/
+ENV WINE_SDK_PATH=/usr/include/wine/wine/windows
 
 COPY scripts/wait_process.sh /opt/wine/
 COPY patches /patches
