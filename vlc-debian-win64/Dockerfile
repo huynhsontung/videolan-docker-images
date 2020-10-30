@@ -2,7 +2,6 @@ FROM debian:buster-20201012-slim
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
-ENV IMAGE_DATE=202010301729
 # in the user range of main distributions, which means:
 # - Debian based: <1000
 # - RPM based: <500 (CentOS, RedHat, etc.)
