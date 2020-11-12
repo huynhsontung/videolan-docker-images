@@ -11,7 +11,7 @@ RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
     automake yasm gettext autopoint vim git-svn ninja-build libwine-development \
     wine-development flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm \
     python3 python3-setuptools locales meson libltdl-dev ca-certificates curl default-jdk-headless \
-    cmake && \
+    cmake winbind && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install --no-install-suggests --no-install-recommends wine32-development && \
     apt-get clean -y && \
