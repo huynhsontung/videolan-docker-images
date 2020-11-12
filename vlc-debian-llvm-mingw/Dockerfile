@@ -51,6 +51,7 @@ COPY build-libssp.sh libssp-Makefile ./
 RUN ./build-libssp.sh $TOOLCHAIN_PREFIX && \
     rm -rf /build/*
 
+# Prepare wine installation
 COPY scripts/wait_process.sh /opt/wine/
 RUN wget -q https://raw.githubusercontent.com/Winetricks/winetricks/d30478da6981e0842956e5b326339b52540efaec/src/winetricks -O /opt/wine/winetricks && \
     WINETRICKS_SHA256=01ebb56d22f54467343700eedfe283d82a47e67bbb6c2d68b7da743f41bb78a3 && \
