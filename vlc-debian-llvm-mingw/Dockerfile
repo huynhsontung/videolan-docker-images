@@ -1,4 +1,4 @@
-FROM debian:sid-20201012-slim
+FROM debian:buster-20201012-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
@@ -16,7 +16,7 @@ RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/* && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
-    update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1
 
 ENV LANG=en_US.UTF-8
 
