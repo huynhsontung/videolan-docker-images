@@ -156,13 +156,9 @@ build_all() {
             -DLIBCXX_ENABLE_EXCEPTIONS=ON \
             -DLIBCXX_ENABLE_THREADS=ON \
             -DLIBCXX_HAS_WIN32_THREAD_API=ON \
-            -DLIBCXX_ENABLE_MONOTONIC_CLOCK=ON \
             -DLIBCXX_ENABLE_SHARED=$SHARED \
             -DLIBCXX_ENABLE_STATIC=$STATIC \
-            -DLIBCXX_SUPPORTS_STD_EQ_CXX11_FLAG=TRUE \
-            -DLIBCXX_HAVE_CXX_ATOMICS_WITHOUT_LIB=TRUE \
             -DLIBCXX_ENABLE_EXPERIMENTAL_LIBRARY=OFF \
-            -DLIBCXX_ENABLE_FILESYSTEM=OFF \
             -DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=TRUE \
             -DLIBCXX_ENABLE_NEW_DELETE_DEFINITIONS=ON \
             -DLIBCXX_CXX_ABI=libcxxabi \
@@ -185,7 +181,14 @@ build_all() {
         mkdir -p build-$arch-$type
         cd build-$arch-$type
         if [ "$type" = "shared" ]; then
-            LIBCXXABI_VISIBILITY_FLAGS="-D_LIBCPP_BUILDING_LIBRARY= -U_LIBCXXABI_DISABLE_VISIBILITY_ANNOTATIONS"
+            # Define _LIBCPP_BUILDING_LIBRARY, to an empty string to match
+            # cases in source files that also do
+            # "#define _LIBCPP_BUILDING_LIBRARY". Since Nov 3 2020, libcxxabi
+            # itself also defines this, but with a plain
+            # -D_LIBCPP_BUILDING_LIBRARY, which defines it to 1. Therefore,
+            # first undefine any potential existing define from the command
+            # line, to avoid conflicts.
+            LIBCXXABI_VISIBILITY_FLAGS="-U_LIBCPP_BUILDING_LIBRARY -D_LIBCPP_BUILDING_LIBRARY= -U_LIBCXXABI_DISABLE_VISIBILITY_ANNOTATIONS"
         else
             LIBCXXABI_VISIBILITY_FLAGS=""
         fi
