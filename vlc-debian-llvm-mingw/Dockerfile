@@ -2,7 +2,7 @@ FROM debian:buster-20201012-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202011131520
+ENV IMAGE_DATE=202011301436
 
 RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
     apt-get upgrade -y && \
@@ -27,8 +27,6 @@ WORKDIR /build
 
 ENV TOOLCHAIN_PREFIX=/opt/llvm-mingw
 
-ARG TOOLCHAIN_ARCHS="i686 x86_64 armv7 aarch64"
-
 ARG CORES=4
 
 RUN CMAKE_VERSION=3.17.0 && \
@@ -50,13 +48,17 @@ RUN CMAKE_VERSION=3.17.0 && \
 
 ENV PATH=/opt/tools/bin:$PATH
 
+ARG TOOLCHAIN_ARCHS="i686 x86_64 armv7 aarch64"
+
+ARG DEFAULT_CRT=msvcrt
+
 # Build everything that uses the llvm monorepo. We need to build the mingw runtime before the compiler-rt/libunwind/libcxxabi/libcxx runtimes.
 COPY build-llvm.sh strip-llvm.sh install-wrappers.sh build-mingw-w64.sh build-mingw-w64-tools.sh build-compiler-rt.sh build-mingw-w64-libraries.sh build-libcxx.sh ./
 COPY wrappers/*.sh wrappers/*.c wrappers/*.h ./wrappers/
 RUN ./build-llvm.sh $TOOLCHAIN_PREFIX && \
     ./strip-llvm.sh $TOOLCHAIN_PREFIX && \
     ./install-wrappers.sh $TOOLCHAIN_PREFIX && \
-    MINGW_W64_VERSION=af56acd2c36af609e701fa4880f25c5f37abe502 ./build-mingw-w64.sh $TOOLCHAIN_PREFIX --with-default-msvcrt=msvcrt && \
+    MINGW_W64_VERSION=ecb4ff5498dfedd6abcbadb889b84fab19ee57b2 ./build-mingw-w64.sh $TOOLCHAIN_PREFIX --with-default-msvcrt=$DEFAULT_CRT && \
     ./build-mingw-w64-tools.sh $TOOLCHAIN_PREFIX && \
     ./build-compiler-rt.sh $TOOLCHAIN_PREFIX && \
     ./build-mingw-w64-libraries.sh $TOOLCHAIN_PREFIX && \

@@ -35,7 +35,7 @@ if [ ! -d mingw-w64 ] || [ -n "$SYNC" ]; then
 fi
 
 cd mingw-w64/mingw-w64-libraries
-for lib in winstorecompat; do
+for lib in winpthreads winstorecompat; do
     cd $lib
     for arch in $ARCHS; do
         [ -z "$CLEAN" ] || rm -rf build-$arch
