@@ -38,6 +38,14 @@ RUN CMAKE_VERSION=3.17.0 && \
     tar xzf cmake-$CMAKE_VERSION.tar.gz && \
     cd cmake-$CMAKE_VERSION && ./configure --prefix=/opt/tools/ --parallel=$CORES --no-qt-gui -- \
         -DCMAKE_USE_OPENSSL:BOOL=OFF -DBUILD_TESTING:BOOL=OFF && make -j$CORES && make install && \
+    cd /build && \
+    PROTOBUF_VERSION=3.1.0 && \
+    PROTOBUF_SHA256=51ceea9957c875bdedeb1f64396b5b0f3864fe830eed6a2d9c066448373ea2d6 && \
+    wget -q https://github.com/google/protobuf/releases/download/v$PROTOBUF_VERSION/protobuf-cpp-$PROTOBUF_VERSION.tar.gz && \
+    echo $PROTOBUF_SHA256 protobuf-cpp-$PROTOBUF_VERSION.tar.gz | sha256sum -c && \
+    tar xzfo protobuf-cpp-$PROTOBUF_VERSION.tar.gz && \
+    cd protobuf-$PROTOBUF_VERSION && \
+    ./configure --prefix=/opt/tools/ --disable-shared --enable-static && make -j$CORES && make install && \
     rm -rf /build/*
 
 ENV PATH=/opt/tools/bin:$PATH
