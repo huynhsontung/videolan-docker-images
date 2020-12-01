@@ -16,7 +16,7 @@
 
 set -e
 
-: ${LLVM_VERSION:=llvmorg-10.0.0}
+: ${LLVM_VERSION:=llvmorg-11.0.0}
 ASSERTS=OFF
 BUILDDIR=build
 unset HOST
@@ -63,9 +63,6 @@ if [ -n "$SYNC" ] || [ -n "$CHECKOUT" ]; then
     cd llvm-project
     [ -z "$SYNC" ] || git fetch
     git checkout $LLVM_VERSION
-    if [ -d ../patches ]; then
-        git am -3 ../patches/*.patch
-    fi
     cd ..
 fi
 
@@ -112,10 +109,14 @@ if [ -n "$HOST" ]; then
 
     native=$(find_native_tools)
     if [ -n "$native" ]; then
-        CMAKEFLAGS="$CMAKEFLAGS -DLLVM_TABLEGEN=$native/llvm-tblgen"
-        CMAKEFLAGS="$CMAKEFLAGS -DCLANG_TABLEGEN=$native/clang-tblgen"
-        CMAKEFLAGS="$CMAKEFLAGS -DLLDB_TABLEGEN=$native/lldb-tblgen"
-        CMAKEFLAGS="$CMAKEFLAGS -DLLVM_CONFIG_PATH=$native/llvm-config"
+        suffix=""
+        if [ -f $native/llvm-tblgen.exe ]; then
+            suffix=".exe"
+        fi
+        CMAKEFLAGS="$CMAKEFLAGS -DLLVM_TABLEGEN=$native/llvm-tblgen$suffix"
+        CMAKEFLAGS="$CMAKEFLAGS -DCLANG_TABLEGEN=$native/clang-tblgen$suffix"
+        CMAKEFLAGS="$CMAKEFLAGS -DLLDB_TABLEGEN=$native/lldb-tblgen$suffix"
+        CMAKEFLAGS="$CMAKEFLAGS -DLLVM_CONFIG_PATH=$native/llvm-config$suffix"
     fi
     CROSS_ROOT=$(cd $(dirname $(which $HOST-gcc))/../$HOST && pwd)
     CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_FIND_ROOT_PATH=$CROSS_ROOT"

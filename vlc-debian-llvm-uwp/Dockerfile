@@ -1,21 +1,22 @@
-FROM debian:testing-20200514-slim
+FROM debian:buster-20201012-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202008191212
+ENV IMAGE_DATE=202011131520
 
 RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
     apt-get upgrade -y && \
     apt-get install -qqy --no-install-suggests --no-install-recommends \
     git wget bzip2 file unzip libtool-bin pkg-config build-essential \
-    automake yasm gettext autopoint vim python git-svn ninja-build libwine-development \
+    automake yasm gettext autopoint vim git-svn ninja-build libwine-development \
     wine-development flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm \
-    python3 locales meson libltdl-dev ca-certificates curl default-jdk-headless && \
+    python3 python3-setuptools locales meson libltdl-dev ca-certificates curl default-jdk-headless && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install --no-install-suggests --no-install-recommends wine32-development && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/* && \
-    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1
 
 ENV LANG=en_US.UTF-8
 
@@ -42,13 +43,13 @@ RUN CMAKE_VERSION=3.17.0 && \
 ENV PATH=/opt/tools/bin:$PATH
 
 # Build everything that uses the llvm monorepo. We need to build the mingw runtime before the compiler-rt/libunwind/libcxxabi/libcxx runtimes.
-COPY build-llvm.sh strip-llvm.sh install-wrappers.sh build-mingw-w64.sh build-compiler-rt.sh build-mingw-w64-libraries.sh build-libcxx.sh ./
+COPY build-llvm.sh strip-llvm.sh install-wrappers.sh build-mingw-w64.sh build-mingw-w64-tools.sh build-compiler-rt.sh build-mingw-w64-libraries.sh build-libcxx.sh ./
 COPY wrappers/*.sh wrappers/*.c wrappers/*.h ./wrappers/
-COPY patches/*.patch ./patches/
 RUN ./build-llvm.sh $TOOLCHAIN_PREFIX && \
     ./strip-llvm.sh $TOOLCHAIN_PREFIX && \
     ./install-wrappers.sh $TOOLCHAIN_PREFIX && \
-    MINGW_W64_VERSION=ceb3ac2f42d56504fae5bd5cfe7f681643baccd6 ./build-mingw-w64.sh $TOOLCHAIN_PREFIX --with-default-msvcrt=ucrt --with-default-win32-winnt=0xA00 && \
+    MINGW_W64_VERSION=af56acd2c36af609e701fa4880f25c5f37abe502 ./build-mingw-w64.sh $TOOLCHAIN_PREFIX --with-default-msvcrt=ucrt --with-default-win32-winnt=0xA00 && \
+    ./build-mingw-w64-tools.sh $TOOLCHAIN_PREFIX && \
     ./build-compiler-rt.sh $TOOLCHAIN_PREFIX && \
     ./build-mingw-w64-libraries.sh $TOOLCHAIN_PREFIX && \
     ./build-libcxx.sh $TOOLCHAIN_PREFIX && \
@@ -60,9 +61,10 @@ COPY build-libssp.sh libssp-Makefile ./
 RUN ./build-libssp.sh $TOOLCHAIN_PREFIX && \
     rm -rf /build/*
 
+# Prepare wine installation
 COPY scripts/wait_process.sh /opt/wine/
-RUN wget -q https://raw.githubusercontent.com/Winetricks/winetricks/d30478da6981e0842956e5b326339b52540efaec/src/winetricks -O /opt/wine/winetricks && \
-    WINETRICKS_SHA256=01ebb56d22f54467343700eedfe283d82a47e67bbb6c2d68b7da743f41bb78a3 && \
+RUN wget -q https://raw.githubusercontent.com/Winetricks/winetricks/9c542b693eb2b63f34428066f54040da3a537c38/src/winetricks -O /opt/wine/winetricks && \
+    WINETRICKS_SHA256=8e180b094e9cde430a89ee98ca63855bfacf3479b030b9bd4fe24bbd261ee04a && \
     echo $WINETRICKS_SHA256 /opt/wine/winetricks | sha256sum -c && \
     chmod +x /opt/wine/winetricks && \
     WINE_MONO_VERSION=4.5.6 && mkdir -p /usr/share/wine/mono && \

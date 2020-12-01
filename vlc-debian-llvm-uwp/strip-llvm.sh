@@ -56,11 +56,7 @@ for i in bugpoint c-index-test clang-* diagtool dsymutil git-clang-format hmapto
     basename=$i
     if [ -n "$EXEEXT" ]; then
         # Some in the list are expanded globs, some are plain names we list.
-        case $i in
-        *$EXEEXT)
-            basename=$(echo $i | sed s/$EXEEXT//)
-            ;;
-        esac
+        basename=${i%$EXEEXT}
         i=$basename
         if [ -e $basename$EXEEXT ]; then
             i=$basename$EXEEXT
@@ -119,7 +115,7 @@ fi
 cd ..
 rm -rf share libexec
 cd include
-rm -rf clang clang-c lld llvm llvm-c
+rm -rf clang clang-c lld llvm llvm-c lldb
 cd ..
 cd lib
 for i in lib*.a *.so* *.dylib* cmake; do
