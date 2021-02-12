@@ -1,6 +1,6 @@
-FROM registry.videolan.org/vlc-debian-win32:20200819162133
+FROM registry.videolan.org/vlc-debian-win32:20201106141924
 
-ENV IMAGE_DATE=202011191111
+ENV IMAGE_DATE=202102121934
 
 USER root
 RUN mkdir -p /build/ml && chown videolan /build && chown videolan /build/ml && \
@@ -8,8 +8,8 @@ RUN mkdir -p /build/ml && chown videolan /build && chown videolan /build/ml && \
 USER videolan
 
 RUN TARGET_TRIPLE=i686-w64-mingw32 \
-    SQLITE_VERSION=sqlite-autoconf-3260000 \
-    SQLITE_SHA256=5daa6a3fb7d1e8c767cd59c4ded8da6e4b00c61d3b466d0685e35c4dd6d7bf5d \
+    SQLITE_VERSION=sqlite-autoconf-3340100 \
+    SQLITE_SHA256=2a3bca581117b3b88e5361d0ef3803ba6d8da604b1c1a47d902ef785c1b53e89 \
     JPEGTURBO_VERSION=1.5.0 \
     JPEGTURBO_SHA256=232280e1c9c3e6a1de95fe99be2f7f9c0362ee08f3e3e48d50ee83b9a2ed955b \
     RAPIDJSON_VERSION=1.1.0 \
@@ -22,7 +22,7 @@ RUN TARGET_TRIPLE=i686-w64-mingw32 \
     mkdir -p /prefix/dll && \
     cp win32/src/.libs/libvlccore.dll /prefix/dll/ && \
     cp win32/lib/.libs/libvlc.dll /prefix/dll && \
-    cd /build/ml && wget -q https://www.sqlite.org/2018/$SQLITE_VERSION.tar.gz && \
+    cd /build/ml && wget -q https://www.sqlite.org/2021/$SQLITE_VERSION.tar.gz && \
     echo $SQLITE_SHA256 $SQLITE_VERSION.tar.gz | sha256sum -c && \
     tar xzf $SQLITE_VERSION.tar.gz && cd $SQLITE_VERSION && \
     ./configure --prefix=/prefix --host=$TARGET_TRIPLE --disable-shared && \
