@@ -30,8 +30,6 @@ RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
         libc6-dev:i386 libgcc-10-dev:i386 wine32 qemu-user && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-COPY crossfiles/ /opt/crossfiles/
-
 USER videolan
 
 COPY scripts/wait_process.sh /opt/wine/
