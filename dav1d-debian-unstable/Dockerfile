@@ -1,8 +1,8 @@
-FROM debian:sid-20200514-slim
+FROM debian:sid-20210208-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202006022030
+ENV IMAGE_DATE=202102132000
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -27,7 +27,7 @@ RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
         gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 \
         gcc-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64-tools \
         gcc-multilib g++-multilib \
-        libc6-dev:i386 libgcc-8-dev:i386 wine32 && \
+        libc6-dev:i386 libgcc-10-dev:i386 wine32 qemu-user && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 COPY crossfiles/ /opt/crossfiles/
