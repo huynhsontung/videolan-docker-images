@@ -1,6 +1,6 @@
 FROM registry.videolan.org/vlc-debian-win32:20201106141924
 
-ENV IMAGE_DATE=202102121934
+ENV IMAGE_DATE=202102152105
 
 USER root
 RUN mkdir -p /build/ml && chown videolan /build && chown videolan /build/ml && \
@@ -41,3 +41,4 @@ RUN TARGET_TRIPLE=i686-w64-mingw32 \
     make install && \
     rm -rf /build/ml
 
+COPY crossfiles /opt/crossfiles
