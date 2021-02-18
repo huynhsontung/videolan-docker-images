@@ -1,8 +1,8 @@
-FROM debian:sid-20200514-slim
+FROM debian:sid-20210208-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202005290919
+ENV IMAGE_DATE=202102181413
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -26,7 +26,7 @@ RUN set -x && \
     apt-get install -y --no-install-suggests --no-install-recommends \
     openjdk-11-jdk lftp ca-certificates git-core libtool automake autoconf \
     autopoint make ninja-build python3 gettext pkg-config subversion \
-    cvs zip bzip2 p7zip-full wget dos2unix ragel yasm g++ g++-7 \
+    cvs zip bzip2 p7zip-full wget dos2unix ragel yasm g++ \
     m4 ant build-essential libtool-bin libavcodec-dev gdb \
     libavformat-dev libavresample-dev libavutil-dev libpostproc-dev \
     libswscale-dev wayland-protocols qtbase5-private-dev libarchive-dev \
@@ -34,18 +34,9 @@ RUN set -x && \
     qtdeclarative5-dev qtquickcontrols2-5-dev qml-module-qtquick-controls2 \
     qml-module-qtquick-layouts qml-module-qtquick-templates2 \
     qml-module-qtgraphicaleffects flex bison libxkbcommon-x11-dev libplacebo-dev \
-    meson doxygen graphviz libsqlite3-dev rapidjson-dev nasm && \
+    meson doxygen graphviz libsqlite3-dev rapidjson-dev nasm cmake && \
     apt-get build-dep --no-install-suggests --no-install-recommends -y vlc && \
     apt-get remove -y libprotobuf-dev protobuf-compiler && \
-    apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
-    mkdir /build && cd /build && \
-    CMAKE_VERSION=3.17.0 && \
-    CMAKE_SHA256=b74c05b55115eacc4fa2b77a814981dbda05cdc95a53e279fe16b7b272f00847 && \
-    wget -q http://www.cmake.org/files/v3.17/cmake-$CMAKE_VERSION.tar.gz && \
-    echo $CMAKE_SHA256 cmake-$CMAKE_VERSION.tar.gz | sha256sum -c && \
-    tar xzf cmake-$CMAKE_VERSION.tar.gz && \
-    cd cmake-$CMAKE_VERSION && ./configure --prefix=/opt/tools/ --parallel=$CORES --no-qt-gui -- \
-        -DCMAKE_USE_OPENSSL:BOOL=OFF -DBUILD_TESTING:BOOL=OFF && make -j$CORES && make install && \
-    rm -rf /build
+    apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 USER videolan
