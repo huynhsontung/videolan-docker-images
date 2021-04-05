@@ -1,6 +1,6 @@
 FROM ubuntu:focal-20201106
 
-ENV IMAGE_DATE=202012020300
+ENV IMAGE_DATE=202104051400
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -23,7 +23,7 @@ RUN set -x && \
         python python3-pip python3-setuptools python3-wheel python3-mako \
         libepoxy-dev liblcms2-dev libavutil-dev curl mesa-vulkan-drivers \
         gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 gcc-mingw-w64-i686 \
-        g++-mingw-w64-i686 mingw-w64-tools systemd-coredump && \
+        g++-mingw-w64-i686 mingw-w64-tools wine wine32 systemd-coredump && \
     pip3 install meson ninja gcovr && \
     curl -s https://packages.lunarg.com/lunarg-signing-key-pub.asc | apt-key add - && \
     echo "deb https://packages.lunarg.com/vulkan/${SDK_VERSION} focal main" > /etc/apt/sources.list.d/lunarg-vulkan-focal.list && \
