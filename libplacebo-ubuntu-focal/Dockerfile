@@ -24,7 +24,10 @@ RUN set -x && \
         libepoxy-dev liblcms2-dev curl mesa-vulkan-drivers \
         libavcodec-dev libavdevice-dev libavfilter-dev libavformat-dev libavutil-dev \
         gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 gcc-mingw-w64-i686 \
-        g++-mingw-w64-i686 mingw-w64-tools wine wine32 systemd-coredump && \
+        g++-mingw-w64-i686 mingw-w64-tools wine systemd-coredump && \
+    dpkg --add-architecture i386 && \
+    apt-get update && \
+    apt-get install --no-install-suggests --no-install-recommends -y wine32 && \
     pip3 install meson ninja gcovr && \
     curl -s https://packages.lunarg.com/lunarg-signing-key-pub.asc | apt-key add - && \
     echo "deb https://packages.lunarg.com/vulkan/${SDK_VERSION} focal main" > /etc/apt/sources.list.d/lunarg-vulkan-focal.list && \
