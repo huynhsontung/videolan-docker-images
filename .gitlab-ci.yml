@@ -1,7 +1,12 @@
 .build-images: &build-images |
   set -x
   DIRS=""
-  CHANGED=$(for i in `git log --name-only --pretty=oneline --full-index $CI_COMMIT_BEFORE_SHA..$CI_COMMIT_SHA | grep -vE '^[0-9a-f]{40} '`; do echo `dirname $i`; done | sort | uniq)
+  if [ "$CI_COMMIT_BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
+    BASE_SHA=$CI_MERGE_REQUEST_DIFF_BASE_SHA
+  else
+    BASE_SHA=$CI_COMMIT_BEFORE_SHA
+  fi
+  CHANGED=$(for i in `git log --name-only --pretty=oneline --full-index $BASE_SHA..$CI_COMMIT_SHA | grep -vE '^[0-9a-f]{40} '`; do echo `dirname $i`; done | sort | uniq)
   for dir in $CHANGED; do
     case "$dir" in
       ".")
@@ -15,8 +20,12 @@
   for d in $DIRS; do
     [ -d "$d" -a -f "$d/Dockerfile" ] || continue
     DATE=`date +'%Y%m%d%H%M%S'`
-    docker build --build-arg CORES=`nproc` -t registry.videolan.org/$d:$DATE $d/
-    docker push registry.videolan.org/$d:$DATE
+    docker build --build-arg CORES=`nproc` -t registry-mgmt.videolan.org/$d:$DATE $d/
+    if [ "$CI_PROJECT_NAMESPACE" = "videolan" -a -z "$CI_MERGE_REQUEST_ID" ]; then
+      docker login -u=$REGISTRY_LOGIN -p=$REGISTRY_AUTH registry-mgmt.videolan.org
+      docker push registry-mgmt.videolan.org/$d:$DATE
+      echo "Done: docker pull registry.videolan.org/$d:$DATE"
+    fi
   done
 
 variables:
@@ -32,7 +41,13 @@ before_script:
 
 build:
   stage: build
+  tags:
+    - dind-amd64
   image:
     name: docker:19.03.1
   script:
     - *build-images
+  only:
+    refs:
+      - merge_requests
+      - master@videolan/docker-images
