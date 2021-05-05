@@ -1,8 +1,8 @@
-FROM debian:buster-20201012-slim
+FROM debian:buster-20210408-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202011301436
+ENV IMAGE_DATE=202105051611
 
 RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
     apt-get upgrade -y && \
@@ -51,6 +51,8 @@ ENV PATH=/opt/tools/bin:$PATH
 ARG TOOLCHAIN_ARCHS="i686 x86_64 armv7 aarch64"
 
 ARG DEFAULT_CRT=msvcrt
+
+COPY patches/llvm-project/*.patch ./patches/llvm-project/
 
 # Build everything that uses the llvm monorepo. We need to build the mingw runtime before the compiler-rt/libunwind/libcxxabi/libcxx runtimes.
 COPY build-llvm.sh strip-llvm.sh install-wrappers.sh build-mingw-w64.sh build-mingw-w64-tools.sh build-compiler-rt.sh build-mingw-w64-libraries.sh build-libcxx.sh ./

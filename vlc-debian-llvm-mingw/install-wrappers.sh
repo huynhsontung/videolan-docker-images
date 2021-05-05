@@ -30,7 +30,7 @@ while [ $# -gt 0 ]; do
     shift
 done
 if [ -z "$PREFIX" ]; then
-    echo $0 [--host=<triple>] dest
+    echo $0 [--host=triple] dest
     exit 1
 fi
 mkdir -p "$PREFIX"
@@ -93,9 +93,13 @@ for arch in $ARCHS; do
             fi
             ln -sf $link_target$EXEEXT $arch-w64-$target_os-$exec$EXEEXT || true
         done
-        for exec in windres; do
-            ln -sf $exec-wrapper$EXEEXT $arch-w64-$target_os-$exec$EXEEXT
-        done
+        if [ -f "llvm-windres$EXEEXT" ]; then
+            # windres can't use llvm-wrapper, as that loses the original
+            # target arch prefix.
+            ln -sf llvm-windres$EXEEXT $arch-w64-$target_os-windres$EXEEXT
+        else
+            ln -sf windres-wrapper$EXEEXT $arch-w64-$target_os-windres$EXEEXT
+        fi
         for exec in ld objdump dlltool; do
             ln -sf $exec-wrapper.sh $arch-w64-$target_os-$exec
         done
