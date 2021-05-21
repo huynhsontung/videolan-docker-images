@@ -1,4 +1,4 @@
-FROM debian:buster-20201012-slim
+FROM debian:buster-20210511-slim
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -9,7 +9,7 @@ ARG VIDEOLAN_UID=499
 # 8 cores ought to be enough for anybody
 ARG CORES=8
 
-ENV IMAGE_DATE=202011061517
+ENV IMAGE_DATE=202105210940
 
 ENV TARGET_TUPLE=i686-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
@@ -38,7 +38,7 @@ RUN set -x && \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
     gettext dos2unix zip wine nsis curl gperf flex bison \
     libcurl4-gnutls-dev python3 python3-requests lftp gcc make procps ca-certificates \
-    openjdk-11-jdk-headless locales nsis nasm \
+    openjdk-11-jdk-headless locales nsis nasm jq \
     && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
     dpkg --add-architecture i386 && \
