@@ -89,7 +89,9 @@ RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     echo "videolan:videolan" | chpasswd
 
 USER videolan
-RUN wine wineboot --init && \
+
+RUN WINEARCH=win64 && \
+    wine64 wineboot --init && \
     /opt/wine/wait_process.sh wineserver && \
     /opt/wine/winetricks --unattended dotnet40 dotnet_verifier && \
     /opt/wine/wait_process.sh wineserver && \
