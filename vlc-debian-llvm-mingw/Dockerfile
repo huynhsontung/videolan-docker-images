@@ -96,7 +96,7 @@ RUN wine wineboot --init && \
     wget -q https://download.videolan.org/contrib/wix/wix-3.5.msi -O ~/wix.msi && \
     WIX_SHA256=621b70e8761d5b940d8c32a42b0e92fd55767f8908a9b32e06bb3d12a30bc47b && \
     echo $WIX_SHA256 ~/wix.msi | sha256sum -c && \
-    wine msiexec /i ~/wix.msi && \
+    wine64 msiexec /i ~/wix.msi && \
     cd ~/ && \
     rm -f ~/wix.msi && \
     rm -rf ~/.cache/winetricks && \
