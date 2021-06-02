@@ -1,6 +1,6 @@
 FROM ubuntu:focal-20201106
 
-ENV IMAGE_DATE=202104081400
+ENV IMAGE_DATE=202106021400
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -19,7 +19,7 @@ RUN set -x && \
     echo "videolan:videolan" | chpasswd && \
     apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
-        apt-utils git-core build-essential gnupg clang clang-tools gdb lcov \
+        apt-utils git-core build-essential gnupg clang clang-tools llvm gdb lcov \
         python python3-pip python3-setuptools python3-wheel python3-mako \
         libepoxy-dev liblcms2-dev curl mesa-vulkan-drivers \
         libavcodec-dev libavdevice-dev libavfilter-dev libavformat-dev libavutil-dev \
