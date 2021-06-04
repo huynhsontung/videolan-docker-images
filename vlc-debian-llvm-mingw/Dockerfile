@@ -93,7 +93,7 @@ USER videolan
 RUN WINEARCH=win64 && \
     wine64 wineboot --init && \
     /opt/wine/wait_process.sh wineserver && \
-    /opt/wine/winetricks --unattended dotnet40 dotnet_verifier && \
+    /opt/wine/winetricks -v --unattended arch=64 dotnet40 dotnet_verifier && \
     /opt/wine/wait_process.sh wineserver && \
     wget -q https://download.videolan.org/contrib/wix/wix-3.5.msi -O ~/wix.msi && \
     WIX_SHA256=621b70e8761d5b940d8c32a42b0e92fd55767f8908a9b32e06bb3d12a30bc47b && \
