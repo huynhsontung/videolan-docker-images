@@ -20,8 +20,8 @@ RUN set -x && \
     adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
     echo "videolan:videolan" | chpasswd && \
     mkdir -p /usr/share/man/man1 && \
-    echo "deb http://ftp.fr.debian.org/debian/ sid main" > /etc/apt/sources.list && \
-    echo "deb-src http://ftp.fr.debian.org/debian/ sid main" >> /etc/apt/sources.list && \
+    echo "deb http://ftp.debian.org/debian/ sid main" > /etc/apt/sources.list && \
+    echo "deb-src http://ftp.debian.org/debian/ sid main" >> /etc/apt/sources.list && \
     apt-get update && apt-get upgrade -q -y && \
     apt-get install -y --no-install-suggests --no-install-recommends \
     openjdk-11-jdk lftp ca-certificates git-core libtool automake autoconf \
