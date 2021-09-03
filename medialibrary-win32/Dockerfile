@@ -1,10 +1,16 @@
 FROM registry.videolan.org/vlc-debian-win32:20210521074247
 
-ENV IMAGE_DATE=202102152105
+ENV IMAGE_DATE=202109031339
 
 USER root
-RUN mkdir -p /build/ml && chown videolan /build && chown videolan /build/ml && \
+
+RUN echo "deb http://deb.debian.org/debian sid main" > /etc/apt/sources.list.d/sid.list && \
+    apt-get update && apt-get install -y -t sid --no-install-suggests --no-install-recommends meson && \
+    rm -f /etc/apt/sources.list.d/sid.list && \
+    apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /build/ml && chown videolan /build && chown videolan /build/ml && \
     mkdir -p /prefix && chown videolan /prefix
+
 USER videolan
 
 RUN TARGET_TRIPLE=i686-w64-mingw32 \

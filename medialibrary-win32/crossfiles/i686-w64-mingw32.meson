@@ -8,7 +8,6 @@ pkgconfig = 'pkg-config'
 exe_wrapper = ['wine']
 
 [properties]
-c_link_args = ['-static-libgcc']
 needs_exe_wrapper = true
 
 [host_machine]
@@ -17,3 +16,5 @@ cpu_family = 'x86'
 cpu = 'i686'
 endian = 'little'
 
+[built-in options]
+c_link_args = ['-static-libgcc']
