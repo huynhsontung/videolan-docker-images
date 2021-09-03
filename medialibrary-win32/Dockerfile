@@ -15,7 +15,7 @@ RUN TARGET_TRIPLE=i686-w64-mingw32 \
     RAPIDJSON_VERSION=1.1.0 \
     RAPIDJSON_SHA256=bf7ced29704a1e696fbccf2a2b4ea068e7774fa37f6d7dd4039d0787f8bed98e && \
     mkdir -p /build/ml && cd /build/ml && \
-    git clone --depth=1 https://git.videolan.org/git/vlc.git && \
+    git clone --depth=1 https://code.videolan.org/videolan/vlc.git && \
     cd vlc && \
     ./extras/package/win32/build.sh -z -a i686 -o /prefix/ && \
     find /prefix/lib -name '*.la' -delete && \
