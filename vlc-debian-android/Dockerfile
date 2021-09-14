@@ -55,12 +55,13 @@ RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
     unzip $SDK_TOOLS_FILENAME && \
     rm -f $SDK_TOOLS_FILENAME && \
     cd / && \
-    wget -q https://github.com/AdoptOpenJDK/openjdk8-upstream-binaries/releases/download/jdk8u232-b09/OpenJDK8U-jdk_x64_linux_8u232b09.tar.gz && \
-    JDK_SHA256=c261f5e2776f4430249fcf6276649969a40f28262d1f224390aa764ae84464df && \
-    echo $JDK_SHA256 OpenJDK8U-jdk_x64_linux_8u232b09.tar.gz | sha256sum -c && \
+    JDK_FILENAME=OpenJDK11U-jdk_x64_linux_11.0.12_7.tar.gz && \
+    wget -q https://github.com/AdoptOpenJDK/openjdk11-upstream-binaries/releases/download/jdk-11.0.12%2B7/$JDK_FILENAME && \
+    JDK_SHA256=06c04b1eccd61dec3849e88f7606d17192c9a713a433ba26f82fe5fe9587d6bb && \
+    echo $JDK_SHA256 $JDK_FILENAME | sha256sum -c && \
     mkdir -p /usr/lib/jvm/java-8-openjdk-amd64 && \
-    tar -C /usr/lib/jvm/java-8-openjdk-amd64 -xvzf OpenJDK8U-jdk_x64_linux_8u232b09.tar.gz --strip=1 && \
-    rm -f OpenJDK8U-jdk_x64_linux_8u232b09.tar.gz && \
+    tar -C /usr/lib/jvm/java-8-openjdk-amd64 -xvzf $JDK_FILENAME --strip=1 && \
+    rm -f $JDK_FILENAME && \
     cd sdk/android-sdk-linux && \
     cmdline-tools/bin/sdkmanager --sdk_root=/sdk/android-sdk-linux/ "build-tools;26.0.1" "platform-tools" "platforms;android-26" && \
     chown -R videolan /sdk && \
