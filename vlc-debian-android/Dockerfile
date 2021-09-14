@@ -48,11 +48,12 @@ RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
     echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "licenses/android-sdk-license" && \
     echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> "licenses/android-sdk-license" && \
     echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" >> "licenses/android-sdk-license" && \
-    wget -q https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip && \
-    SDK_TOOLS_SHA256=444e22ce8ca0f67353bda4b85175ed3731cae3ffa695ca18119cbacef1c1bea0 && \
-    echo $SDK_TOOLS_SHA256 sdk-tools-linux-3859397.zip | sha256sum -c && \
-    unzip sdk-tools-linux-3859397.zip && \
-    rm -f sdk-tools-linux-3859397.zip && \
+    SDK_TOOLS_FILENAME=commandlinetools-linux-7583922_latest.zip && \
+    wget -q https://dl.google.com/android/repository/$SDK_TOOLS_FILENAME && \
+    SDK_TOOLS_SHA256=124f2d5115eee365df6cf3228ffbca6fc3911d16f8025bebd5b1c6e2fcfa7faf && \
+    echo $SDK_TOOLS_SHA256 $SDK_TOOLS_FILENAME | sha256sum -c && \
+    unzip $SDK_TOOLS_FILENAME && \
+    rm -f $SDK_TOOLS_FILENAME && \
     cd / && \
     wget -q https://github.com/AdoptOpenJDK/openjdk8-upstream-binaries/releases/download/jdk8u232-b09/OpenJDK8U-jdk_x64_linux_8u232b09.tar.gz && \
     JDK_SHA256=c261f5e2776f4430249fcf6276649969a40f28262d1f224390aa764ae84464df && \
@@ -61,7 +62,7 @@ RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
     tar -C /usr/lib/jvm/java-8-openjdk-amd64 -xvzf OpenJDK8U-jdk_x64_linux_8u232b09.tar.gz --strip=1 && \
     rm -f OpenJDK8U-jdk_x64_linux_8u232b09.tar.gz && \
     cd sdk/android-sdk-linux && \
-    tools/bin/sdkmanager "build-tools;26.0.1" "platform-tools" "platforms;android-26" && \
+    cmdline-tools/bin/sdkmanager --sdk_root=/sdk/android-sdk-linux/ "build-tools;26.0.1" "platform-tools" "platforms;android-26" && \
     chown -R videolan /sdk && \
     mkdir /build && cd /build && \
     CMAKE_VERSION=3.17.0 && \
