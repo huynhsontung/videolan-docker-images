@@ -1,6 +1,6 @@
-FROM debian:bullseye-20210511-slim
+FROM debian:bullseye-20210902-slim
 
-ENV IMAGE_DATE=20210601100000
+ENV IMAGE_DATE=202109151132
 
 ARG VIDEOLAN_UID=499
 ARG EMSDK_VERSION=latest
@@ -11,7 +11,6 @@ COPY patches /patches
 ENV PATH=/opt/tools/bin:$PATH
 
 RUN  set -x && \
-     mkdir  /usr/share/man/man1/ && \ 
      apt-get update && \
      apt-get install -y git-core libtool automake autoconf autopoint make \
      gettext pkg-config subversion cmake cvs zip bzip2 p7zip-full wget dos2unix \
