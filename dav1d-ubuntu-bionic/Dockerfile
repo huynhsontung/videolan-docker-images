@@ -1,8 +1,8 @@
-FROM ubuntu:bionic-20200112
+FROM ubuntu:bionic-20210930
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202001211500
+ENV IMAGE_DATE=202110022000
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -16,7 +16,7 @@ RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     echo "videolan:videolan" | chpasswd && \
     apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
-        lftp ca-certificates curl git-core build-essential \
+        lftp ca-certificates curl git build-essential \
         procps snapcraft ninja-build python3-pip python3-setuptools \
         python3-wheel meson && \
     echo "deb http://archive.ubuntu.com/ubuntu/ focal main restricted" >> /etc/apt/sources.list.d/focal.list && \
