@@ -1,8 +1,8 @@
-FROM debian:sid-20210408-slim
+FROM debian:sid-20210927-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202104212000
+ENV IMAGE_DATE=202110020000
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -17,7 +17,7 @@ RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     apt-get update && \
     apt-get -y dist-upgrade && \
     apt-get install --no-install-suggests --no-install-recommends -y \
-        lftp ca-certificates curl git-core build-essential python3-pip \
+        lftp ca-certificates curl git build-essential python3-pip \
         python3-setuptools python3-wheel nasm clang \
         wine wine64 procps doxygen graphviz libsdl2-dev && \
     pip3 install meson ninja gcovr && \
