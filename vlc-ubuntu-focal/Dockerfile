@@ -2,7 +2,7 @@ FROM ubuntu:focal-20210416
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202106111900
+ENV IMAGE_DATE=202110051249
 ENV LANG=en_US.UTF-8
 ENV PATH="/snap/bin:$PATH:/usr/sbin"
 ENV SNAP="/snap/snapcraft/current"
