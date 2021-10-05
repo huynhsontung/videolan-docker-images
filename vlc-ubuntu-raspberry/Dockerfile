@@ -2,7 +2,7 @@ FROM ubuntu:focal-20210416
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202110050826
+ENV IMAGE_DATE=202110051235
 ENV LANG=en_US.UTF-8
 
 # If someone wants to use VideoLAN docker images on a local machine and does
@@ -46,7 +46,11 @@ COMMENT="first install a main dependency, which doesn't work well with the other
 COMMENT="Get the Raspberry Pi custom system headers/libraries" \
     apt-get -y install \
         libraspberrypi-dev:armhf \
-        libc6:armhf libxcb-xkb-dev:armhf libasound2-dev:armhf && \
+        libc6:armhf libxcb-xkb-dev:armhf libasound2-dev:armhf \
+        libfontconfig1-dev:armhf libmpg123-dev:armhf libfaad-dev:armhf \
+        libxcb-shm0-dev:armhf libxcb-composite0-dev:armhf libxcb-xv0-dev:armhf libxcb-randr0-dev:armhf \
+        libupnp-dev:armhf \
+        nettle-dev:armhf libgnutls28-dev:armhf && \
 # COMMENT="Most prebuilt libraries we use in contribs" \
 #     apt-get -y install \
 #         libxcb-xkb-dev:armhf libmpg123-dev:armhf  \
