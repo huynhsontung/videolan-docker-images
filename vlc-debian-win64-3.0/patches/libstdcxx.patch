@@ -1,0 +1,10 @@
+--- libstdc++-v3/crossconfig.m4.old	2018-02-16 11:48:22.008235751 +0100
++++ libstdc++-v3/crossconfig.m4	2018-02-16 09:47:10.636001982 +0100
+@@ -197,6 +197,7 @@
+     GLIBCXX_CHECK_LINKER_FEATURES
+     GLIBCXX_CHECK_MATH_SUPPORT
+     GLIBCXX_CHECK_STDLIB_SUPPORT
++    GCC_CHECK_TLS
+     ;;
+   *-netbsd*)
+     SECTION_FLAGS='-ffunction-sections -fdata-sections'
