@@ -26,7 +26,7 @@ RUN set -x && \
     liba52-0.7.4-dev liblua5.1-0-dev zlib1g-dev libjpeg62-turbo-dev libxml2-dev gcovr \
     gdb libid3-tools && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
-    cd / && \
+    mkdir /build && cd /build && \
     git clone --depth=1 https://code.videolan.org/videolan/vlc.git --single-branch --branch=3.0.x && \
     cd vlc && \
     git config --global user.name 'VideoLAN CI' && \
@@ -38,7 +38,8 @@ RUN set -x && \
     ../configure --disable-lua --disable-qt --disable-skins2 \
         --disable-nls --disable-xcb --disable-alsa \
         --prefix=/prefix && \
-    make -j4 && make install
+    make -j4 && make install && \
+    rm -rf /build
 
 ENV PKG_CONFIG_PATH=/prefix/lib/pkgconfig 
 
