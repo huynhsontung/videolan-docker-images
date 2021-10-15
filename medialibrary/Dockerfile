@@ -11,6 +11,8 @@ ENV IMAGE_DATE=202108100918
 # - RPM based: <500 (CentOS, RedHat, etc.)
 ARG VIDEOLAN_UID=499
 
+ARG CORES=8
+
 RUN set -x && \
     addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
@@ -32,13 +34,13 @@ RUN set -x && \
     git config --global user.name 'VideoLAN CI' && \
     git config --global user.email 'root@videolan.org' && \
     mkdir contrib/native && cd contrib/native && \
-    ../bootstrap && make .dvdread .dvdnav -j4 && \
+    ../bootstrap && make .dvdread .dvdnav -j$CORES && \
     cd ../.. && \
     ./bootstrap && mkdir build && cd build && \
     ../configure --disable-lua --disable-qt --disable-skins2 \
         --disable-nls --disable-xcb --disable-alsa \
         --prefix=/prefix && \
-    make -j4 && make install && \
+    make -j$CORES && make install && \
     rm -rf /build
 
 ENV PKG_CONFIG_PATH=/prefix/lib/pkgconfig 
