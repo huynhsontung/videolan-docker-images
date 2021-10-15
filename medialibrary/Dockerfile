@@ -26,7 +26,7 @@ RUN set -x && \
     gettext pkg-config wget m4 build-essential curl libltdl-dev meson flex bison \
     rapidjson-dev libsqlite3-dev lcov libmpg123-dev libtag-extras-dev liba52-dev \
     liba52-0.7.4-dev liblua5.1-0-dev zlib1g-dev libjpeg62-turbo-dev libxml2-dev gcovr \
-    gdb libid3-tools && \
+    gdb libid3-tools python3-scipy cmake && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     mkdir /build && cd /build && \
     git clone --depth=1 https://code.videolan.org/videolan/vlc.git --single-branch --branch=3.0.x && \
@@ -40,6 +40,15 @@ RUN set -x && \
     ../configure --disable-lua --disable-qt --disable-skins2 \
         --disable-nls --disable-xcb --disable-alsa \
         --prefix=/prefix && \
+    make -j$CORES && make install && \
+    cd / && \
+    git clone --depth=1 --single-branch --branch=v1.6.0 https://github.com/google/benchmark.git && \
+    cd /build && mkdir benchmark && cd benchmark && \
+    cmake -DCMAKE_BUILD_TYPE=Release \
+        -DBENCHMARK_ENABLE_GTEST_TESTS=OFF \
+        -DCMAKE_INSTALL_PREFIX=/prefix \
+        -DBENCHMARK_ENABLE_TESTING=OFF \
+        /benchmark && \
     make -j$CORES && make install && \
     rm -rf /build
 
