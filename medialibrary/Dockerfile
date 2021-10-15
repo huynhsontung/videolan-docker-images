@@ -27,8 +27,8 @@ RUN set -x && \
     gdb libid3-tools && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     cd / && \
-    git clone --depth=1 https://git.videolan.org/git/vlc/vlc-3.0.git && \
-    cd vlc-3.0 && \
+    git clone --depth=1 https://code.videolan.org/videolan/vlc.git --single-branch --branch=3.0.x && \
+    cd vlc && \
     git config --global user.name 'VideoLAN CI' && \
     git config --global user.email 'root@videolan.org' && \
     mkdir contrib/native && cd contrib/native && \
