@@ -1,4 +1,4 @@
-FROM debian:sid-20210721-slim
+FROM debian:sid-20211011-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
@@ -20,7 +20,7 @@ RUN set -x && \
     echo "deb-src http://ftp.fr.debian.org/debian/ sid main" >> /etc/apt/sources.list && \
     apt-get update && apt-get install -yq --no-install-suggests --no-install-recommends \
     ca-certificates git-core libtool automake autoconf autopoint ninja-build python3 \
-    libavformat-dev libavresample-dev libavutil-dev libpostproc-dev libswscale-dev \
+    libavformat-dev libavutil-dev libpostproc-dev libswscale-dev \
     gettext pkg-config wget m4 build-essential curl libltdl-dev meson flex bison \
     rapidjson-dev libsqlite3-dev lcov libmpg123-dev libtag-extras-dev liba52-dev \
     liba52-0.7.4-dev liblua5.1-0-dev zlib1g-dev libjpeg62-turbo-dev libxml2-dev gcovr \
