@@ -2,7 +2,7 @@ FROM debian:buster-20210511-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202105281537
+ENV IMAGE_DATE=202110191202
 
 # The wine SDK path differs from version to version, starting from the one in buster, it's
 # located in /usr/include/wine/wine/windows/ instead of
@@ -12,9 +12,9 @@ ENV WINE_SDK_PATH=/usr/include/wine/wine/windows
 RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
     apt-get upgrade -y && \
     apt-get install -qqy --no-install-suggests --no-install-recommends \
-    git wget bzip2 file unzip libtool-bin pkg-config build-essential \
+    git wget bzip2 file libwine-dev unzip libtool-bin pkg-config build-essential \
     automake yasm gettext autopoint vim git-svn ninja-build ant \
-    wine wine64 winbind flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm \
+    wine winbind flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm \
     python3 python3-setuptools locales meson help2man libltdl-dev ca-certificates curl default-jdk-headless && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install --no-install-suggests --no-install-recommends wine32 && \
@@ -103,16 +103,14 @@ RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     echo "videolan:videolan" | chpasswd
 
 USER videolan
-
-RUN WINEARCH=win64 && \
-    wine64 wineboot --init && \
+RUN wine wineboot --init && \
     /opt/wine/wait_process.sh wineserver && \
-    /opt/wine/winetricks -v --unattended arch=64 dotnet40 dotnet_verifier && \
+    /opt/wine/winetricks --unattended dotnet40 dotnet_verifier && \
     /opt/wine/wait_process.sh wineserver && \
     wget -q https://download.videolan.org/contrib/wix/wix-3.5.msi -O ~/wix.msi && \
     WIX_SHA256=621b70e8761d5b940d8c32a42b0e92fd55767f8908a9b32e06bb3d12a30bc47b && \
     echo $WIX_SHA256 ~/wix.msi | sha256sum -c && \
-    wine64 msiexec /i ~/wix.msi && \
+    wine msiexec /i ~/wix.msi && \
     cd ~/ && \
     rm -f ~/wix.msi && \
     rm -rf ~/.cache/winetricks && \
