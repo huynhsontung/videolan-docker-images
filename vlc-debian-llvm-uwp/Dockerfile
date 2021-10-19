@@ -4,6 +4,11 @@ MAINTAINER VideoLAN roots <roots@videolan.org>
 
 ENV IMAGE_DATE=202011301436
 
+# The wine SDK path differs from version to version, starting from the one in buster, it's
+# located in /usr/include/wine/wine/windows/ instead of
+# /usr/include/wine/windows/
+ENV WINE_SDK_PATH=/usr/include/wine/wine/windows
+
 RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
     apt-get upgrade -y && \
     apt-get install -qqy --no-install-suggests --no-install-recommends \
