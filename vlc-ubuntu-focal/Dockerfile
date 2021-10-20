@@ -2,7 +2,7 @@ FROM ubuntu:focal-20210416
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202110051249
+ENV IMAGE_DATE=202110201142
 ENV LANG=en_US.UTF-8
 ENV PATH="/snap/bin:$PATH:/usr/sbin"
 ENV SNAP="/snap/snapcraft/current"
@@ -43,7 +43,7 @@ RUN set -x && \
       nasm clang libvulkan-dev qtdeclarative5-dev qtquickcontrols2-5-dev \
       qml-module-qtquick-controls2 qml-module-qtquick-layouts qml-module-qtquick-templates2 \
       qml-module-qtgraphicaleffects gnupg1 ca-certificates lftp openjdk-11-jdk \
-      curl jq squashfs-tools snapd libgcrypt20-dev libsystemd-dev \
+      curl jq squashfs-tools snapd libgcrypt20-dev libsystemd-dev libxcb-damage0-dev \
       && \
     pip3 install meson ninja && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
