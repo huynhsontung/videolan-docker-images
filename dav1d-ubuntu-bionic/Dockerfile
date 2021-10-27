@@ -24,7 +24,7 @@ RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
         nasm && \
-    pip3 install meson ninja && \
+    pip3 install meson ninja gcovr && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 USER videolan
