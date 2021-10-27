@@ -17,14 +17,14 @@ RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
         lftp ca-certificates curl git build-essential \
-        procps snapcraft ninja-build python3-pip python3-setuptools \
+        procps snapcraft python3-pip python3-setuptools \
         python3-wheel && \
     echo "deb http://archive.ubuntu.com/ubuntu/ focal main restricted" >> /etc/apt/sources.list.d/focal.list && \
     echo "deb http://archive.ubuntu.com/ubuntu/ focal universe" >> /etc/apt/sources.list.d/focal.list && \
     apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
         nasm && \
-    pip3 install meson && \
+    pip3 install meson ninja && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 USER videolan
