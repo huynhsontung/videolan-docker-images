@@ -1,6 +1,6 @@
 FROM debian:bullseye-20210902-slim
 
-ENV IMAGE_DATE=202109151132
+ENV IMAGE_DATE=202111031143
 
 ARG VIDEOLAN_UID=499
 ARG EMSDK_VERSION=latest
@@ -39,5 +39,8 @@ WORKDIR /home/videolan
 RUN git clone --depth=1 https://github.com/emscripten-core/emsdk/ && \
     cd emsdk && ./emsdk install $EMSDK_VERSION && \
     ./emsdk activate $EMSDK_VERSION
+
+RUN git config --global user.name "VLC.js" && \
+    git config --global user.email buildbot@videolan.org
 
 ENV EMSCRIPTEN_SDK="/home/videolan/emsdk"
