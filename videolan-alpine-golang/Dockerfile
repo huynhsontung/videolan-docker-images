@@ -14,6 +14,6 @@ ARG VIDEOLAN_UID=499
 RUN addgroup -g ${VIDEOLAN_UID} videolan && \
     adduser -u ${VIDEOLAN_UID} -G videolan -h /home/videolan -D videolan && \
     echo "videolan:videolan" | chpasswd && \
-    apk --no-cache add build-base jq autoconf automake libtool pkgconfig jsoncpp-dev curl-dev sassc curl musl-dev
+    apk --no-cache add build-base jq autoconf automake libtool pkgconfig jsoncpp-dev curl-dev sassc curl musl-dev linux-headers
 
 USER videolan
