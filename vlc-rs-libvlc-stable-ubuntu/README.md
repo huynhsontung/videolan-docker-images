@@ -12,4 +12,3 @@ You can make local builds of this image, for example for local CI testing with g
 ```
 docker build -t registry.videolan.org/$(basename $PWD):$(grep IMAGE_DATE Dockerfile | sed -E 's/.*=([0-9]+)$/\1/') .
 ```
-
