@@ -10,6 +10,7 @@ ENV IMAGE_DATE=202112101518
 # - Debian based: <1000
 # - RPM based: <500 (CentOS, RedHat, etc.)
 ARG VIDEOLAN_UID=499
+ARG CORES=4
 
 RUN set -x && \
     addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
@@ -31,7 +32,7 @@ RUN set -x && \
     ../configure --disable-lua --disable-qt --disable-skins2 \
         --disable-nls --disable-xcb --disable-alsa \
         --prefix=/prefix && \
-    make -j4 && make install
+    make -j$CORES && make install
 
 ENV PKG_CONFIG_PATH=/prefix/lib/pkgconfig 
 
