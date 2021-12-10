@@ -25,7 +25,7 @@ RUN set -x && \
     liba52-0.7.4-dev liblua5.1-0-dev zlib1g-dev libjpeg62-turbo-dev libxml2-dev && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     cd / && \
-    git clone --depth=1 https://git.videolan.org/git/vlc.git && \
+    git clone --depth=1 https://code.videolan.org/videolan/vlc.git && \
     cd vlc && \
     ./bootstrap && mkdir build && cd build && \
     ../configure --disable-lua --disable-qt --disable-skins2 \
