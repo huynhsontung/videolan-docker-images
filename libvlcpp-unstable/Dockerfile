@@ -1,8 +1,8 @@
-FROM debian:sid-20201012-slim
+FROM debian:bullseye-20201012-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202011191148
+ENV IMAGE_DATE=202112101518
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -15,8 +15,8 @@ RUN set -x && \
     addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
     echo "videolan:videolan" | chpasswd && \
-    echo "deb http://ftp.fr.debian.org/debian/ sid main" > /etc/apt/sources.list && \
-    echo "deb-src http://ftp.fr.debian.org/debian/ sid main" >> /etc/apt/sources.list && \
+    echo "deb http://ftp.fr.debian.org/debian/ bullseye main" > /etc/apt/sources.list && \
+    echo "deb-src http://ftp.fr.debian.org/debian/ bullseye main" >> /etc/apt/sources.list && \
     apt-get update && apt-get install -yq --no-install-suggests --no-install-recommends \
     ca-certificates git-core libtool automake autoconf autopoint ninja-build python3 \
     libavformat-dev libavresample-dev libavutil-dev libpostproc-dev libswscale-dev \
