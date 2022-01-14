@@ -33,7 +33,7 @@ variables:
   DOCKER_TLS_CERTDIR: "/certs"
 
 services:
-  - docker:19.03.1-dind
+  - docker:20.10.12-dind
 
 before_script:
   - docker info
@@ -44,7 +44,7 @@ build:
   tags:
     - dind-amd64
   image:
-    name: docker:19.03.1
+    name: docker:20.10.12
   script:
     - *build-images
   only:
