@@ -2,7 +2,7 @@ FROM ubuntu:focal-20210416
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202110201142
+ENV IMAGE_DATE=202201180937
 ENV LANG=en_US.UTF-8
 ENV PATH="/snap/bin:$PATH:/usr/sbin"
 ENV SNAP="/snap/snapcraft/current"
@@ -61,7 +61,7 @@ RUN set -x && \
     mkdir -p /snap/core18 && \
     unsquashfs -d /snap/core18/current core18.snap && \
     rm -f core18.snap && \
-    curl -L $(curl -H 'X-Ubuntu-Series: 16' 'https://api.snapcraft.io/api/v1/snaps/details/snapcraft?channel=stable' | jq '.download_url' -r) --output snapcraft.snap && \
+    curl -L $(curl -H 'X-Ubuntu-Series: 16' 'https://api.snapcraft.io/api/v1/snaps/details/snapcraft?channel=5.x/stable' | jq '.download_url' -r) --output snapcraft.snap && \
     mkdir -p /snap/snapcraft && \
     unsquashfs -d /snap/snapcraft/current snapcraft.snap && \
     rm -f snapcraft.snap && \
