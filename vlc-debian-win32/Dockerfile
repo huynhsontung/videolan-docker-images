@@ -44,13 +44,14 @@ RUN set -x && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install --no-install-suggests --no-install-recommends wine32 && \
     echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list.d/testing.list && \
-    apt-get update && apt-get -y -t testing --no-install-suggests --no-install-recommends install nasm meson && \
+    apt-get update && apt-get -y -t testing --no-install-suggests --no-install-recommends install \
+    nasm meson autoconf autoconf2.69 && \
     rm -f /etc/apt/sources.list.d/testing.list && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1 && \
     \
-    GCC_VERSION=10.1.0 \
-    GCC_SHA256=b6898a23844b656f1b68691c5c012036c2e694ac4b53a8918d4712ad876e7ea2 \
+    GCC_VERSION=11.2.0 \
+    GCC_SHA256=d08edc536b54c372a1010ff6619dd274c0f1603aa49212ba20f7aa2cda36fa8b \
     BINUTILS_VERSION=2.27 \
     BINUTILS_SHA256=369737ce51587f92466041a97ab7d2358c6d9e1b6490b3940eb09fb0a9a6ac88 \
     MPFR_VERSION=3.1.6 \
@@ -59,7 +60,7 @@ RUN set -x && \
     GMP_SHA256=d36e9c05df488ad630fff17edb50051d6432357f9ce04e34a09b3d818825e831 \
     MPC_VERSION=1.0.3 \
     MPC_SHA256=617decc6ea09889fb08ede330917a00b16809b8db88c29c31bfbb49cbf88ecc3 \
-    MINGW_W64_HASH=af56acd2c36af609e701fa4880f25c5f37abe502 \
+    MINGW_W64_HASH=eac8c38c10ca4e22feb2f1e5e530b1e2daedc20f \
     && \
     mkdir /build/ && \
     cd /build && \
@@ -96,7 +97,7 @@ RUN set -x && \
     ln -s /build/gmp-$GMP_VERSION gcc-$GCC_VERSION/gmp && \
     ln -s /build/mpc-$MPC_VERSION gcc-$GCC_VERSION/mpc && \
     cd /build/gcc-$GCC_VERSION && patch -p0 < /patches/libstdcxx.patch && \
-    autoreconf -vif && cd libstdc++-v3/ && autoreconf && \
+    autoreconf2.69 -vif && cd libstdc++-v3/ && autoreconf2.69 && \
     cd /build/gcc-$GCC_VERSION && \
     mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX \
