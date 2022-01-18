@@ -157,6 +157,8 @@ RUN set -x && \
     echo $PROTOBUF_SHA256 protobuf-cpp-$PROTOBUF_VERSION.tar.gz | sha256sum -c && \
     tar xzfo protobuf-cpp-$PROTOBUF_VERSION.tar.gz && \
     cd protobuf-$PROTOBUF_VERSION && \
+    wget -q https://code.videolan.org/videolan/vlc/-/raw/c580054e4f3a166f93c91f94416f97d89be83c16/extras/tools/protobuf-fix-build.patch && \
+    patch -p1 < protobuf-fix-build.patch && \
     ./configure --prefix=/opt/protobuf --disable-shared --enable-static && make -j$CORES && make install && \
     cd / && rm -rf /build
 
