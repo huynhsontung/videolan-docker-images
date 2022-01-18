@@ -122,8 +122,13 @@ RUN set -x && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE && \
     make -j$CORES && \
     make install && \
-    cd /build/ && git clone --recursive https://code.videolan.org/videolan/breakpad.git && \
-    cd breakpad && autoreconf -vif && mkdir build && cd build && \
+    cd /build/ && \
+    BREAKPAD_VERSION=0.1.4 && \
+    BREAKPAD_SHA256=020953390cce3a04ba859801bf863689a74e2aca0bd48ff256055f1c9af0e33a && \
+    wget -q https://download.videolan.org/pub/contrib/breakpad/breakpad-$BREAKPAD_VERSION.tar.gz && \
+    echo $BREAKPAD_SHA256 breakpad-$BREAKPAD_VERSION.tar.gz | sha256sum -c && \
+    tar xzf breakpad-$BREAKPAD_VERSION.tar.gz && \
+    cd breakpad-$BREAKPAD_VERSION && autoreconf -vif && mkdir build && cd build && \
     ../configure --enable-tools --disable-processor --prefix=/opt/breakpad && \
     make -j$CORES && make install && \
     \
