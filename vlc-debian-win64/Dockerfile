@@ -72,7 +72,7 @@ RUN set -x && \
     mkdir $TOOLCHAIN_PREFIX && \
     mkdir $MINGW_PREFIX && \
     ln -s $MINGW_PREFIX $TOOLCHAIN_PREFIX/mingw && \
-    wget -q http://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.bz2 && \
+    wget -q https://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.bz2 && \
     echo $BINUTILS_SHA256 binutils-$BINUTILS_VERSION.tar.bz2 | sha256sum -c && \
     wget -q https://ftp.gnu.org/gnu/gcc/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.xz && \
     echo $GCC_SHA256 gcc-$GCC_VERSION.tar.xz | sha256sum -c && \
@@ -155,7 +155,7 @@ RUN set -x && \
     cd /build && \
     CMAKE_VERSION=3.17.0 && \
     CMAKE_SHA256=b74c05b55115eacc4fa2b77a814981dbda05cdc95a53e279fe16b7b272f00847 && \
-    wget -q http://www.cmake.org/files/v3.17/cmake-$CMAKE_VERSION.tar.gz && \
+    wget -q https://www.cmake.org/files/v3.17/cmake-$CMAKE_VERSION.tar.gz && \
     echo $CMAKE_SHA256 cmake-$CMAKE_VERSION.tar.gz | sha256sum -c && \
     tar xzf cmake-$CMAKE_VERSION.tar.gz && \
     cd cmake-$CMAKE_VERSION && ./configure --prefix=/opt/cmake/ --parallel=$CORES --no-qt-gui -- \
