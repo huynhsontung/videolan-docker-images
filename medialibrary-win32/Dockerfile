@@ -23,6 +23,7 @@ RUN TARGET_TRIPLE=i686-w64-mingw32 \
     mkdir -p /build/ml && cd /build/ml && \
     git clone --depth=1 https://code.videolan.org/videolan/vlc.git && \
     cd vlc && \
+    export CONTRIBFLAGS="--disable-medialibrary" && \
     ./extras/package/win32/build.sh -z -a i686 -o /prefix/ && \
     find /prefix/lib -name '*.la' -delete && \
     mkdir -p /prefix/dll && \
