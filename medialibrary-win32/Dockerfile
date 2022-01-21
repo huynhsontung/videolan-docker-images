@@ -1,6 +1,6 @@
 FROM registry.videolan.org/vlc-debian-win32:20220118142856
 
-ENV IMAGE_DATE=202201201144
+ENV IMAGE_DATE=202201211725
 
 USER root
 
@@ -9,7 +9,8 @@ RUN echo "deb http://deb.debian.org/debian sid main" > /etc/apt/sources.list.d/s
     rm -f /etc/apt/sources.list.d/sid.list && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     mkdir -p /build/ml && chown videolan /build && chown videolan /build/ml && \
-    mkdir -p /prefix && chown videolan /prefix
+    mkdir -p /prefix && chown videolan /prefix && \
+    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
 USER videolan
 
