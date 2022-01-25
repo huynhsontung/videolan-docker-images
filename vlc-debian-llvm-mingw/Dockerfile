@@ -1,8 +1,8 @@
-FROM debian:buster-20210511-slim
+FROM debian:bullseye-20211220-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202110191202
+ENV IMAGE_DATE=202201251623
 
 # The wine SDK path differs from version to version, starting from the one in buster, it's
 # located in /usr/include/wine/wine/windows/ instead of
@@ -21,7 +21,7 @@ RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/* && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
-    update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1
 
 ENV LANG=en_US.UTF-8
 
