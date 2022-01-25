@@ -12,12 +12,15 @@ ENV WINE_SDK_PATH=/usr/include/wine/wine/windows
 RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
     apt-get upgrade -y && \
     apt-get install -qqy --no-install-suggests --no-install-recommends \
-    git wget bzip2 file libwine-dev unzip libtool-bin pkg-config build-essential \
+    git wget bzip2 file unzip libtool-bin pkg-config build-essential \
     automake yasm gettext autopoint vim git-svn ninja-build ant \
-    wine winbind flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm \
-    python3 python3-setuptools locales meson help2man libltdl-dev ca-certificates curl default-jdk-headless && \
+    winbind flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm \
+    python3 python3-setuptools locales meson help2man libltdl-dev ca-certificates curl default-jdk-headless gnupg && \
     dpkg --add-architecture i386 && \
-    apt-get update && apt-get -y install --no-install-suggests --no-install-recommends wine32 && \
+    wget -nc https://dl.winehq.org/wine-builds/winehq.key && \
+    apt-key add winehq.key && rm -f winehq.key && \
+    echo "deb https://dl.winehq.org/wine-builds/debian/ bullseye main" > /etc/apt/sources.list.d/winehq.list && \
+    apt-get update && apt-get -y install winehq-stable && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/* && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
