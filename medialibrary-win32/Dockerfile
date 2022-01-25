@@ -1,4 +1,4 @@
-FROM registry.videolan.org/vlc-debian-win32:20220118142856
+FROM registry.videolan.org/vlc-debian-win32:20220125133544
 
 ENV IMAGE_DATE=202201211725
 
