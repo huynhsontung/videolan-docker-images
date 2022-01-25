@@ -39,13 +39,18 @@ RUN set -x && \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
     gettext dos2unix zip wine nsis g++-mingw-w64-i686 curl gperf flex bison \
     libcurl4-gnutls-dev python3 python3-requests lftp gcc make procps ca-certificates \
-    openjdk-11-jdk-headless jq \
+    openjdk-11-jdk-headless jq gnupg \
     && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install --no-install-suggests --no-install-recommends wine32 && \
     echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list.d/testing.list && \
     apt-get update && apt-get -y -t testing --no-install-suggests --no-install-recommends install nasm meson && \
     rm -f /etc/apt/sources.list.d/testing.list && \
+    wget -nc https://dl.winehq.org/wine-builds/winehq.key && \
+    apt-key add winehq.key && rm -f winehq.key && \
+    echo "deb https://dl.winehq.org/wine-builds/debian/ bullseye main" > /etc/apt/sources.list.d/winehq.list && \
+    apt-get update && apt-get -y install winehq-stable && \
+    rm -f /etc/apt/sources.list.d/winehq.list && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1 && \
     \
