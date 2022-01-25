@@ -1,4 +1,4 @@
-FROM debian:buster-20210511-slim
+FROM debian:bullseye-20211220-slim
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -47,7 +47,7 @@ RUN set -x && \
     apt-get update && apt-get -y -t testing --no-install-suggests --no-install-recommends install nasm meson && \
     rm -f /etc/apt/sources.list.d/testing.list && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
-    update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1 && \
     \
     GCC_VERSION=10.1.0 \
     GCC_SHA256=b6898a23844b656f1b68691c5c012036c2e694ac4b53a8918d4712ad876e7ea2 \
