@@ -34,7 +34,8 @@ RUN set -x && \
     qtdeclarative5-dev qtquickcontrols2-5-dev qml-module-qtquick-controls2 \
     qml-module-qtquick-layouts qml-module-qtquick-templates2 \
     qml-module-qtgraphicaleffects flex bison libxkbcommon-x11-dev libplacebo-dev \
-    meson doxygen graphviz libsqlite3-dev rapidjson-dev nasm cmake libxcb-damage0-dev && \
+    meson doxygen graphviz libsqlite3-dev rapidjson-dev nasm cmake libxcb-damage0-dev \
+    clang libc++-dev && \
     apt-get build-dep --no-install-suggests --no-install-recommends -y vlc && \
     apt-get remove -y libprotobuf-dev protobuf-compiler && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
