@@ -2,7 +2,7 @@ FROM ubuntu:focal-20210416
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202110051235
+ENV IMAGE_DATE=202202171500
 ENV LANG=en_US.UTF-8
 
 # If someone wants to use VideoLAN docker images on a local machine and does
@@ -28,9 +28,8 @@ RUN echo "APT::Install-Recommends \"false\";\nAPT::Install-Suggests \"false\";" 
         git wget bzip2 file unzip libtool-bin pkg-config cmake build-essential \
         automake yasm gettext autopoint git-svn ninja-build ant \
         flex ragel bison zip dos2unix p7zip-full subversion gperf nasm \
-        python python3 locales meson help2man vim nano openjdk-11-jdk \
-        qtchooser xcb-proto \
-        crossbuild-essential-armhf
+        python python3 python3-setuptools python3-mako locales meson help2man \
+        vim nano openjdk-11-jdk qtchooser xcb-proto crossbuild-essential-armhf
 
 RUN set -e && \
 COMMENT="Pre-compiled Raspbian packages, so we don't rebuild everything" \
