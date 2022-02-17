@@ -2,7 +2,7 @@ FROM ubuntu:focal-20210416
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202201180937
+ENV IMAGE_DATE=202202171500
 ENV LANG=en_US.UTF-8
 ENV PATH="/snap/bin:$PATH:/usr/sbin"
 ENV SNAP="/snap/snapcraft/current"
@@ -39,7 +39,7 @@ RUN set -x && \
       libxext-dev libxi-dev libxinerama-dev libxml2-dev libxpm-dev libzvbi-dev \
       locales lua5.2 make pkg-config p7zip-full qtbase5-dev qtbase5-private-dev ragel \
       vim xz-utils yasm zlib1g-dev libxkbcommon-x11-dev meson \
-      curl build-essential python3-pip python3-setuptools python3-wheel \
+      curl build-essential python3-pip python3-setuptools python3-mako python3-wheel \
       nasm clang libvulkan-dev qtdeclarative5-dev qtquickcontrols2-5-dev \
       qml-module-qtquick-controls2 qml-module-qtquick-layouts qml-module-qtquick-templates2 \
       qml-module-qtgraphicaleffects gnupg1 ca-certificates lftp openjdk-11-jdk \
