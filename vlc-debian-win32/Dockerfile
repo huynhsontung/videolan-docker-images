@@ -9,7 +9,7 @@ ARG VIDEOLAN_UID=499
 # 8 cores ought to be enough for anybody
 ARG CORES=8
 
-ENV IMAGE_DATE=202105210940
+ENV IMAGE_DATE=202214171500
 
 ENV TARGET_TUPLE=i686-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-$TARGET_TUPLE
@@ -37,7 +37,8 @@ RUN set -x && \
     git wget bzip2 file libwine-dev unzip libtool libtool-bin libltdl-dev pkg-config ant \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
     gettext dos2unix zip wine nsis curl gperf flex bison \
-    libcurl4-gnutls-dev python3 python3-requests lftp gcc make procps ca-certificates \
+    libcurl4-gnutls-dev python3 python3-setuptools python3-mako python3-requests \
+    lftp gcc make procps ca-certificates \
     openjdk-11-jdk-headless locales nsis nasm jq gnupg \
     && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
