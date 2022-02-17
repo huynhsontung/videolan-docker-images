@@ -9,7 +9,7 @@ ARG VIDEOLAN_UID=499
 # 8 cores ought to be enough for anybody
 ARG CORES=8
 
-ENV IMAGE_DATE=202105210940
+ENV IMAGE_DATE=202202171500
 
 ENV TARGET_TUPLE=x86_64-w64-mingw32
 ENV TOOLCHAIN_PREFIX=/opt/gcc-${TARGET_TUPLE}
@@ -38,8 +38,8 @@ RUN set -x && \
     git wget bzip2 file libwine-dev unzip libtool libtool-bin libltdl-dev pkg-config ant \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
     gettext dos2unix zip wine nsis g++-mingw-w64-i686 curl gperf flex bison \
-    libcurl4-gnutls-dev python3 python3-requests lftp gcc make procps ca-certificates \
-    openjdk-11-jdk-headless jq gnupg \
+    libcurl4-gnutls-dev python3 python3-requests python3-setuptools python3-mako lftp \
+    gcc make procps ca-certificates openjdk-11-jdk-headless jq gnupg \
     && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install --no-install-suggests --no-install-recommends wine32 && \
