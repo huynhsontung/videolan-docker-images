@@ -17,7 +17,7 @@ ENV MINGW_PREFIX=$TOOLCHAIN_PREFIX/$TARGET_TUPLE
 ENV PATH=$TOOLCHAIN_PREFIX/bin:/opt/cmake/bin:/opt/protobuf/bin:$PATH
 
 # The wine SDK path differs from version to version, starting from the one in buster, it's
-# located in /usr/include/wine/wine/windows/ instead of 
+# located in /usr/include/wine/wine/windows/ instead of
 # /usr/include/wine/windows/
 ENV WINE_SDK_PATH=/usr/include/wine/wine/windows
 
@@ -125,6 +125,11 @@ RUN set -x && \
     cd /build/mingw-w64/mingw-w64-tools/widl && \
     mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE && \
+    make -j$CORES && \
+    make install && \
+    cd /build/mingw-w64/mingw-w64-libraries/winpthreads && \
+    mkdir build && cd build && \
+    ../configure --prefix=$TOOLCHAIN_PREFIX --host=$TARGET_TUPLE && \
     make -j$CORES && \
     make install && \
     cd /build/ && \
