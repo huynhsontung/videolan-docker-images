@@ -1,4 +1,4 @@
-FROM debian:buster-20210721-slim
+FROM debian:buster-20220125-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
@@ -24,6 +24,7 @@ RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
     adduser --quiet --uid ${VIDEOLAN_CI_UID} --ingroup videolan videolan && \
     echo "videolan:videolan" | chpasswd && \
     mkdir -p /usr/share/man/man1 && \
+    echo "deb http://deb.debian.org/debian buster-backports main" > /etc/apt/sources.list.d/backports.list && \
     apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
     ca-certificates autoconf m4 automake ant autopoint bison \
