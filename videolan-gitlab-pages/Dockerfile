@@ -22,7 +22,7 @@ RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
         build-essential zlib1g-dev ruby-full bundler \
         python3-pip python3-setuptools \
 	graphviz && \
-    pip3 install Sphinx==2.2.0 sphinx-intl>=0.9.11 sphinx-rtd-theme==0.4.3 sphinx-tabs==1.1.12 && \
+    pip3 install Sphinx==4.4.0 'sphinx-intl>=2.0.1' sphinx-rtd-theme==1.0.0 sphinx-tabs==3.3.1 && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 USER videolan
