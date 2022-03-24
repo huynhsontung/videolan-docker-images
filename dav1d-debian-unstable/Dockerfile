@@ -1,8 +1,8 @@
-FROM debian:sid-20211011-slim
+FROM debian:sid-20220316-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202111021600
+ENV IMAGE_DATE=202203241700
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
