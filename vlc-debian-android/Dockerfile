@@ -1,8 +1,8 @@
-FROM debian:buster-20220125-slim
+FROM debian:buster-20220316-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202109141914
+ENV IMAGE_DATE=202203241700
 
 COPY crossfiles/ /opt/crossfiles/
 
