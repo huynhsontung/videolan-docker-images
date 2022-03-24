@@ -1,8 +1,8 @@
-FROM debian:bullseye-20211220-slim
+FROM debian:bullseye-20220316-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202201251623
+ENV IMAGE_DATE=202203241700
 
 # The wine SDK path differs from version to version, starting from the one in buster, it's
 # located in /usr/include/wine/wine/windows/ instead of
