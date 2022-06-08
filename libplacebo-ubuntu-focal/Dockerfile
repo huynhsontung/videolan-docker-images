@@ -1,6 +1,6 @@
-FROM ubuntu:focal-20201106
+FROM ubuntu:focal-20220531
 
-ENV IMAGE_DATE=202106021400
+ENV IMAGE_DATE=202206090000
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -12,12 +12,12 @@ ARG VIDEOLAN_UID=499
 ENV SDK_VERSION=1.2.154
 
 RUN set -x && \
+    apt-get update && apt-get --no-install-suggests --no-install-recommends -y install udev && \
     ln -fs /usr/share/zoneinfo/UTC /etc/localtime && \
     addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
-    usermod --append --groups video videolan && \
+    usermod --append --groups video,render videolan && \
     echo "videolan:videolan" | chpasswd && \
-    apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
         apt-utils git-core build-essential gnupg clang clang-tools llvm gdb lcov \
         python python3-pip python3-setuptools python3-wheel python3-mako \
