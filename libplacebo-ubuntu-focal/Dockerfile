@@ -1,6 +1,6 @@
 FROM ubuntu:focal-20220531
 
-ENV IMAGE_DATE=202206090000
+ENV IMAGE_DATE=202206100000
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -9,7 +9,8 @@ ENV IMAGE_DATE=202206090000
 # - RPM based: <500 (CentOS, RedHat, etc.)
 ARG VIDEOLAN_UID=499
 
-ENV SDK_VERSION=1.2.154
+# For updates check: https://packages.lunarg.com/
+ENV SDK_VERSION=1.3.211
 
 RUN set -x && \
     apt-get update && apt-get --no-install-suggests --no-install-recommends -y install udev && \
