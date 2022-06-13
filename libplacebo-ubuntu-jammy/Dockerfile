@@ -21,7 +21,7 @@ RUN set -x && \
     apt-get install --no-install-suggests --no-install-recommends -y \
         apt-utils git-core build-essential gnupg clang clang-tools llvm gdb lcov \
         python3-pip python3-setuptools python3-wheel python3-mako \
-        libepoxy-dev liblcms2-dev curl mesa-vulkan-drivers \
+        libepoxy-dev libgles1 libgles2 liblcms2-dev curl mesa-vulkan-drivers \
         libavcodec-dev libavdevice-dev libavfilter-dev libavformat-dev libavutil-dev \
         gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 gcc-mingw-w64-i686 \
         g++-mingw-w64-i686 mingw-w64-tools wine systemd-coredump && \
