@@ -15,6 +15,7 @@ RUN addgroup -g ${VIDEOLAN_UID} videolan && \
     adduser -u ${VIDEOLAN_UID} -G videolan -h /home/videolan -D videolan && \
     echo "videolan:videolan" | chpasswd && \
     apk --no-cache add build-base meson vlc-dev vlc-libs \
-        pkgconfig sqlite-dev rapidjson-dev musl-dev jpeg-dev
+        pkgconfig sqlite-dev rapidjson-dev musl-dev jpeg-dev \
+        git
 
 USER videolan
