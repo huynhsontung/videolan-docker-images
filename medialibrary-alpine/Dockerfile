@@ -1,8 +1,8 @@
-FROM alpine:20210804
+FROM alpine:20220328
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202109020924
+ENV IMAGE_DATE=2022061347
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
