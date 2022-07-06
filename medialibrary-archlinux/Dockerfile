@@ -15,7 +15,7 @@ ARG CORES=8
 
 RUN set -x && \
     groupadd --gid ${VIDEOLAN_UID} videolan && \
-    useradd --uid ${VIDEOLAN_UID} -g videolan videolan && \
+    useradd -m --uid ${VIDEOLAN_UID} -g videolan videolan && \
     echo "videolan:videolan" | chpasswd && \
     pacman -Suy --noconfirm \
         git meson ninja xxhash && \
