@@ -2,7 +2,7 @@ FROM debian:buster-20210511-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202110191202
+ENV IMAGE_DATE=202206130000
 
 # The wine SDK path differs from version to version, starting from the one in buster, it's
 # located in /usr/include/wine/wine/windows/ instead of
@@ -15,7 +15,7 @@ RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
     git wget bzip2 file libwine-dev unzip libtool-bin pkg-config build-essential \
     automake yasm gettext autopoint vim git-svn ninja-build ant \
     wine winbind flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm \
-    python3 python3-setuptools locales meson help2man libltdl-dev ca-certificates curl default-jdk-headless && \
+    python3 python3-setuptools python3-mako locales meson help2man libltdl-dev ca-certificates curl default-jdk-headless && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install --no-install-suggests --no-install-recommends wine32 && \
     apt-get clean -y && \
