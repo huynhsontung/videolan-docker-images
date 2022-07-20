@@ -44,7 +44,7 @@ RUN set -x && \
       qml-module-qtquick-controls2 qml-module-qtquick-layouts qml-module-qtquick-templates2 \
       qml-module-qtgraphicaleffects gnupg1 ca-certificates lftp openjdk-11-jdk \
       wayland-protocols qtwayland5 libva-wayland2 \
-      curl jq squashfs-tools snapd libgcrypt20-dev libsystemd-dev libxcb-damage0-dev \
+      curl jq squashfs-tools snapd libgcrypt20-dev libsystemd-dev libxcb-damage0-dev gperf \
       && \
     pip3 install meson ninja && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
