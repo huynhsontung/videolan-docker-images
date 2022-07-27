@@ -1,6 +1,6 @@
-FROM registry.videolan.org/vlc-debian-llvm-mingw:20220125164309
+FROM registry.videolan.org/vlc-debian-llvm-mingw:20220705072259
 
-ENV IMAGE_DATE=202206201030
+ENV IMAGE_DATE=202207271527
 
 USER root
 
