@@ -41,6 +41,7 @@ before_script:
 
 build:
   stage: build
+  interruptible: true
   tags:
     - dind-amd64
   image:
