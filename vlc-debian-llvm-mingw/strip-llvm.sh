@@ -77,14 +77,14 @@ for i in bugpoint c-index-test clang-* diagtool dsymutil git-clang-format hmapto
             rm -f $i
         fi
         ;;
-    llvm-ar|llvm-cvtres|llvm-dlltool|llvm-nm|llvm-objdump|llvm-ranlib|llvm-rc|llvm-readobj|llvm-strings|llvm-pdbutil|llvm-objcopy|llvm-strip|llvm-cov|llvm-profdata|llvm-addr2line|llvm-symbolizer|llvm-wrapper|llvm-windres)
+    llvm-ar|llvm-cvtres|llvm-dlltool|llvm-nm|llvm-objdump|llvm-ranlib|llvm-rc|llvm-readobj|llvm-strings|llvm-pdbutil|llvm-objcopy|llvm-strip|llvm-cov|llvm-profdata|llvm-addr2line|llvm-symbolizer|llvm-wrapper|llvm-windres|llvm-ml|llvm-readelf)
         ;;
     ld64.lld|wasm-ld)
         if [ -e $i ]; then
             rm $i
         fi
         ;;
-    lldb|lldb-server|lldb-argdumper|lldb-instr)
+    lldb|lldb-server|lldb-argdumper|lldb-instr|lldb-mi)
         ;;
     *)
         if [ -f $i ]; then
@@ -118,9 +118,10 @@ cd include
 rm -rf clang clang-c lld llvm llvm-c lldb
 cd ..
 cd lib
+rm -f *.dll.a
 for i in lib*.a *.so* *.dylib* cmake; do
     case $i in
-    liblldb*)
+    liblldb*|libclang-cpp*|libLLVM*)
         ;;
     *)
         rm -rf $i

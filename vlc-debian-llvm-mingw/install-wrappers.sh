@@ -69,7 +69,6 @@ if [ -n "$HOST" ]; then
     done
 fi
 $CC wrappers/clang-target-wrapper.c -o "$PREFIX/bin/clang-target-wrapper$EXEEXT" -O2 -Wl,-s $WRAPPER_FLAGS
-$CC wrappers/windres-wrapper.c -o "$PREFIX/bin/windres-wrapper$EXEEXT" -O2 -Wl,-s $WRAPPER_FLAGS
 $CC wrappers/llvm-wrapper.c -o "$PREFIX/bin/llvm-wrapper$EXEEXT" -O2 -Wl,-s $WRAPPER_FLAGS
 if [ -n "$EXEEXT" ]; then
     # For Windows, we should prefer the executable wrapper, which also works
@@ -85,7 +84,7 @@ for arch in $ARCHS; do
         for exec in clang clang++ gcc g++ cc c99 c11 c++ as; do
             ln -sf clang-target-wrapper$CTW_SUFFIX $arch-w64-$target_os-$exec$CTW_LINK_SUFFIX
         done
-        for exec in addr2line ar ranlib nm objcopy strings strip; do
+        for exec in addr2line ar ranlib nm objcopy readelf strings strip; do
             if [ -n "$HOST" ]; then
                 link_target=llvm-wrapper
             else
@@ -93,14 +92,11 @@ for arch in $ARCHS; do
             fi
             ln -sf $link_target$EXEEXT $arch-w64-$target_os-$exec$EXEEXT || true
         done
-        if [ -f "llvm-windres$EXEEXT" ]; then
-            # windres can't use llvm-wrapper, as that loses the original
-            # target arch prefix.
-            ln -sf llvm-windres$EXEEXT $arch-w64-$target_os-windres$EXEEXT
-        else
-            ln -sf windres-wrapper$EXEEXT $arch-w64-$target_os-windres$EXEEXT
-        fi
-        for exec in ld objdump dlltool; do
+        # windres and dlltool can't use llvm-wrapper, as that loses the original
+        # target arch prefix.
+        ln -sf llvm-windres$EXEEXT $arch-w64-$target_os-windres$EXEEXT
+        ln -sf llvm-dlltool$EXEEXT $arch-w64-$target_os-dlltool$EXEEXT
+        for exec in ld objdump; do
             ln -sf $exec-wrapper.sh $arch-w64-$target_os-$exec
         done
     done
@@ -117,10 +113,10 @@ if [ -n "$EXEEXT" ]; then
     # we are installing wrappers for.
     case $ARCHS in
     *$HOST_ARCH*)
-        for exec in clang clang++ gcc g++ cc c99 c11 c++ addr2line ar ranlib nm objcopy strings strip windres; do
+        for exec in clang clang++ gcc g++ cc c99 c11 c++ addr2line ar dlltool ranlib nm objcopy readelf strings strip windres; do
             ln -sf $HOST-$exec$EXEEXT $exec$EXEEXT
         done
-        for exec in ld objdump dlltool; do
+        for exec in ld objdump; do
             ln -sf $HOST-$exec $exec
         done
         ;;
