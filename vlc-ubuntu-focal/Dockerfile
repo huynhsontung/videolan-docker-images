@@ -2,9 +2,9 @@ FROM ubuntu:focal-20210416
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202202171500
+ENV IMAGE_DATE=202208100939
 ENV LANG=en_US.UTF-8
-ENV PATH="/snap/bin:$PATH:/usr/sbin"
+ENV PATH="/snap/bin:/opt/protobuf/bin:$PATH:/usr/sbin"
 ENV SNAP="/snap/snapcraft/current"
 ENV SNAP_NAME="snapcraft"
 ENV SNAP_ARCH="amd64"
@@ -37,7 +37,7 @@ RUN set -x && \
       libva-dev libvdpau-dev libx11-dev libxcb-composite0-dev libxcb-keysyms1-dev \
       libxcb-randr0-dev libxcb-shm0-dev libxcb-xfixes0-dev libxcb-xv0-dev libxcb1-dev \
       libxext-dev libxi-dev libxinerama-dev libxml2-dev libxpm-dev libzvbi-dev \
-      locales lua5.2 make pkg-config p7zip-full qtbase5-dev qtbase5-private-dev ragel \
+      locales lua5.2 make pkg-config p7zip-full wget qtbase5-dev qtbase5-private-dev ragel \
       vim xz-utils yasm zlib1g-dev libxkbcommon-x11-dev meson \
       curl build-essential python3-pip python3-setuptools python3-mako python3-wheel \
       nasm clang libvulkan-dev qtdeclarative5-dev qtquickcontrols2-5-dev \
@@ -71,6 +71,15 @@ RUN set -x && \
     snap_version="$(awk '/^version:/{print $2}' /snap/snapcraft/current/meta/snap.yaml)" && \
     echo "export SNAP_VERSION=\"$snap_version\"" >> /snap/bin/snapcraft && \
     echo 'exec "$SNAP/usr/bin/python3" "$SNAP/bin/snapcraft" "$@"' >> /snap/bin/snapcraft && \
-    chmod +x /snap/bin/snapcraft
+    chmod +x /snap/bin/snapcraft && \
+    mkdir /build && cd /build && \
+    PROTOBUF_VERSION=3.1.0 && \
+    PROTOBUF_SHA256=51ceea9957c875bdedeb1f64396b5b0f3864fe830eed6a2d9c066448373ea2d6 && \
+    wget -q https://github.com/google/protobuf/releases/download/v$PROTOBUF_VERSION/protobuf-cpp-$PROTOBUF_VERSION.tar.gz && \
+    echo $PROTOBUF_SHA256 protobuf-cpp-$PROTOBUF_VERSION.tar.gz | sha256sum -c && \
+    tar xzfo protobuf-cpp-$PROTOBUF_VERSION.tar.gz && \
+    cd protobuf-$PROTOBUF_VERSION && \
+    ./configure --prefix=/opt/protobuf --disable-shared --enable-static && make -j$CORES && make install && \
+    rm -rf /build/*
 
 USER videolan
