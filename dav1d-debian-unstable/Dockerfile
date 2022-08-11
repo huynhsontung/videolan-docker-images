@@ -1,4 +1,4 @@
-FROM debian:sid-20220509-slim
+FROM debian:sid-20220801-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
@@ -18,7 +18,7 @@ RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     apt-get -y dist-upgrade && \
     apt-get install --no-install-suggests --no-install-recommends -y \
         lftp ca-certificates curl git build-essential python3-pip \
-        python3-setuptools python3-wheel nasm clang \
+        python3-setuptools python3-wheel nasm clang mold \
         wine wine64 procps doxygen graphviz libsdl2-dev ripgrep && \
     pip3 install meson ninja gcovr==5.0 'jinja2<3.1' && \
     dpkg --add-architecture i386 && \
@@ -34,4 +34,5 @@ USER videolan
 
 COPY scripts/wait_process.sh /opt/wine/
 RUN wine wineboot --init && \
-    /opt/wine/wait_process.sh wineserver
+    /opt/wine/wait_process.sh wineserver && \
+    rm -rf /tmp/wine-*
