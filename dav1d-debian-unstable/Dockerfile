@@ -20,7 +20,7 @@ RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
         lftp ca-certificates curl git build-essential python3-pip \
         python3-setuptools python3-wheel nasm clang mold \
         wine wine64 procps doxygen graphviz libsdl2-dev ripgrep && \
-    pip3 install meson ninja gcovr==5.0 'jinja2<3.1' && \
+    pip3 install meson ninja gcovr && \
     dpkg --add-architecture i386 && \
     apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
