@@ -1,4 +1,4 @@
-FROM debian:bullseye-20220316-slim
+FROM debian:bullseye-20220801-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
@@ -16,7 +16,7 @@ RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
     automake yasm gettext autopoint vim git-svn ninja-build ant \
     winbind flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm \
     python3 python3-setuptools python3-mako locales meson help2man libltdl-dev \
-    ca-certificates curl default-jdk-headless gnupg && \
+    ca-certificates curl default-jdk-headless gnupg procps && \
     dpkg --add-architecture i386 && \
     wget -nc https://dl.winehq.org/wine-builds/winehq.key && \
     apt-key add winehq.key && rm -f winehq.key && \
@@ -75,7 +75,8 @@ RUN ./build-llvm.sh $TOOLCHAIN_PREFIX && \
     ./build-mingw-w64-libraries.sh $TOOLCHAIN_PREFIX && \
     ./build-libcxx.sh $TOOLCHAIN_PREFIX && \
     ./build-compiler-rt.sh $TOOLCHAIN_PREFIX --build-sanitizers && \
-    rm -rf /build/*
+    rm -rf /build/* && \
+    rm -rf /root/.wine /tmp/.wine-*
 
 # Build libssp
 COPY build-libssp.sh libssp-Makefile ./
@@ -118,7 +119,7 @@ RUN wine wineboot --init && \
     cd ~/ && \
     rm -f ~/wix.msi && \
     rm -rf ~/.cache/winetricks && \
-    rm -rf /tmp/wine-*
+    rm -rf /tmp/.wine-*
 
 ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
 
