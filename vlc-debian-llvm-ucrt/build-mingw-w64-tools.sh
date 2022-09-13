@@ -34,7 +34,7 @@ while [ $# -gt 0 ]; do
 done
 if [ -z "$CHECKOUT_ONLY" ]; then
     if [ -z "$PREFIX" ]; then
-        echo $0 [--skip-include-triplet-prefix] [--host=<triple>] dest
+        echo $0 [--skip-include-triplet-prefix] [--host=triple] dest
         exit 1
     fi
 
@@ -79,7 +79,14 @@ else
 fi
 ANY_ARCH=$(echo $ARCHS | awk '{print $1}')
 
-cd mingw-w64-tools/widl
+cd mingw-w64-tools/gendef
+[ -z "$CLEAN" ] || rm -rf build${CROSS_NAME}
+mkdir -p build${CROSS_NAME}
+cd build${CROSS_NAME}
+../configure --prefix="$PREFIX" $CONFIGFLAGS
+$MAKE -j$CORES
+$MAKE install-strip
+cd ../../widl
 [ -z "$CLEAN" ] || rm -rf build${CROSS_NAME}
 mkdir -p build${CROSS_NAME}
 cd build${CROSS_NAME}

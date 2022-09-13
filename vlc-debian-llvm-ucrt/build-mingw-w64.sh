@@ -18,7 +18,7 @@ set -e
 
 : ${DEFAULT_WIN32_WINNT:=0x601}
 : ${DEFAULT_MSVCRT:=ucrt}
-: ${MINGW_W64_VERSION:=ecb4ff5498dfedd6abcbadb889b84fab19ee57b2}
+: ${MINGW_W64_VERSION:=586baa17bb41dd78addd8cbb6415cfd24d24e925}
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -48,7 +48,7 @@ if [ -z "$CHECKOUT_ONLY" ]; then
 fi
 
 if [ ! -d mingw-w64 ]; then
-    git clone https://git.code.sf.net/p/mingw-w64/mingw-w64
+    git clone https://github.com/mingw-w64/mingw-w64
     CHECKOUT=1
 fi
 
@@ -67,6 +67,8 @@ if [ -n "$(which gmake)" ]; then
 fi
 
 export PATH="$PREFIX/bin:$PATH"
+
+unset CC
 
 : ${CORES:=$(nproc 2>/dev/null)}
 : ${CORES:=$(sysctl -n hw.ncpu 2>/dev/null)}

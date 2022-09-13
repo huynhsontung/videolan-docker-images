@@ -16,20 +16,37 @@
 
 set -e
 
-: ${LLVM_VERSION:=llvmorg-11.0.0}
+: ${LLVM_VERSION:=llvmorg-13.0.0}
 ASSERTS=OFF
-BUILDDIR=build
 unset HOST
+BUILDDIR="build"
+LINK_DYLIB=ON
+ASSERTSSUFFIX=""
 
 while [ $# -gt 0 ]; do
     case "$1" in
     --disable-asserts)
         ASSERTS=OFF
-        BUILDDIR=build
+        ASSERTSSUFFIX=""
         ;;
     --enable-asserts)
         ASSERTS=ON
-        BUILDDIR=build-asserts
+        ASSERTSSUFFIX="-asserts"
+        ;;
+    --stage2)
+        STAGE2=1
+        BUILDDIR="$BUILDDIR-stage2"
+        ;;
+    --thinlto)
+        LTO="thin"
+        BUILDDIR="$BUILDDIR-thinlto"
+        ;;
+    --lto)
+        LTO="full"
+        BUILDDIR="$BUILDDIR-lto"
+        ;;
+    --disable-dylib)
+        LINK_DYLIB=OFF
         ;;
     --full-llvm)
         FULL_LLVM=1
@@ -37,15 +54,19 @@ while [ $# -gt 0 ]; do
     --host=*)
         HOST="${1#*=}"
         ;;
+    --with-python)
+        WITH_PYTHON=1
+        ;;
     *)
         PREFIX="$1"
         ;;
     esac
     shift
 done
+BUILDDIR="$BUILDDIR$ASSERTSSUFFIX"
 if [ -z "$CHECKOUT_ONLY" ]; then
     if [ -z "$PREFIX" ]; then
-        echo $0 [--enable-asserts] [--full-llvm] [--host=<triple>] dest
+        echo $0 [--enable-asserts] [--stage2] [--thinlto] [--lto] [--disable-dylib] [--full-llvm] [--with-python] [--host=triple] dest
         exit 1
     fi
 
@@ -54,15 +75,23 @@ if [ -z "$CHECKOUT_ONLY" ]; then
 fi
 
 if [ ! -d llvm-project ]; then
-    # When cloning master and checking out a pinned old hash, we can't use --depth=1.
-    git clone https://github.com/llvm/llvm-project.git
+    mkdir llvm-project
+    cd llvm-project
+    git init
+    git remote add origin https://github.com/llvm/llvm-project.git
+    git fetch --depth 1 origin "$LLVM_VERSION"
+    git checkout FETCH_HEAD
+    cd ..
     CHECKOUT=1
+    unset SYNC
 fi
 
 if [ -n "$SYNC" ] || [ -n "$CHECKOUT" ]; then
     cd llvm-project
-    [ -z "$SYNC" ] || git fetch
-    git checkout $LLVM_VERSION
+    if [ -n "$SYNC" ]; then 
+        git fetch --depth 1 origin "$LLVM_VERSION"
+        git checkout FETCH_HEAD
+    fi
     cd ..
 fi
 
@@ -105,7 +134,7 @@ if [ -n "$HOST" ]; then
     CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_C_COMPILER=$HOST-gcc"
     CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_CXX_COMPILER=$HOST-g++"
     CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_RC_COMPILER=$HOST-windres"
-    CMAKEFLAGS="$CMAKEFLAGS -DCROSS_TOOLCHAIN_FLAGS_NATIVE=-DLLDB_ENABLE_LIBEDIT=OFF;-DLLDB_ENABLE_PYTHON=OFF;-DLLDB_ENABLE_CURSES=OFF;-DLLDB_ENABLE_LUA=OFF"
+    CMAKEFLAGS="$CMAKEFLAGS -DCROSS_TOOLCHAIN_FLAGS_NATIVE="
 
     native=$(find_native_tools)
     if [ -n "$native" ]; then
@@ -128,9 +157,38 @@ if [ -n "$HOST" ]; then
     # the frontend wrappers, but this makes sure they are enabled by
     # default if that wrapper is bypassed as well.
     CMAKEFLAGS="$CMAKEFLAGS -DCLANG_DEFAULT_RTLIB=compiler-rt"
+    CMAKEFLAGS="$CMAKEFLAGS -DCLANG_DEFAULT_UNWINDLIB=libunwind"
     CMAKEFLAGS="$CMAKEFLAGS -DCLANG_DEFAULT_CXX_STDLIB=libc++"
     CMAKEFLAGS="$CMAKEFLAGS -DCLANG_DEFAULT_LINKER=lld"
     BUILDDIR=$BUILDDIR-$HOST
+
+    if [ -n "$WITH_PYTHON" ]; then
+        PYTHON_VER="3.9"
+        CMAKEFLAGS="$CMAKEFLAGS -DLLDB_ENABLE_PYTHON=ON"
+        [ -z "$PYTHON_EXEC" ] && command -v python$PYTHON_VER && PYTHON_EXEC=python$PYTHON_VER
+        [ -z "$PYTHON_EXEC" ] && command -v python3           && PYTHON_EXEC=python3
+        [ -z "$PYTHON_EXEC" ] && command -v python            && PYTHON_EXEC=python
+        CMAKEFLAGS="$CMAKEFLAGS -DPYTHON_HOME=$PREFIX/python"
+        CMAKEFLAGS="$CMAKEFLAGS -DLLDB_PYTHON_HOME=../python"
+        CMAKEFLAGS="$CMAKEFLAGS -DLLDB_PYTHON_RELATIVE_PATH=python/lib/python$PYTHON_VER/site-packages"
+
+        CMAKEFLAGS="$CMAKEFLAGS -DPython3_EXECUTABLE=$PYTHON_EXEC"
+        CMAKEFLAGS="$CMAKEFLAGS -DPython3_INCLUDE_DIRS=$PREFIX/python/include/python$PYTHON_VER"
+        CMAKEFLAGS="$CMAKEFLAGS -DPython3_LIBRARIES=$PREFIX/python/lib/libpython$PYTHON_VER.dll.a"
+    fi
+elif [ -n "$STAGE2" ]; then
+    # Build using an earlier built and installed clang in the target directory
+    export PATH="$PREFIX/bin:$PATH"
+    CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_C_COMPILER=clang"
+    CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_CXX_COMPILER=clang++"
+    if [ "$(uname)" != "Darwin" ]; then
+        # Current lld isn't yet properly usable on macOS
+        CMAKEFLAGS="$CMAKEFLAGS -DLLVM_USE_LINKER=lld"
+    fi
+fi
+
+if [ -n "$LTO" ]; then
+    CMAKEFLAGS="$CMAKEFLAGS -DLLVM_ENABLE_LTO=$LTO"
 fi
 
 TOOLCHAIN_ONLY=ON
@@ -176,12 +234,9 @@ cmake \
     ${EXPLICIT_PROJECTS+-DLLVM_ENABLE_PROJECTS="clang;lld;lldb"} \
     -DLLVM_TARGETS_TO_BUILD="ARM;AArch64;X86" \
     -DLLVM_INSTALL_TOOLCHAIN_ONLY=$TOOLCHAIN_ONLY \
-    -DLLVM_TOOLCHAIN_TOOLS="llvm-ar;llvm-ranlib;llvm-objdump;llvm-rc;llvm-cvtres;llvm-nm;llvm-strings;llvm-readobj;llvm-dlltool;llvm-pdbutil;llvm-objcopy;llvm-strip;llvm-cov;llvm-profdata;llvm-addr2line;llvm-symbolizer" \
+    -DLLVM_LINK_LLVM_DYLIB=$LINK_DYLIB \
+    -DLLVM_TOOLCHAIN_TOOLS="llvm-ar;llvm-ranlib;llvm-objdump;llvm-rc;llvm-cvtres;llvm-nm;llvm-strings;llvm-readobj;llvm-dlltool;llvm-pdbutil;llvm-objcopy;llvm-strip;llvm-cov;llvm-profdata;llvm-addr2line;llvm-symbolizer;llvm-windres;llvm-ml;llvm-readelf" \
     ${HOST+-DLLVM_HOST_TRIPLE=$HOST} \
-    -DLLDB_ENABLE_LIBEDIT=OFF \
-    -DLLDB_ENABLE_PYTHON=OFF \
-    -DLLDB_ENABLE_CURSES=OFF \
-    -DLLDB_ENABLE_LUA=OFF \
     -DLLDB_INCLUDE_TESTS=OFF \
     $CMAKEFLAGS \
     ..

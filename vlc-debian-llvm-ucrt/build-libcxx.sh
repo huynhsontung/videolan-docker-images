@@ -87,10 +87,6 @@ build_all() {
         [ -z "$CLEAN" ] || rm -rf build-$arch-$type
         mkdir -p build-$arch-$type
         cd build-$arch-$type
-        # CXX_SUPPORTS_CXX11 is not strictly necessary here. But if building
-        # with a stripped llvm install, and the system happens to have an older
-        # llvm-config in /usr/bin, it can end up including older cmake files,
-        # and then CXX_SUPPORTS_CXX11 needs to be set.
         cmake \
             ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
             -DCMAKE_BUILD_TYPE=Release \
@@ -102,25 +98,16 @@ build_all() {
             -DCMAKE_C_COMPILER_WORKS=TRUE \
             -DCMAKE_CXX_COMPILER_WORKS=TRUE \
             -DLLVM_PATH="$LLVM_PATH" \
-            -DLLVM_COMPILER_CHECKED=TRUE \
             -DCMAKE_AR="$PREFIX/bin/llvm-ar" \
             -DCMAKE_RANLIB="$PREFIX/bin/llvm-ranlib" \
-            -DCXX_SUPPORTS_CXX11=TRUE \
-            -DCXX_SUPPORTS_CXX_STD=TRUE \
             -DLIBUNWIND_USE_COMPILER_RT=TRUE \
             -DLIBUNWIND_ENABLE_THREADS=TRUE \
             -DLIBUNWIND_ENABLE_SHARED=$SHARED \
             -DLIBUNWIND_ENABLE_STATIC=$STATIC \
             -DLIBUNWIND_ENABLE_CROSS_UNWINDING=FALSE \
-            -DCMAKE_CXX_FLAGS="-Wno-dll-attribute-on-redeclaration" \
-            -DCMAKE_C_FLAGS="-Wno-dll-attribute-on-redeclaration" \
             ..
         $BUILDCMD ${CORES+-j$CORES}
         $BUILDCMD install
-        if [ "$type" = "shared" ]; then
-            mkdir -p "$PREFIX/$arch-w64-mingw32/bin"
-            cp lib/libunwind.dll "$PREFIX/$arch-w64-mingw32/bin"
-        fi
         cd ..
     done
     cd ..
@@ -132,11 +119,6 @@ build_all() {
         [ -z "$CLEAN" ] || rm -rf build-$arch-$type
         mkdir -p build-$arch-$type
         cd build-$arch-$type
-        if [ "$type" = "shared" ]; then
-            LIBCXX_VISIBILITY_FLAGS="-D_LIBCXXABI_BUILDING_LIBRARY"
-        else
-            LIBCXX_VISIBILITY_FLAGS="-D_LIBCXXABI_DISABLE_VISIBILITY_ANNOTATIONS"
-        fi
         cmake \
             ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
             -DCMAKE_BUILD_TYPE=Release \
@@ -147,7 +129,6 @@ build_all() {
             -DCMAKE_SYSTEM_NAME=Windows \
             -DCMAKE_C_COMPILER_WORKS=TRUE \
             -DCMAKE_CXX_COMPILER_WORKS=TRUE \
-            -DLLVM_COMPILER_CHECKED=TRUE \
             -DCMAKE_AR="$PREFIX/bin/llvm-ar" \
             -DCMAKE_RANLIB="$PREFIX/bin/llvm-ranlib" \
             -DLLVM_PATH="$LLVM_PATH" \
@@ -160,14 +141,12 @@ build_all() {
             -DLIBCXX_ENABLE_STATIC=$STATIC \
             -DLIBCXX_ENABLE_EXPERIMENTAL_LIBRARY=OFF \
             -DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=TRUE \
-            -DLIBCXX_ENABLE_NEW_DELETE_DEFINITIONS=ON \
+            -DLIBCXX_ENABLE_NEW_DELETE_DEFINITIONS=OFF \
             -DLIBCXX_CXX_ABI=libcxxabi \
             -DLIBCXX_CXX_ABI_INCLUDE_PATHS=../../libcxxabi/include \
             -DLIBCXX_CXX_ABI_LIBRARY_PATH=../../libcxxabi/build-$arch-$type/lib \
             -DLIBCXX_LIBDIR_SUFFIX="" \
             -DLIBCXX_INCLUDE_TESTS=FALSE \
-            -DCMAKE_CXX_FLAGS="$LIBCXX_VISIBILITY_FLAGS" \
-            -DCMAKE_SHARED_LINKER_FLAGS="-lunwind" \
             -DLIBCXX_ENABLE_ABI_LINKER_SCRIPT=FALSE \
             ..
         $BUILDCMD ${CORES+-j$CORES} generate-cxx-headers
@@ -180,18 +159,6 @@ build_all() {
         [ -z "$CLEAN" ] || rm -rf build-$arch-$type
         mkdir -p build-$arch-$type
         cd build-$arch-$type
-        if [ "$type" = "shared" ]; then
-            # Define _LIBCPP_BUILDING_LIBRARY, to an empty string to match
-            # cases in source files that also do
-            # "#define _LIBCPP_BUILDING_LIBRARY". Since Nov 3 2020, libcxxabi
-            # itself also defines this, but with a plain
-            # -D_LIBCPP_BUILDING_LIBRARY, which defines it to 1. Therefore,
-            # first undefine any potential existing define from the command
-            # line, to avoid conflicts.
-            LIBCXXABI_VISIBILITY_FLAGS="-U_LIBCPP_BUILDING_LIBRARY -D_LIBCPP_BUILDING_LIBRARY= -U_LIBCXXABI_DISABLE_VISIBILITY_ANNOTATIONS"
-        else
-            LIBCXXABI_VISIBILITY_FLAGS=""
-        fi
         cmake \
             ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
             -DCMAKE_BUILD_TYPE=Release \
@@ -203,19 +170,17 @@ build_all() {
             -DCMAKE_C_COMPILER_WORKS=TRUE \
             -DCMAKE_CXX_COMPILER_WORKS=TRUE \
             -DLLVM_PATH="$LLVM_PATH" \
-            -DLLVM_COMPILER_CHECKED=TRUE \
             -DCMAKE_AR="$PREFIX/bin/llvm-ar" \
             -DCMAKE_RANLIB="$PREFIX/bin/llvm-ranlib" \
             -DLIBCXXABI_USE_COMPILER_RT=ON \
             -DLIBCXXABI_ENABLE_EXCEPTIONS=ON \
             -DLIBCXXABI_ENABLE_THREADS=ON \
-            -DLIBCXXABI_TARGET_TRIPLE=$arch-w64-mingw32 \
             -DLIBCXXABI_ENABLE_SHARED=OFF \
             -DLIBCXXABI_LIBCXX_INCLUDES=../../libcxx/build-$arch-$type/include/c++/v1 \
             -DLIBCXXABI_LIBDIR_SUFFIX="" \
-            -DLIBCXXABI_ENABLE_NEW_DELETE_DEFINITIONS=OFF \
-            -DCXX_SUPPORTS_CXX_STD=TRUE \
-            -DCMAKE_CXX_FLAGS="$LIBCXXABI_VISIBILITY_FLAGS" \
+            -DLIBCXXABI_ENABLE_NEW_DELETE_DEFINITIONS=ON \
+            -DLIBCXX_ENABLE_SHARED=$SHARED \
+            -DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=TRUE \
             ..
         $BUILDCMD ${CORES+-j$CORES}
         cd ..
@@ -227,16 +192,6 @@ build_all() {
         cd build-$arch-$type
         $BUILDCMD ${CORES+-j$CORES}
         $BUILDCMD install
-        if [ "$type" = "shared" ]; then
-            llvm-ar qcsL \
-                "$PREFIX/$arch-w64-mingw32/lib/libc++.dll.a" \
-                "$PREFIX/$arch-w64-mingw32/lib/libunwind.dll.a"
-            cp lib/libc++.dll "$PREFIX/$arch-w64-mingw32/bin"
-        else
-            llvm-ar qcsL \
-                "$PREFIX/$arch-w64-mingw32/lib/libc++.a" \
-                "$PREFIX/$arch-w64-mingw32/lib/libunwind.a"
-        fi
         cd ..
     done
     cd ..
@@ -246,3 +201,13 @@ build_all() {
 # work when linking against the DLL, but not vice versa.
 [ -z "$BUILD_SHARED" ] || build_all shared
 [ -z "$BUILD_STATIC" ] || build_all static
+
+# Remove dummy placeholder libunwind.a. If we've built a static version, it
+# already was overwritten with a proper one, but if only building a shared
+# version, remove the dummy one to avoid surprises.
+for arch in $ARCHS; do
+    # Only remove the file if it contains no members.
+    if [ -f $PREFIX/$arch-w64-mingw32/lib/libunwind.a ] && [ "$(llvm-ar t $PREFIX/$arch-w64-mingw32/lib/libunwind.a)" = "" ]; then
+        rm $PREFIX/$arch-w64-mingw32/lib/libunwind.a
+    fi
+done

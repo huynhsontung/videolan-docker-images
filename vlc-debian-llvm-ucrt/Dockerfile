@@ -1,4 +1,4 @@
-FROM debian:buster-20210511-slim
+FROM debian:bullseye-20220801-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
@@ -12,16 +12,20 @@ ENV WINE_SDK_PATH=/usr/include/wine/wine/windows
 RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
     apt-get upgrade -y && \
     apt-get install -qqy --no-install-suggests --no-install-recommends \
-    git wget bzip2 file libwine-dev unzip libtool-bin pkg-config build-essential \
+    git wget bzip2 file unzip libtool-bin pkg-config build-essential \
     automake yasm gettext autopoint vim git-svn ninja-build ant \
-    wine winbind flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm \
-    python3 python3-setuptools python3-mako locales meson help2man libltdl-dev ca-certificates curl default-jdk-headless && \
+    winbind flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm \
+    python3 python3-setuptools python3-mako locales meson help2man libltdl-dev \
+    ca-certificates curl default-jdk-headless gnupg procps && \
     dpkg --add-architecture i386 && \
-    apt-get update && apt-get -y install --no-install-suggests --no-install-recommends wine32 && \
+    wget -nc https://dl.winehq.org/wine-builds/winehq.key && \
+    apt-key add winehq.key && rm -f winehq.key && \
+    echo "deb https://dl.winehq.org/wine-builds/debian/ bullseye main" > /etc/apt/sources.list.d/winehq.list && \
+    apt-get update && apt-get -y install winehq-stable && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/* && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
-    update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1
 
 ENV LANG=en_US.UTF-8
 
@@ -69,7 +73,8 @@ RUN ./build-llvm.sh $TOOLCHAIN_PREFIX && \
     ./build-mingw-w64-libraries.sh $TOOLCHAIN_PREFIX && \
     ./build-libcxx.sh $TOOLCHAIN_PREFIX && \
     ./build-compiler-rt.sh $TOOLCHAIN_PREFIX --build-sanitizers && \
-    rm -rf /build/*
+    rm -rf /build/* && \
+    rm -rf /root/.wine /tmp/.wine-*
 
 # Build libssp
 COPY build-libssp.sh libssp-Makefile ./
@@ -79,8 +84,8 @@ RUN ./build-libssp.sh $TOOLCHAIN_PREFIX && \
 # Prepare wine installation
 COPY scripts/wait_process.sh /opt/wine/
 RUN chmod +x /opt/wine/wait_process.sh && \
-    wget -q https://raw.githubusercontent.com/Winetricks/winetricks/d30478da6981e0842956e5b326339b52540efaec/src/winetricks -O /opt/wine/winetricks && \
-    WINETRICKS_SHA256=01ebb56d22f54467343700eedfe283d82a47e67bbb6c2d68b7da743f41bb78a3 && \
+    wget -q https://raw.githubusercontent.com/Winetricks/winetricks/5028127369b7b23b03789aec083ba5b68aa1ec34/src/winetricks -O /opt/wine/winetricks && \
+    WINETRICKS_SHA256=7ec9c3e9140e592ef575140417f27e75e16ccebfeee9816cdbab21aa3d5c0841 && \
     echo $WINETRICKS_SHA256 /opt/wine/winetricks | sha256sum -c && \
     chmod +x /opt/wine/winetricks && \
     WINE_MONO_VERSION=4.5.6 && mkdir -p /usr/share/wine/mono && \
@@ -112,7 +117,7 @@ RUN wine wineboot --init && \
     cd ~/ && \
     rm -f ~/wix.msi && \
     rm -rf ~/.cache/winetricks && \
-    rm -rf /tmp/wine-*
+    rm -rf /tmp/.wine-*
 
 ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
 
