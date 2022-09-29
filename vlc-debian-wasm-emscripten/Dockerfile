@@ -13,7 +13,7 @@ ENV PATH=/opt/tools/bin:$PATH
 RUN  set -x && \
      apt-get update && \
      apt-get install -y git-core libtool automake autoconf autopoint make \
-     gettext pkg-config subversion cmake cvs zip bzip2 p7zip-full wget dos2unix \
+     gettext pkg-config cmake zip bzip2 p7zip-full wget dos2unix \
      ragel yasm g++ m4 ant build-essential libtool-bin gperf \
      flex bison curl nasm meson python3 python3-setuptools python3-mako && \
      apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
