@@ -23,13 +23,16 @@ RUN  set -x && \
      cd /usr/share/misc && \
      patch -l < /patches/emscripten-automake.patch && \
      mkdir /build && cd /build && \
-     PROTOBUF_VERSION=3.1.0 && \
-     PROTOBUF_SHA256=51ceea9957c875bdedeb1f64396b5b0f3864fe830eed6a2d9c066448373ea2d6 && \
+     PROTOBUF_VERSION=3.4.1 && \
+     PROTOBUF_SHA256=2bb34b4a8211a30d12ef29fd8660995023d119c99fbab2e5fe46f17528c9cc78 && \
      wget -q https://github.com/google/protobuf/releases/download/v$PROTOBUF_VERSION/protobuf-cpp-$PROTOBUF_VERSION.tar.gz && \
      echo $PROTOBUF_SHA256 protobuf-cpp-$PROTOBUF_VERSION.tar.gz | sha256sum -c && \
      tar xzfo protobuf-cpp-$PROTOBUF_VERSION.tar.gz && \
      cd protobuf-$PROTOBUF_VERSION && \
-     ./configure --prefix=/opt/tools/ --disable-shared --enable-static && make -j$CORES && make install && \
+# force include <algorithm> \
+     sed -i.orig 's,#ifdef _MSC_VER,#if 1,' "src/google/protobuf/repeated_field.h" && \
+     cmake  -S cmake -B cbuild -DBUILD_SHARED_LIBS=OFF -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_BUILD_EXAMPLES=OFF && \
+     cmake --build cbuild --parallel $CORES && cmake --install cbuild --prefix /opt/tools && \
      rm -rf /build/*
 
 USER videolan
