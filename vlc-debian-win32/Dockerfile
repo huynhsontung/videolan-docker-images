@@ -157,15 +157,16 @@ RUN set -x && \
     echo $WINE_MONO_SHA256 /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi | sha256sum -c && \
     chmod +x /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi && \
     cd /build && \
-    PROTOBUF_VERSION=3.1.0 && \
-    PROTOBUF_SHA256=51ceea9957c875bdedeb1f64396b5b0f3864fe830eed6a2d9c066448373ea2d6 && \
+    PROTOBUF_VERSION=3.4.1 && \
+    PROTOBUF_SHA256=2bb34b4a8211a30d12ef29fd8660995023d119c99fbab2e5fe46f17528c9cc78 && \
     wget -q https://github.com/google/protobuf/releases/download/v$PROTOBUF_VERSION/protobuf-cpp-$PROTOBUF_VERSION.tar.gz && \
     echo $PROTOBUF_SHA256 protobuf-cpp-$PROTOBUF_VERSION.tar.gz | sha256sum -c && \
     tar xzfo protobuf-cpp-$PROTOBUF_VERSION.tar.gz && \
     cd protobuf-$PROTOBUF_VERSION && \
-    wget -q https://code.videolan.org/videolan/vlc/-/raw/c580054e4f3a166f93c91f94416f97d89be83c16/extras/tools/protobuf-fix-build.patch && \
-    patch -p1 < protobuf-fix-build.patch && \
-    ./configure --prefix=/opt/protobuf --disable-shared --enable-static && make -j$CORES && make install && \
+# force include <algorithm> \
+    sed -i.orig 's,#ifdef _MSC_VER,#if 1,' "src/google/protobuf/repeated_field.h" && \
+    cmake  -S cmake -B cbuild -DBUILD_SHARED_LIBS=OFF -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_BUILD_EXAMPLES=OFF && \
+    cmake --build cbuild --parallel $CORES && cmake --install cbuild --prefix /opt/protobuf && \
     cd / && rm -rf /build
 
 ENV LANG=en_US.UTF-8
