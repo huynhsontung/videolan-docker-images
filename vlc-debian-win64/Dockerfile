@@ -58,8 +58,8 @@ RUN set -x && \
     \
     GCC_VERSION=11.3.0 \
     GCC_SHA256=b47cf2818691f5b1e21df2bb38c795fac2cfbd640ede2d0a5e1c89e338a3ac39 \
-    BINUTILS_VERSION=2.27 \
-    BINUTILS_SHA256=369737ce51587f92466041a97ab7d2358c6d9e1b6490b3940eb09fb0a9a6ac88 \
+    BINUTILS_VERSION=2.39 \
+    BINUTILS_SHA256=645c25f563b8adc0a81dbd6a41cffbf4d37083a382e02d5d3df4f65c09516d00 \
     MPFR_VERSION=3.1.6 \
     MPFR_SHA256=569ceb418aa935317a79e93b87eeb3f956cab1a97dfb2f3b5fd8ac2501011d62 \
     GMP_VERSION=6.1.1 \
@@ -73,15 +73,15 @@ RUN set -x && \
     mkdir $TOOLCHAIN_PREFIX && \
     mkdir $MINGW_PREFIX && \
     ln -s $MINGW_PREFIX $TOOLCHAIN_PREFIX/mingw && \
-    wget -q https://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.bz2 && \
-    echo $BINUTILS_SHA256 binutils-$BINUTILS_VERSION.tar.bz2 | sha256sum -c && \
+    wget -q https://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.xz && \
+    echo $BINUTILS_SHA256 binutils-$BINUTILS_VERSION.tar.xz | sha256sum -c && \
     wget -q https://ftp.gnu.org/gnu/gcc/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.xz && \
     echo $GCC_SHA256 gcc-$GCC_VERSION.tar.xz | sha256sum -c && \
     git config --global user.name "VideoLAN Buildbot" && \
     git config --global user.email buildbot@videolan.org && \
     git clone -n --single-branch git://git.code.sf.net/p/mingw-w64/mingw-w64 && \
     tar xf gcc-$GCC_VERSION.tar.xz && \
-    tar xf binutils-$BINUTILS_VERSION.tar.bz2 && \
+    tar xf binutils-$BINUTILS_VERSION.tar.xz && \
     cd binutils-$BINUTILS_VERSION && mkdir build && cd build && \
     ../configure --prefix=$TOOLCHAIN_PREFIX --target=$TARGET_TUPLE \
                     --disable-werror --disable-multilib && make -j$CORES && make install-strip && \
