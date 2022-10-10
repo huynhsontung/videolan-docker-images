@@ -40,7 +40,7 @@ RUN set -x && \
     gettext dos2unix zip wine nsis g++-mingw-w64-i686 curl gperf flex bison \
     libcurl4-gnutls-dev python3 python3-setuptools python3-mako python3-requests \
     lftp gcc make procps ca-certificates \
-    openjdk-11-jdk-headless jq gnupg \
+    openjdk-11-jdk-headless nasm jq gnupg \
     && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install --no-install-suggests --no-install-recommends wine32 && \
