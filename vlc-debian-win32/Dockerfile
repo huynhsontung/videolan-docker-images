@@ -56,8 +56,8 @@ RUN set -x && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1 && \
     \
-    GCC_VERSION=11.2.0 \
-    GCC_SHA256=d08edc536b54c372a1010ff6619dd274c0f1603aa49212ba20f7aa2cda36fa8b \
+    GCC_VERSION=11.3.0 \
+    GCC_SHA256=b47cf2818691f5b1e21df2bb38c795fac2cfbd640ede2d0a5e1c89e338a3ac39 \
     BINUTILS_VERSION=2.27 \
     BINUTILS_SHA256=369737ce51587f92466041a97ab7d2358c6d9e1b6490b3940eb09fb0a9a6ac88 \
     MPFR_VERSION=3.1.6 \
