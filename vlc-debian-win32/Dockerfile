@@ -66,7 +66,7 @@ RUN set -x && \
     GMP_SHA256=d36e9c05df488ad630fff17edb50051d6432357f9ce04e34a09b3d818825e831 \
     MPC_VERSION=1.0.3 \
     MPC_SHA256=617decc6ea09889fb08ede330917a00b16809b8db88c29c31bfbb49cbf88ecc3 \
-    MINGW_W64_HASH=eac8c38c10ca4e22feb2f1e5e530b1e2daedc20f \
+    MINGW_W64_HASH=aa08f56da559016f10336dddca85d59f9bdc9e02 \
     && \
     mkdir /build/ && \
     cd /build && \
