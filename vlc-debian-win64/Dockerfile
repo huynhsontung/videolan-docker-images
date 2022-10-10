@@ -114,7 +114,9 @@ RUN set -x && \
                     --disable-multilib && \
                     make -j$CORES all-gcc && \
                     make install-gcc && \
-    cd /build/mingw-w64/mingw-w64-crt && \
+    cd /build/mingw-w64 && patch -p1 < /patches/0001-crt-Fix-building-lib32-lib64-in-parallel.patch && \
+    cd /build/mingw-w64 && patch -p1 < /patches/0001-Revert-headers-crt-Upgrade-to-autoconf-2.71-and-auto.patch && \
+    cd /build/mingw-w64/mingw-w64-crt && autoreconf2.69 -vif && \
     mkdir build && cd build && \
     ../configure --prefix=$MINGW_PREFIX \
                     --host=$TARGET_TUPLE && \

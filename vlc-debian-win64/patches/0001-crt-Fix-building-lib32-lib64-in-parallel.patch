@@ -1,0 +1,55 @@
+From 953bcd32ae470c4647e94de8548dda5a8f07d82d Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Martin=20Storsj=C3=B6?= <martin@martin.st>
+Date: Tue, 26 Apr 2022 23:49:43 +0300
+Subject: [PATCH] crt: Fix building lib32+lib64 in parallel
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+In 0ad299826ca14987fd53664c1047f4dfe848c3f8, we started passing
+--temp-prefix to dlltool (if supported), to avoid temp file clashes
+when running on windows.
+
+We used the file name portion of the output file path as temp prefix;
+e.g. when building lib64/libuser32.a, we ended up passing
+"--temp-prefix libuser32" to dlltool. This avoids the temp file
+clashes on Windows, since there's no randomness involved in the file
+names.
+
+However, if both lib32 and lib64 are enabled at the same time,
+we can end up building e.g. lib32/libuser32.a and lib64/libuser32.a
+in parallel, which both would end up with the same temp file prefix,
+which then causes build failures.
+
+Therefore, pass the whole output name, minus extension, as temp prefix,
+i.e. passing "--temp-prefix lib64/libuser32" as prefix. In practice,
+this produces the temp object files in the subdirectory, while keeping
+their names the same.
+
+For the practical details of the change; previously this expanded into
+a subshell, calling the shell utility "basename", which removes both
+leading directories and an optional suffix. Switch this to use the
+gnu make builtin function "basename" instead, which keeps the directory
+prefix, but removes any suffixes.
+
+Signed-off-by: Martin Storsjö <martin@martin.st>
+---
+ mingw-w64-crt/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mingw-w64-crt/Makefile.am b/mingw-w64-crt/Makefile.am
+index 229a6aa9f..6a2835079 100644
+--- a/mingw-w64-crt/Makefile.am
++++ b/mingw-w64-crt/Makefile.am
+@@ -47,7 +47,7 @@ else
+   DTDEF64=$(DLLTOOL) $(DLLTOOLFLAGS64) $(AM_DLLTOOLFLAGS) --input-def
+ endif
+ if DLLTOOL_HAS_TEMP_PREFIX
+-  AM_DLLTOOLFLAGS += --temp-prefix $$(basename $@ .a)
++  AM_DLLTOOLFLAGS += --temp-prefix $(basename $@)
+ endif
+ if DELAY_IMPORT_LIBS
+   AM_DLLTOOLFLAGS += --output-delaylib $@.delayimp.a
+-- 
+2.37.3.windows.1
+
