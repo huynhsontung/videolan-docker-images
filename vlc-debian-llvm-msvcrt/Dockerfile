@@ -14,7 +14,7 @@ RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
     apt-get install -qqy --no-install-suggests --no-install-recommends \
     git wget bzip2 file unzip libtool-bin pkg-config build-essential \
     automake yasm gettext autopoint vim ninja-build ant \
-    winbind flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm \
+    winbind flex ragel bison zip dos2unix p7zip-full subversion gperf nsis nasm cmake \
     python3 python3-setuptools python3-mako locales meson help2man libltdl-dev \
     ca-certificates curl default-jdk-headless gnupg procps && \
     dpkg --add-architecture i386 && \
@@ -38,14 +38,7 @@ ENV TOOLCHAIN_PREFIX=/opt/llvm-mingw
 
 ARG CORES=4
 
-RUN CMAKE_VERSION=3.17.0 && \
-    CMAKE_SHA256=b74c05b55115eacc4fa2b77a814981dbda05cdc95a53e279fe16b7b272f00847 && \
-    wget -q http://www.cmake.org/files/v3.17/cmake-$CMAKE_VERSION.tar.gz && \
-    echo $CMAKE_SHA256 cmake-$CMAKE_VERSION.tar.gz | sha256sum -c && \
-    tar xzf cmake-$CMAKE_VERSION.tar.gz && \
-    cd cmake-$CMAKE_VERSION && ./configure --prefix=/opt/tools/ --parallel=$CORES --no-qt-gui -- \
-        -DCMAKE_USE_OPENSSL:BOOL=OFF -DBUILD_TESTING:BOOL=OFF && make -j$CORES && make install && \
-    cd /build && \
+RUN cd /build && \
     PROTOBUF_VERSION=3.1.0 && \
     PROTOBUF_SHA256=51ceea9957c875bdedeb1f64396b5b0f3864fe830eed6a2d9c066448373ea2d6 && \
     wget -q https://github.com/google/protobuf/releases/download/v$PROTOBUF_VERSION/protobuf-cpp-$PROTOBUF_VERSION.tar.gz && \
