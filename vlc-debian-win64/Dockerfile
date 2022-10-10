@@ -141,7 +141,8 @@ RUN set -x && \
     wget -q https://download.videolan.org/pub/contrib/breakpad/breakpad-$BREAKPAD_VERSION.tar.gz && \
     echo $BREAKPAD_SHA256 breakpad-$BREAKPAD_VERSION.tar.gz | sha256sum -c && \
     tar xzf breakpad-$BREAKPAD_VERSION.tar.gz && \
-    cd breakpad-$BREAKPAD_VERSION && autoreconf -vif && mkdir build && cd build && \
+    cd breakpad-$BREAKPAD_VERSION && patch -p1 < /patches/0001-Fix-for-non-constant-SIGSTKSZ.patch && \
+    autoreconf -vif && mkdir build && cd build && \
     ../configure --enable-tools --disable-processor --prefix=/opt/breakpad && \
     make -j$CORES && make install && \
     \
