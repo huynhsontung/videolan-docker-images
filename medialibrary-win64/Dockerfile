@@ -1,6 +1,6 @@
 FROM registry.videolan.org/vlc-debian-llvm-msvcrt:20221011232542
 
-ENV IMAGE_DATE=202207271527
+ENV IMAGE_DATE=20221020113644
 
 USER root
 
@@ -13,17 +13,19 @@ RUN echo "deb http://deb.debian.org/debian sid main" > /etc/apt/sources.list.d/s
 
 USER videolan
 
-RUN TARGET_TRIPLE=x86_64-w64-mingw32 \
-    SQLITE_VERSION=sqlite-autoconf-3340100 \
-    SQLITE_SHA256=2a3bca581117b3b88e5361d0ef3803ba6d8da604b1c1a47d902ef785c1b53e89 \
-    JPEGTURBO_VERSION=2.0.8-esr \
-    JPEGTURBO_SHA256=e536592f8729d1f16c2523c09c3753a64bb8870c75f73ce4451c84a55c5d9852 \
-    RAPIDJSON_VERSION=1.1.0 \
+RUN export TARGET_TRIPLE=x86_64-w64-mingw32 && \
+    SQLITE_VERSION=sqlite-autoconf-3340100 && \
+    SQLITE_SHA256=2a3bca581117b3b88e5361d0ef3803ba6d8da604b1c1a47d902ef785c1b53e89 && \
+    JPEGTURBO_VERSION=2.0.8-esr && \
+    JPEGTURBO_SHA256=e536592f8729d1f16c2523c09c3753a64bb8870c75f73ce4451c84a55c5d9852 && \
+    RAPIDJSON_VERSION=1.1.0 && \
     RAPIDJSON_SHA256=bf7ced29704a1e696fbccf2a2b4ea068e7774fa37f6d7dd4039d0787f8bed98e && \
     mkdir -p /build/ml && cd /build/ml && \
-    git clone --depth=1 https://code.videolan.org/videolan/vlc.git && \
+    git clone --depth=1000 https://code.videolan.org/videolan/vlc.git && \
     cd vlc && \
-    ./extras/package/win32/build.sh -z -a x86_64 -o /prefix/ && \
+    export VLC_CONTRIB_SHA="$(extras/ci/get-contrib-sha.sh)" && \
+    export VLC_PREBUILT_CONTRIBS_URL="https://artifacts.videolan.org/vlc/win64-llvm/vlc-contrib-${TARGET_TRIPLE}-${VLC_CONTRIB_SHA}.tar.bz2" && \
+    ./extras/package/win32/build.sh -z -p -a x86_64 -o /prefix/ && \
     find /prefix/lib -name '*.la' -delete && \
     mkdir -p /prefix/dll && \
     cp win64/src/.libs/libvlccore.dll /prefix/dll/ && \
