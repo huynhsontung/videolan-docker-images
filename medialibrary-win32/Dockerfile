@@ -4,13 +4,8 @@ ENV IMAGE_DATE=20221020113644
 
 USER root
 
-RUN echo "deb http://deb.debian.org/debian sid main" > /etc/apt/sources.list.d/sid.list && \
-    apt-get update && apt-get install -y -t sid --no-install-suggests --no-install-recommends meson && \
-    rm -f /etc/apt/sources.list.d/sid.list && \
-    apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
-    mkdir -p /build/ml && chown videolan /build && chown videolan /build/ml && \
-    mkdir -p /prefix && chown videolan /prefix && \
-    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+RUN mkdir -p /build/ml && chown videolan /build && chown videolan /build/ml && \
+    mkdir -p /prefix && chown videolan /prefix
 
 USER videolan
 
@@ -21,7 +16,7 @@ RUN export TARGET_TRIPLE=i686-w64-mingw32 && \
     JPEGTURBO_SHA256=e536592f8729d1f16c2523c09c3753a64bb8870c75f73ce4451c84a55c5d9852 && \
     RAPIDJSON_VERSION=1.1.0 && \
     RAPIDJSON_SHA256=bf7ced29704a1e696fbccf2a2b4ea068e7774fa37f6d7dd4039d0787f8bed98e && \
-    mkdir -p /build/ml && cd /build/ml && \
+    cd /build/ml && \
     git clone --depth=1000 https://code.videolan.org/videolan/vlc.git && \
     cd vlc && \
     export VLC_CONTRIB_SHA="$(extras/ci/get-contrib-sha.sh)" && \
