@@ -46,10 +46,10 @@ RUN export TARGET_TRIPLE=i686-w64-mingw32 && \
     cmake --build . --parallel `nproc` && cmake --install . --prefix /prefix && \
     cd /build/ml && wget -q https://github.com/miloyip/rapidjson/archive/v$RAPIDJSON_VERSION.tar.gz && \
     echo $RAPIDJSON_SHA256 v$RAPIDJSON_VERSION.tar.gz | sha256sum -c && \
-    tar xzf v1.1.0.tar.gz && cd rapidjson-1.1.0/ && \
+    tar xzf v$RAPIDJSON_VERSION.tar.gz && cd rapidjson-$RAPIDJSON_VERSION/ && \
     cmake -DCMAKE_INSTALL_PREFIX=/prefix -DRAPIDJSON_BUILD_DOC=OFF \
         -DRAPIDJSON_BUILD_EXAMPLES=OFF -DRAPIDJSON_BUILD_TESTS=OFF . && \
-    make install && \
+    cmake --build . --parallel `nproc` && cmake --install . --prefix /prefix && \
     rm -rf /build/ml
 
 COPY crossfiles /opt/crossfiles
