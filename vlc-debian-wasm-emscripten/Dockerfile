@@ -15,7 +15,7 @@ RUN  set -x && \
      apt-get install -y git-core libtool automake autoconf autopoint make \
      gettext pkg-config cmake zip bzip2 p7zip-full wget dos2unix \
      ragel yasm g++ m4 ninja-build ant build-essential libtool-bin gperf \
-     flex bison curl nasm meson python3 python3-setuptools python3-mako && \
+     flex bison curl nasm meson python3 python3-venv python3-setuptools python3-mako && \
      apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
      addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
      adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \

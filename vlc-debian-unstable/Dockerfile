@@ -25,7 +25,7 @@ RUN set -x && \
     apt-get update && apt-get upgrade -q -y && \
     apt-get install -y --no-install-suggests --no-install-recommends \
     openjdk-11-jdk lftp ca-certificates git-core libtool automake autoconf \
-    autopoint make ninja-build python3 gettext pkg-config subversion \
+    autopoint make ninja-build python3 python3-venv gettext pkg-config subversion \
     cvs zip bzip2 p7zip-full wget dos2unix ragel yasm g++ \
     m4 ant build-essential libtool-bin libavcodec-dev gdb \
     libavformat-dev libswresample-dev libavutil-dev libpostproc-dev \

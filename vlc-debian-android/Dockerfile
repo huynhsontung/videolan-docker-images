@@ -30,7 +30,7 @@ RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
     ca-certificates autoconf m4 automake ant autopoint bison \
     flex build-essential libtool libtool-bin patch pkg-config ragel subversion cmake \
     git yasm ragel g++ protobuf-compiler gettext ninja-build \
-    wget expect unzip python python3 python3-setuptools python3-mako \
+    wget expect unzip python python3 python3-venv python3-setuptools python3-mako \
     locales libltdl-dev curl automake nasm && \
     apt-get install --no-install-suggests --no-install-recommends -y \
         -t buster-backports meson && \
