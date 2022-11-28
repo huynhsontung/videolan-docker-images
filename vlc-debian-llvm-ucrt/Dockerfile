@@ -2,7 +2,7 @@ FROM debian:bullseye-20220801-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202206130000
+ENV IMAGE_DATE=202211290000
 
 # The wine SDK path differs from version to version, starting from the one in buster, it's
 # located in /usr/include/wine/wine/windows/ instead of
@@ -104,14 +104,7 @@ RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
 USER videolan
 RUN wine wineboot --init && \
     /opt/wine/wait_process.sh wineserver && \
-    /opt/wine/winetricks --unattended dotnet40 dotnet_verifier && \
-    /opt/wine/wait_process.sh wineserver && \
-    wget -q https://download.videolan.org/contrib/wix/wix-3.5.msi -O ~/wix.msi && \
-    WIX_SHA256=621b70e8761d5b940d8c32a42b0e92fd55767f8908a9b32e06bb3d12a30bc47b && \
-    echo $WIX_SHA256 ~/wix.msi | sha256sum -c && \
-    wine msiexec /i ~/wix.msi && \
-    cd ~/ && \
-    rm -f ~/wix.msi && \
+    /opt/wine/winetricks --unattended dotnet48 dotnet_verifier && \
     rm -rf ~/.cache/winetricks && \
     rm -rf /tmp/.wine-*
 
