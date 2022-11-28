@@ -1,8 +1,8 @@
-FROM debian:bullseye-20220801-slim
+FROM debian:bullseye-20221114-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202205051600
+ENV IMAGE_DATE=202211290000
 
 COPY crossfiles/ /opt/crossfiles/
 
