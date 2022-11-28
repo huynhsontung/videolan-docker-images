@@ -1,4 +1,4 @@
-FROM debian:bullseye-20220801-slim
+FROM debian:bullseye-20221114-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
