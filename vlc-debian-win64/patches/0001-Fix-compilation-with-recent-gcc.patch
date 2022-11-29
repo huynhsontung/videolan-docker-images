@@ -1,0 +1,36 @@
+From 7e24569a63d552740140ce80bcb89baf8c92401b Mon Sep 17 00:00:00 2001
+From: Steve Lhomme <robux4@ycbcr.xyz>
+Date: Tue, 29 Nov 2022 12:53:18 +0100
+Subject: [PATCH] Fix compilation with recent gcc
+
+In recent C++ compiler using the proper header is enforced. This is the
+compilation error it fixes:
+
+../src/common/linux/guid_creator.cc: In static member function 'static void GUIDGenerator::CreateGuidFromArc4Random(GUID*)':
+../src/common/linux/guid_creator.cc:112:7: error: 'memcpy' was not declared in this scope
+  112 |       memcpy(buf + i, &random_data, sizeof(uint32_t));
+      |       ^~~~~~
+../src/common/linux/guid_creator.cc:48:1: note: 'memcpy' is defined in header '<cstring>'; did you forget to '#include <cstring>'?
+   47 | #include <sys/random.h>
+  +++ |+#include <cstring>
+   48 | #endif
+make: *** [Makefile:5701: src/common/linux/guid_creator.o] Error 1
+---
+ src/common/linux/guid_creator.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/common/linux/guid_creator.cc b/src/common/linux/guid_creator.cc
+index f81c2911..09b64926 100644
+--- a/src/common/linux/guid_creator.cc
++++ b/src/common/linux/guid_creator.cc
+@@ -42,6 +42,7 @@
+ #include <sys/stat.h>
+ #include <time.h>
+ #include <unistd.h>
++#include <cstring>
+ 
+ #if defined(HAVE_SYS_RANDOM_H)
+ #include <sys/random.h>
+-- 
+2.37.3.windows.1
+
