@@ -1,4 +1,4 @@
-FROM debian:sid-20220125-slim
+FROM debian:sid-20221114-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
