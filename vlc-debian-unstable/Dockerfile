@@ -33,7 +33,7 @@ RUN set -x && \
     libmpg123-dev libnfs-dev curl libltdl-dev libqt5svg5-dev \
     qtdeclarative5-dev qtquickcontrols2-5-dev qml-module-qtquick-controls2 \
     qml-module-qtquick-layouts qml-module-qtquick-templates2 \
-    qml-module-qtgraphicaleffects flex bison libxkbcommon-x11-dev libplacebo-dev \
+    qml-module-qtgraphicaleffects flex bison libxkbcommon-x11-dev libx11-xcb-dev libplacebo-dev \
     meson doxygen graphviz libsqlite3-dev rapidjson-dev nasm cmake libxcb-damage0-dev \
     clang libc++-dev libc++abi-dev llvm-13 gperf && \
     apt-get build-dep --no-install-suggests --no-install-recommends -y vlc && \
