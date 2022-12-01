@@ -16,9 +16,6 @@ ARG CORES=8
 ENV PATH=/opt/tools/bin:$PATH
 
 RUN set -x && \
-    addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
-    adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
-    echo "videolan:videolan" | chpasswd && \
     mkdir -p /usr/share/man/man1 && \
     echo "deb http://ftp.debian.org/debian/ sid main" > /etc/apt/sources.list && \
     echo "deb-src http://ftp.debian.org/debian/ sid main" >> /etc/apt/sources.list && \
@@ -39,6 +36,9 @@ RUN set -x && \
     apt-get build-dep --no-install-suggests --no-install-recommends -y vlc && \
     apt-get remove -y libprotobuf-dev protobuf-compiler && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
+    addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
+    adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
+    echo "videolan:videolan" | chpasswd && \
     mkdir /build && cd /build && \
     PROTOBUF_VERSION=3.4.1 && \
     PROTOBUF_SHA256=2bb34b4a8211a30d12ef29fd8660995023d119c99fbab2e5fe46f17528c9cc78 && \
