@@ -2,7 +2,7 @@ FROM debian:bullseye-20221114-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202211290000
+ENV IMAGE_DATE=202212110930
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -21,7 +21,7 @@ RUN set -x && \
     libavformat-dev libavresample-dev libavutil-dev libpostproc-dev libswscale-dev \
     gettext pkg-config wget m4 build-essential curl libltdl-dev meson flex bison \
     rapidjson-dev libsqlite3-dev lcov libmpg123-dev libtag-extras-dev liba52-dev \
-    liba52-0.7.4-dev liblua5.1-0-dev zlib1g-dev libjpeg62-turbo-dev libxml2-dev && \
+    liba52-0.7.4-dev zlib1g-dev libjpeg62-turbo-dev libxml2-dev && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     cd / && \
     git clone --depth=1 https://code.videolan.org/videolan/vlc.git && \
