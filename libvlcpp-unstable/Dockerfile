@@ -1,8 +1,8 @@
-FROM debian:bullseye-20220228-slim
+FROM debian:bullseye-20221114-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202207271125
+ENV IMAGE_DATE=202211290000
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -34,6 +34,6 @@ RUN set -x && \
         --prefix=/prefix && \
     make -j$CORES && make install
 
-ENV PKG_CONFIG_PATH=/prefix/lib/pkgconfig 
+ENV PKG_CONFIG_PATH=/prefix/lib/pkgconfig
 
 USER videolan
