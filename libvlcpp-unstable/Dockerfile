@@ -30,7 +30,8 @@ RUN set -x && \
     ../configure --disable-lua --disable-qt --disable-skins2 \
         --disable-nls --disable-xcb --disable-alsa \
         --prefix=/prefix && \
-    make -j$CORES && make install
+    make -j$CORES && make install && \
+    cd .. && rm -rf build
 
 ENV PKG_CONFIG_PATH=/prefix/lib/pkgconfig
 
