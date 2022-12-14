@@ -1,6 +1,6 @@
-FROM registry.videolan.org/vlc-debian-llvm-msvcrt:20221011232542
+FROM registry.videolan.org/vlc-debian-llvm-msvcrt:20221023173315
 
-ENV IMAGE_DATE=20221020113644
+ENV IMAGE_DATE=202212140826
 
 USER root
 
@@ -21,8 +21,8 @@ RUN export TARGET_TRIPLE=x86_64-w64-mingw32 && \
     cd vlc && \
     export VLC_CONTRIB_SHA="$(extras/ci/get-contrib-sha.sh)" && \
     export VLC_PREBUILT_CONTRIBS_URL="https://artifacts.videolan.org/vlc/win64-llvm/vlc-contrib-${TARGET_TRIPLE}-${VLC_CONTRIB_SHA}.tar.bz2" && \
-    ./extras/package/win32/build.sh -z -p -a x86_64 -o /prefix/ && \
-    find /prefix/lib -name '*.la' -delete && \
+    ./extras/package/win32/build.sh -z -l -p -a x86_64 -o /prefix/ && \
+    find /prefix/lib -name '*.la' -delete || echo "no .la files" && \
     mkdir -p /prefix/dll && \
     cp win64/src/.libs/libvlccore.dll /prefix/dll/ && \
     cp win64/lib/.libs/libvlc.dll /prefix/dll && \
