@@ -1,4 +1,4 @@
-FROM registry.videolan.org/vlc-debian-llvm-msvcrt:20221023173315
+FROM registry.videolan.org/vlc-debian-llvm-msvcrt:20221214101739
 
 ENV IMAGE_DATE=202212140826
 
