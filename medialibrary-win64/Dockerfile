@@ -21,7 +21,8 @@ RUN export TARGET_TRIPLE=x86_64-w64-mingw32 && \
     cd vlc && \
     export VLC_CONTRIB_SHA="$(extras/ci/get-contrib-sha.sh)" && \
     export VLC_PREBUILT_CONTRIBS_URL="https://artifacts.videolan.org/vlc/win64-llvm/vlc-contrib-${TARGET_TRIPLE}-${VLC_CONTRIB_SHA}.tar.bz2" && \
-    ./extras/package/win32/build.sh -z -l -p -a x86_64 -o /prefix/ && \
+    CONFIGFLAGS="--prefix /prefix" ./extras/package/win32/build.sh -z -l -p -a x86_64 && \
+    make -C win64 -j`nproc` package-win-common && \
     find /prefix/lib -name '*.la' -delete || echo "no .la files" && \
     mkdir -p /prefix/dll && \
     cp win64/src/.libs/libvlccore.dll /prefix/dll/ && \
