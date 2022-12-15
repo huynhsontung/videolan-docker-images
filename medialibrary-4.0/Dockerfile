@@ -14,14 +14,11 @@ ARG VIDEOLAN_UID=499
 ARG CORES=8
 
 RUN set -x && \
-    addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
-    adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
-    echo "videolan:videolan" | chpasswd && \
     mkdir -p /usr/share/man/man1 && \
     echo "deb http://ftp.fr.debian.org/debian/ sid main" > /etc/apt/sources.list && \
     echo "deb-src http://ftp.fr.debian.org/debian/ sid main" >> /etc/apt/sources.list && \
     apt-get update && apt-get install -yq --no-install-suggests --no-install-recommends \
-    ca-certificates git-core libtool automake autoconf autopoint ninja-build python3 \
+    ca-certificates adduser git-core libtool automake autoconf autopoint ninja-build python3 \
     libavformat-dev libavutil-dev libpostproc-dev libswscale-dev \
     gettext pkg-config wget m4 build-essential curl libltdl-dev meson flex bison \
     rapidjson-dev libsqlite3-dev lcov libmpg123-dev libtag-extras-dev liba52-dev \
@@ -29,6 +26,9 @@ RUN set -x && \
     gdb libid3-tools python3-scipy cmake sqlite3 libtag1-dev libxxhash-dev \
     clang libc++-dev libc++abi-dev llvm-13 && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
+    addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
+    adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
+    echo "videolan:videolan" | chpasswd && \
     mkdir /build && cd /build && \
     git clone --depth=1 https://code.videolan.org/videolan/vlc.git && \
     cd vlc && \
