@@ -23,8 +23,8 @@ RUN set -x && \
     gettext pkg-config wget m4 build-essential curl libltdl-dev meson flex bison \
     rapidjson-dev libsqlite3-dev lcov libmpg123-dev libtag-extras-dev liba52-dev \
     liba52-0.7.4-dev liblua5.1-0-dev zlib1g-dev libjpeg62-turbo-dev libxml2-dev gcovr \
-    gdb libid3-tools python3-scipy cmake sqlite3 libtag1-dev libxxhash-dev \
-    clang libc++-dev libc++abi-dev llvm && \
+    gdb libid3-tools python3-scipy cmake sqlite3 libtag1-dev libxxhash-dev && \
+    apt-get install -yq --no-install-suggests clang libc++-dev libc++abi-dev && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
