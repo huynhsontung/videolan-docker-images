@@ -1,6 +1,6 @@
-FROM ubuntu:jammy-20220531
+FROM ubuntu:jammy-20221130
 
-ENV IMAGE_DATE=202207280000
+ENV IMAGE_DATE=202301280000
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
