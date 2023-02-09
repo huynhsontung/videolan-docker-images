@@ -1,4 +1,4 @@
-FROM debian:buster-20220801-slim
+FROM debian:buster-20230202-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
@@ -20,7 +20,7 @@ RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
         ca-certificates curl git build-essential python3-pip \
         python3-setuptools python3-wheel nasm \
         doxygen graphviz ninja-build && \
-    pip3 install meson==0.49 && \
+    pip3 install --no-cache-dir meson==0.49 && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 USER videolan
