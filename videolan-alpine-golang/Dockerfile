@@ -1,4 +1,4 @@
-FROM golangci/golangci-lint:v1.26-alpine
+FROM golangci/golangci-lint:v1.51.1-alpine
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
