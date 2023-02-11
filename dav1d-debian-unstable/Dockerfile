@@ -1,4 +1,4 @@
-FROM debian:sid-20230202-slim
+FROM debian:sid-20230208-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
@@ -17,10 +17,9 @@ RUN groupadd --gid ${VIDEOLAN_UID} videolan && \
     apt-get update && \
     apt-get -y dist-upgrade && \
     apt-get install --no-install-suggests --no-install-recommends -y \
-        lftp ca-certificates curl git build-essential python3-pip \
-        python3-setuptools python3-wheel nasm clang mold \
+        lftp ca-certificates curl git build-essential \
+        nasm clang mold meson ninja-build gcovr \
         wine wine64 procps doxygen graphviz libsdl2-dev ripgrep && \
-    pip3 install --no-cache-dir meson ninja gcovr && \
     dpkg --add-architecture i386 && \
     apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
