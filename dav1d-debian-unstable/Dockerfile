@@ -18,7 +18,7 @@ RUN groupadd --gid ${VIDEOLAN_UID} videolan && \
     apt-get -y dist-upgrade && \
     apt-get install --no-install-suggests --no-install-recommends -y \
         lftp ca-certificates curl git build-essential \
-        nasm clang mold meson ninja-build gcovr \
+        nasm clang libclang-rt-dev mold meson ninja-build gcovr \
         wine wine64 procps doxygen graphviz libsdl2-dev ripgrep && \
     dpkg --add-architecture i386 && \
     apt-get update && \
