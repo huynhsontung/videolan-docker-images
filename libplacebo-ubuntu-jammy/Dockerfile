@@ -1,6 +1,6 @@
-FROM ubuntu:jammy-20221130
+FROM ubuntu:jammy
 
-ENV IMAGE_DATE=202301310000
+ENV IMAGE_DATE=202303220000
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -22,7 +22,7 @@ RUN set -x && \
     usermod --append --groups video,render videolan && \
     echo "videolan:videolan" | chpasswd && \
     apt-get install --no-install-suggests --no-install-recommends -y \
-        apt-utils git-core build-essential gnupg clang clang-tools llvm gdb lcov \
+        apt-utils git-core build-essential gnupg clang clang-tools lld llvm gdb lcov \
         python3-pip python3-setuptools python3-wheel python3-mako \
         libepoxy-dev libgles1 libgles2 liblcms2-dev curl mesa-vulkan-drivers \
         libavcodec-dev libavdevice-dev libavfilter-dev libavformat-dev libavutil-dev \
