@@ -1,4 +1,4 @@
-FROM debian:sid-20230411-slim
+FROM debian:sid-20230502-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
@@ -20,7 +20,7 @@ RUN groupadd --gid ${VIDEOLAN_UID} videolan && \
         lftp ca-certificates curl git build-essential \
         nasm clang libclang-rt-dev mold meson ninja-build gcovr \
         wine wine64 procps doxygen graphviz libsdl2-dev ripgrep \
-        debian-ports-archive-keyring unzip && \
+        debian-ports-archive-keyring zstd && \
     sed -i -e '$aArchitectures-Remove: riscv64' /etc/apt/sources.list.d/debian.sources && \
     sed -e '/^URIs/c URIs: http://deb.debian.org/debian-ports' \
         -e '/^Signed-By/c Signed-By: /usr/share/keyrings/debian-ports-archive-keyring.gpg' \
