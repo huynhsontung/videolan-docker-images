@@ -11,5 +11,9 @@ ENV IMAGE_DATE=202305051600
 # - RPM based: <500 (CentOS, RedHat, etc.)
 ARG VIDEOLAN_UID=499
 
+RUN addgroup -g ${VIDEOLAN_UID} videolan && \
+    adduser -u ${VIDEOLAN_UID} -G videolan -h /home/videolan -D videolan && \
+    echo "videolan:videolan" | chpasswd
+
 USER videolan
 
