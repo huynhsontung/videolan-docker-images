@@ -15,5 +15,7 @@ RUN addgroup -g ${VIDEOLAN_UID} videolan && \
     adduser -u ${VIDEOLAN_UID} -G videolan -h /home/videolan -D videolan && \
     echo "videolan:videolan" | chpasswd
 
+RUN apk add git
+
 USER videolan
 
