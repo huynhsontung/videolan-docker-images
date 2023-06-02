@@ -49,9 +49,9 @@ RUN groupadd --gid ${VIDEOLAN_CI_UID} videolan && \
     echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "licenses/android-sdk-license" && \
     echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> "licenses/android-sdk-license" && \
     echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" >> "licenses/android-sdk-license" && \
-    SDK_TOOLS_FILENAME=commandlinetools-linux-7583922_latest.zip && \
+    SDK_TOOLS_FILENAME=commandlinetools-linux-9477386_latest.zip && \
     wget -q https://dl.google.com/android/repository/$SDK_TOOLS_FILENAME && \
-    SDK_TOOLS_SHA256=124f2d5115eee365df6cf3228ffbca6fc3911d16f8025bebd5b1c6e2fcfa7faf && \
+    SDK_TOOLS_SHA256=bd1aa17c7ef10066949c88dc6c9c8d536be27f992a1f3b5a584f9bd2ba5646a0 && \
     echo $SDK_TOOLS_SHA256 $SDK_TOOLS_FILENAME | sha256sum -c && \
     unzip $SDK_TOOLS_FILENAME && \
     rm -f $SDK_TOOLS_FILENAME && \
