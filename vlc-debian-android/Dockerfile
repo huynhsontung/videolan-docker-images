@@ -1,8 +1,8 @@
-FROM debian:bullseye-20230208-slim
+FROM debian:bookworm-20230522-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202211290000
+ENV IMAGE_DATE=202306021100
 
 COPY crossfiles/ /opt/crossfiles/
 
@@ -20,8 +20,8 @@ ARG CORES=8
 
 ENV PATH=/usr/lib/jvm/java-8-openjdk-amd64/bin:/sdk/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/:/opt/tools/bin:$PATH
 
-RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
-    adduser --quiet --uid ${VIDEOLAN_CI_UID} --ingroup videolan videolan && \
+RUN groupadd --gid ${VIDEOLAN_CI_UID} videolan && \
+    useradd --uid ${VIDEOLAN_CI_UID} --gid videolan --create-home --shell /bin/bash videolan && \
     echo "videolan:videolan" | chpasswd && \
     mkdir -p /usr/share/man/man1 && \
     echo "deb http://deb.debian.org/debian buster-backports main" > /etc/apt/sources.list.d/backports.list && \
@@ -30,7 +30,7 @@ RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
         ca-certificates autoconf m4 automake ant autopoint bison \
         flex build-essential libtool libtool-bin patch pkg-config ragel subversion cmake \
         git yasm ragel g++ protobuf-compiler gettext ninja-build \
-        wget expect unzip python python3 python3-venv python3-setuptools python3-mako \
+        wget expect unzip python3 python3-venv python3-setuptools python3-mako \
         locales libltdl-dev curl automake nasm && \
     apt-get install --no-install-suggests --no-install-recommends -y \
         -t buster-backports meson && \
