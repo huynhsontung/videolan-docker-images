@@ -24,16 +24,13 @@ RUN groupadd --gid ${VIDEOLAN_CI_UID} videolan && \
     useradd --uid ${VIDEOLAN_CI_UID} --gid videolan --create-home --shell /bin/bash videolan && \
     echo "videolan:videolan" | chpasswd && \
     mkdir -p /usr/share/man/man1 && \
-    echo "deb http://deb.debian.org/debian buster-backports main" > /etc/apt/sources.list.d/backports.list && \
     apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
         ca-certificates autoconf m4 automake ant autopoint bison \
-        flex build-essential libtool libtool-bin patch pkg-config ragel subversion cmake \
+        flex build-essential libtool libtool-bin patch pkg-config ragel subversion cmake meson \
         git yasm ragel g++ protobuf-compiler gettext ninja-build \
         wget expect unzip python3 python3-venv python3-setuptools python3-mako \
         locales libltdl-dev curl automake nasm && \
-    apt-get install --no-install-suggests --no-install-recommends -y \
-        -t buster-backports meson && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
     echo "export ANDROID_NDK=${ANDROID_NDK}" >> /etc/profile.d/vlc_env.sh && \
