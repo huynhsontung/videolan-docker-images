@@ -18,7 +18,7 @@ ARG VIDEOLAN_CI_UID=499
 
 ARG CORES=8
 
-ENV PATH=/usr/lib/jvm/java-8-openjdk-amd64/bin:/sdk/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/:/opt/tools/bin:$PATH
+ENV PATH=/sdk/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/:/opt/tools/bin:$PATH
 
 RUN groupadd --gid ${VIDEOLAN_CI_UID} videolan && \
     useradd --uid ${VIDEOLAN_CI_UID} --gid videolan --create-home --shell /bin/bash videolan && \
@@ -26,7 +26,7 @@ RUN groupadd --gid ${VIDEOLAN_CI_UID} videolan && \
     mkdir -p /usr/share/man/man1 && \
     apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
-        ca-certificates autoconf m4 automake ant autopoint bison \
+        openjdk-17-jdk-headless ca-certificates autoconf m4 automake ant autopoint bison \
         flex build-essential libtool libtool-bin patch pkg-config cmake meson \
         git yasm ragel g++ gettext ninja-build \
         wget expect unzip python3 python3-venv python3-setuptools python3-mako \
@@ -56,13 +56,6 @@ RUN groupadd --gid ${VIDEOLAN_CI_UID} videolan && \
     unzip $SDK_TOOLS_FILENAME && \
     rm -f $SDK_TOOLS_FILENAME && \
     cd / && \
-    JDK_FILENAME=OpenJDK11U-jdk_x64_linux_11.0.16_8.tar.gz && \
-    wget -q https://github.com/AdoptOpenJDK/openjdk11-upstream-binaries/releases/download/jdk-11.0.16%2B8/$JDK_FILENAME && \
-    JDK_SHA256=c27620e1675c89d2eae44213973f7256bad0386f7a56c1bececfe452fe5f235a && \
-    echo $JDK_SHA256 $JDK_FILENAME | sha256sum -c && \
-    mkdir -p /usr/lib/jvm/java-8-openjdk-amd64 && \
-    tar -C /usr/lib/jvm/java-8-openjdk-amd64 -xvzf $JDK_FILENAME --strip=1 && \
-    rm -f $JDK_FILENAME && \
     cd sdk/android-sdk-linux && \
     cmdline-tools/bin/sdkmanager --sdk_root=/sdk/android-sdk-linux/ "build-tools;26.0.1" "platform-tools" "platforms;android-26" && \
     chown -R videolan /sdk && \
