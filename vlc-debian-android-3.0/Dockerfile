@@ -5,6 +5,7 @@ MAINTAINER VideoLAN roots <roots@videolan.org>
 ENV IMAGE_DATE=202306200801
 
 COPY crossfiles/ /opt/crossfiles/
+COPY patches /patches
 
 ENV ANDROID_NDK="/sdk/android-ndk" \
     ANDROID_SDK="/sdk/android-sdk-linux"
@@ -64,6 +65,8 @@ RUN groupadd --gid ${VIDEOLAN_CI_UID} videolan && \
     echo $PROTOBUF_SHA256 protobuf-cpp-$PROTOBUF_VERSION.tar.gz | sha256sum -c && \
     tar xzfo protobuf-cpp-$PROTOBUF_VERSION.tar.gz && \
     cd protobuf-$PROTOBUF_VERSION && \
+    patch -p1 < /patches/protobuf-fix-build.patch && \
+    patch -p1 < /patches/protobuf-include-algorithm.patch && \
     ./configure --prefix=/opt/tools/ --disable-shared --enable-static && make -j$CORES && make install && \
     rm -rf /build
 
