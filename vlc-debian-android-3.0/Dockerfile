@@ -1,8 +1,8 @@
-FROM debian:stretch-20210927
+FROM debian:bookworm-20230522-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202110041109
+ENV IMAGE_DATE=202306200801
 
 ENV ANDROID_NDK="/sdk/android-ndk" \
     ANDROID_SDK="/sdk/android-sdk-linux"
@@ -18,18 +18,15 @@ ARG CORES=8
 
 ENV PATH=/opt/tools/bin:$PATH
 
-RUN addgroup --quiet --gid ${VIDEOLAN_CI_UID} videolan && \
-    adduser --quiet --uid ${VIDEOLAN_CI_UID} --ingroup videolan videolan && \
+RUN groupadd --gid ${VIDEOLAN_CI_UID} videolan && \
+    useradd --uid ${VIDEOLAN_CI_UID} --gid videolan --create-home --shell /bin/bash videolan && \
     echo "videolan:videolan" | chpasswd && \
     apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
     openjdk-8-jdk-headless ca-certificates autoconf m4 automake ant autopoint bison \
-    flex build-essential libtool libtool-bin patch pkg-config ragel subversion \
-    git rpm2cpio libwebkitgtk-1.0-0 yasm ragel g++ protobuf-compiler gettext \
-    libgsm1-dev wget expect unzip python python3 locales libltdl-dev curl && \
-    echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list.d/testing.list && \
-    apt-get update && apt-get -y -t testing --no-install-suggests --no-install-recommends install automake && \
-    rm -f /etc/apt/sources.list.d/testing.list && \
+    flex build-essential libtool libtool-bin patch pkg-config \
+    git yasm ragel g++ gettext \
+    wget expect unzip python3 locales libltdl-dev curl && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
     echo "export ANDROID_NDK=${ANDROID_NDK}" >> /etc/profile.d/vlc_env.sh && \
