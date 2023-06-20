@@ -67,7 +67,8 @@ RUN groupadd --gid ${VIDEOLAN_CI_UID} videolan && \
     cd protobuf-$PROTOBUF_VERSION && \
     patch -p1 < /patches/protobuf-fix-build.patch && \
     patch -p1 < /patches/protobuf-include-algorithm.patch && \
-    ./configure --prefix=/opt/tools/ --disable-shared --enable-static && make -j$CORES && make install && \
+    cmake  -S cmake -B build -DBUILD_SHARED_LIBS=OFF -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_BUILD_EXAMPLES=OFF && \
+    cmake --build build --parallel $CORES && cmake --install build --prefix /opt/tools && \
     rm -rf /build
 
 ENV LANG en_US.UTF-8
