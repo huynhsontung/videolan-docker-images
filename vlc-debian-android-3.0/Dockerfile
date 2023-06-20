@@ -44,11 +44,12 @@ RUN groupadd --gid ${VIDEOLAN_CI_UID} videolan && \
     mkdir "licenses" && \
     echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "licenses/android-sdk-license" && \
     echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> "licenses/android-sdk-license" && \
-    wget -q https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip && \
+    SDK_TOOLS_FILENAME=sdk-tools-linux-3859397.zip && \
+    wget -q https://dl.google.com/android/repository/$SDK_TOOLS_FILENAME && \
     SDK_TOOLS_SHA256=444e22ce8ca0f67353bda4b85175ed3731cae3ffa695ca18119cbacef1c1bea0 && \
-    echo $SDK_TOOLS_SHA256 sdk-tools-linux-3859397.zip | sha256sum -c && \
-    unzip sdk-tools-linux-3859397.zip && \
-    rm -f sdk-tools-linux-3859397.zip && \
+    echo $SDK_TOOLS_SHA256 $SDK_TOOLS_FILENAME | sha256sum -c && \
+    unzip $SDK_TOOLS_FILENAME && \
+    rm -f $SDK_TOOLS_FILENAME && \
     tools/bin/sdkmanager "build-tools;26.0.1" "platform-tools" "platforms;android-26" && \
     chown -R videolan /sdk && \
     mkdir /build && cd /build && \
