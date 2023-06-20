@@ -24,7 +24,7 @@ RUN groupadd --gid ${VIDEOLAN_CI_UID} videolan && \
     apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
     openjdk-17-jdk-headless ca-certificates autoconf m4 automake ant autopoint bison \
-    flex build-essential libtool libtool-bin patch pkg-config \
+    flex build-essential libtool libtool-bin patch pkg-config cmake \
     git yasm ragel g++ gettext \
     wget expect unzip python3 locales libltdl-dev curl && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
@@ -53,14 +53,6 @@ RUN groupadd --gid ${VIDEOLAN_CI_UID} videolan && \
     tools/bin/sdkmanager "build-tools;26.0.1" "platform-tools" "platforms;android-26" && \
     chown -R videolan /sdk && \
     mkdir /build && cd /build && \
-    CMAKE_VERSION=3.17.0 && \
-    CMAKE_SHA256=b74c05b55115eacc4fa2b77a814981dbda05cdc95a53e279fe16b7b272f00847 && \
-    wget -q http://www.cmake.org/files/v3.17/cmake-$CMAKE_VERSION.tar.gz && \
-    echo $CMAKE_SHA256 cmake-$CMAKE_VERSION.tar.gz | sha256sum -c && \
-    tar xzf cmake-$CMAKE_VERSION.tar.gz && \
-    cd cmake-$CMAKE_VERSION && ./configure --prefix=/opt/tools/ --parallel=$CORES --no-qt-gui -- \
-        -DCMAKE_USE_OPENSSL:BOOL=OFF -DBUILD_TESTING:BOOL=OFF && make -j$CORES && make install && \
-    cd /build && \
     PROTOBUF_VERSION=3.1.0 && \
     PROTOBUF_SHA256=51ceea9957c875bdedeb1f64396b5b0f3864fe830eed6a2d9c066448373ea2d6 && \
     wget -q https://github.com/google/protobuf/releases/download/v$PROTOBUF_VERSION/protobuf-cpp-$PROTOBUF_VERSION.tar.gz && \
