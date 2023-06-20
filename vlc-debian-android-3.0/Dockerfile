@@ -16,14 +16,14 @@ ARG VIDEOLAN_CI_UID=499
 
 ARG CORES=8
 
-ENV PATH=/opt/tools/bin:$PATH
+ENV PATH=/sdk/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/:/opt/tools/bin:$PATH
 
 RUN groupadd --gid ${VIDEOLAN_CI_UID} videolan && \
     useradd --uid ${VIDEOLAN_CI_UID} --gid videolan --create-home --shell /bin/bash videolan && \
     echo "videolan:videolan" | chpasswd && \
     apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
-    openjdk-8-jdk-headless ca-certificates autoconf m4 automake ant autopoint bison \
+    openjdk-17-jdk-headless ca-certificates autoconf m4 automake ant autopoint bison \
     flex build-essential libtool libtool-bin patch pkg-config \
     git yasm ragel g++ gettext \
     wget expect unzip python3 locales libltdl-dev curl && \
