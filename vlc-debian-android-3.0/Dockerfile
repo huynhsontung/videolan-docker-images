@@ -32,12 +32,13 @@ RUN groupadd --gid ${VIDEOLAN_CI_UID} videolan && \
     echo "export ANDROID_NDK=${ANDROID_NDK}" >> /etc/profile.d/vlc_env.sh && \
     echo "export ANDROID_SDK=${ANDROID_SDK}" >> /etc/profile.d/vlc_env.sh && \
     mkdir sdk && cd sdk && \
-    wget -q https://dl.google.com/android/repository/android-ndk-r18b-linux-x86_64.zip && \
+    ANDROID_NDK_VERSION=18b && \
     ANDROID_NDK_SHA256=4f61cbe4bbf6406aa5ef2ae871def78010eed6271af72de83f8bd0b07a9fd3fd && \
-    echo $ANDROID_NDK_SHA256 android-ndk-r18b-linux-x86_64.zip | sha256sum -c && \
-    unzip android-ndk-r18b-linux-x86_64.zip && \
-    rm -f android-ndk-r18b-linux-x86_64.zip && \
-    ln -s android-ndk-r18b android-ndk && \
+    wget -q https://dl.google.com/android/repository/android-ndk-r$ANDROID_NDK_VERSION-linux-x86_64.zip && \
+    echo $ANDROID_NDK_SHA256 android-ndk-r$ANDROID_NDK_VERSION-linux-x86_64.zip | sha256sum -c && \
+    unzip android-ndk-r$ANDROID_NDK_VERSION-linux-x86_64.zip && \
+    rm -f android-ndk-r$ANDROID_NDK_VERSION-linux-x86_64.zip && \
+    ln -s android-ndk-r$ANDROID_NDK_VERSION android-ndk && \
     mkdir android-sdk-linux && \
     cd android-sdk-linux && \
     mkdir "licenses" && \
