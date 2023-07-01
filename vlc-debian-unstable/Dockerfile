@@ -32,7 +32,7 @@ RUN set -x && \
     qml-module-qtquick-layouts qml-module-qtquick-templates2 qml-module-qttest \
     qml-module-qtgraphicaleffects flex bison libxkbcommon-x11-dev libx11-xcb-dev libplacebo-dev \
     meson doxygen graphviz libsqlite3-dev rapidjson-dev nasm cmake libxcb-damage0-dev \
-    clang libc++-dev libc++abi-dev llvm-13 gperf libgstreamer-plugins-base1.0-dev && \
+    clang llvm-13 gperf libgstreamer-plugins-base1.0-dev && \
     apt-get build-dep --no-install-suggests --no-install-recommends -y vlc && \
     apt-get remove -y libprotobuf-dev protobuf-compiler && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
