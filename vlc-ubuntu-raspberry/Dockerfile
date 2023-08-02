@@ -2,7 +2,7 @@ FROM ubuntu:focal-20210416
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=202202171500
+ENV IMAGE_DATE=202308021154
 ENV LANG=en_US.UTF-8
 
 # If someone wants to use VideoLAN docker images on a local machine and does
@@ -88,9 +88,9 @@ ENV PATH=/opt/tools/bin:$PATH
 RUN set -e && \
 COMMENT="Prebuild build tools" \
     mkdir /build && cd /build && \
-    CMAKE_VERSION=3.17.0 && \
-    CMAKE_SHA256=b74c05b55115eacc4fa2b77a814981dbda05cdc95a53e279fe16b7b272f00847 && \
-    wget -q http://www.cmake.org/files/v3.17/cmake-$CMAKE_VERSION.tar.gz && \
+    CMAKE_MAIN_VERSION=3.24 && CMAKE_VERSION=$CMAKE_MAIN_VERSION.2 && \
+    CMAKE_SHA256=0d9020f06f3ddf17fb537dc228e1a56c927ee506b486f55fe2dc19f69bf0c8db && \
+    wget -q https://www.cmake.org/files/v$CMAKE_MAIN_VERSION/cmake-$CMAKE_VERSION.tar.gz && \
     echo $CMAKE_SHA256 cmake-$CMAKE_VERSION.tar.gz | sha256sum -c && \
     tar xzf cmake-$CMAKE_VERSION.tar.gz && \
     cd cmake-$CMAKE_VERSION && ./configure --prefix=/opt/tools/ --parallel=$CORES --no-qt-gui -- \
