@@ -9,6 +9,6 @@ RUN apt-get update && apt-get build-dep -y vlc && \
     libavformat-dev libavresample-dev libavutil-dev libpostproc-dev \
     libswscale-dev wayland-protocols qtbase5-private-dev libarchive-dev \
     libmpg123-dev libnfs-dev libqt5svg5-dev flex bison curl \
-    qtdeclarative5-dev qtquickcontrols2-5-dev nasm \
+    qtdeclarative5-dev qtquickcontrols2-5-dev nasm gcovr \
     libxkbcommon-x11-dev meson && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
