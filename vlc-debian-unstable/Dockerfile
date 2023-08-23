@@ -24,7 +24,7 @@ RUN set -x && \
     openjdk-11-jdk lftp ca-certificates git-core libtool automake autoconf \
     autopoint make ninja-build python3 python3-venv gettext pkg-config subversion \
     cvs zip bzip2 p7zip-full wget dos2unix ragel yasm g++ \
-    m4 ant build-essential libtool-bin libavcodec-dev gdb \
+    m4 ant build-essential libtool-bin libavcodec-dev gdb gcovr \
     libavformat-dev libswresample-dev libavutil-dev libpostproc-dev \
     libswscale-dev wayland-protocols qtbase5-private-dev libarchive-dev \
     libmpg123-dev libnfs-dev curl libltdl-dev libqt5svg5-dev \
