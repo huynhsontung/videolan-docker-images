@@ -32,27 +32,15 @@ RUN set -x && \
     qml-module-qtquick-layouts qml-module-qtquick-templates2 qml-module-qttest \
     qml-module-qtgraphicaleffects flex bison libxkbcommon-x11-dev libx11-xcb-dev libplacebo-dev \
     meson doxygen graphviz libsqlite3-dev rapidjson-dev nasm cmake libxcb-damage0-dev \
+    libprotobuf-dev protobuf-compiler \
     clang llvm-14 gperf libgstreamer-plugins-base1.0-dev \
     glslang-dev libfaad2 libfaad-dev libgmp-dev libmpcdec-dev libvpx-dev \
     libopencv-dev libgme-dev libaom-dev librav1e-dev libmfx-dev libebur128-dev librist-dev && \
     apt-get build-dep --no-install-suggests --no-install-recommends -y vlc && \
-    apt-get remove -y libprotobuf-dev protobuf-compiler && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
-    echo "videolan:videolan" | chpasswd && \
-    mkdir /build && cd /build && \
-    PROTOBUF_VERSION=3.4.1 && \
-    PROTOBUF_SHA256=2bb34b4a8211a30d12ef29fd8660995023d119c99fbab2e5fe46f17528c9cc78 && \
-    wget -q https://github.com/google/protobuf/releases/download/v$PROTOBUF_VERSION/protobuf-cpp-$PROTOBUF_VERSION.tar.gz && \
-    echo $PROTOBUF_SHA256 protobuf-cpp-$PROTOBUF_VERSION.tar.gz | sha256sum -c && \
-    tar xzfo protobuf-cpp-$PROTOBUF_VERSION.tar.gz && \
-    cd protobuf-$PROTOBUF_VERSION && \
-# force include <algorithm> \
-    sed -i.orig 's,#ifdef _MSC_VER,#if 1,' "src/google/protobuf/repeated_field.h" && \
-    cmake  -S cmake -B build -DBUILD_SHARED_LIBS=OFF -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_BUILD_EXAMPLES=OFF && \
-    cmake --build build --parallel $CORES && cmake --install build --prefix /opt/tools && \
-    rm -rf /build/*
+    echo "videolan:videolan" | chpasswd
 
 
 USER videolan
