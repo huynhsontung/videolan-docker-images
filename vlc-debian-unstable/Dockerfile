@@ -33,6 +33,7 @@ RUN set -x && \
     qml-module-qtgraphicaleffects flex bison libxkbcommon-x11-dev libx11-xcb-dev libplacebo-dev \
     meson doxygen graphviz libsqlite3-dev rapidjson-dev nasm cmake libxcb-damage0-dev \
     clang llvm-14 gperf libgstreamer-plugins-base1.0-dev \
+    glslang-dev libfaad2 libfaad-dev libgmp-dev libmpcdec-dev libvpx-dev \
     libopencv-dev libgme-dev libaom-dev librav1e-dev libmfx-dev libebur128-dev librist-dev && \
     apt-get build-dep --no-install-suggests --no-install-recommends -y vlc && \
     apt-get remove -y libprotobuf-dev protobuf-compiler && \
