@@ -30,7 +30,7 @@ RUN groupadd --gid ${VIDEOLAN_CI_UID} videolan && \
         flex build-essential libtool libtool-bin patch pkg-config cmake meson \
         git yasm ragel g++ gettext ninja-build \
         wget expect unzip python3 python3-venv python3-setuptools python3-mako \
-        locales libltdl-dev curl nasm && \
+        locales libltdl-dev curl nasm gperf && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
     echo "export ANDROID_NDK=${ANDROID_NDK}" >> /etc/profile.d/vlc_env.sh && \
