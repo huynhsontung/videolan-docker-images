@@ -1,12 +1,10 @@
-FROM debian:bullseye-20221114-slim
+FROM debian:bookworm-20231009-slim
 
 ENV IMAGE_DATE=202211290000
 
 ARG VIDEOLAN_UID=499
 ARG EMSDK_VERSION=3.1.9
 ARG CORES=8
-
-COPY patches /patches
 
 ENV PATH=/opt/tools/bin:$PATH
 
@@ -20,8 +18,6 @@ RUN  set -x && \
      addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
      adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
      echo "videolan:videolan" | chpasswd && \
-     cd /usr/share/misc && \
-     patch -l < /patches/emscripten-automake.patch && \
      mkdir /build && cd /build && \
      PROTOBUF_VERSION=3.4.1 && \
      PROTOBUF_SHA256=2bb34b4a8211a30d12ef29fd8660995023d119c99fbab2e5fe46f17528c9cc78 && \
