@@ -74,12 +74,14 @@ COMMENT="Prebuilt Qt5 packages" \
     apt-get -y install \
         qtdeclarative5-dev:armhf \
         qtquickcontrols2-5-dev:armhf \
+        qml-module-qtqml-models2:armhf \
         qml-module-qtquick2:armhf \
         qml-module-qtquick-controls2:armhf \
         qml-module-qtquick-layouts:armhf \
         qml-module-qtquick-window2:armhf \
         qml-module-qtgraphicaleffects:armhf \
         qml-module-qtquick2:armhf \
+        qml-module-qttest:armhf \
         libqt5x11extras5-dev:armhf \
         libqt5svg5-dev:armhf
 
