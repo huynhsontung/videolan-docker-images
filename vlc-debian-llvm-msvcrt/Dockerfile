@@ -12,11 +12,11 @@ ENV WINE_SDK_PATH=/usr/include/wine/wine/windows
 RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
     apt-get -y dist-upgrade && \
     apt-get install -qqy --no-install-suggests --no-install-recommends \
-    git wget bzip2 file unzip libtool-bin pkg-config build-essential \
-    automake yasm gettext autopoint vim ninja-build ant \
-    winbind flex ragel bison zip dos2unix p7zip-full gperf nsis nasm cmake \
-    python3 python3-venv python3-setuptools python3-mako locales meson help2man libltdl-dev \
-    ca-certificates curl default-jdk-headless gnupg procps && \
+        git wget bzip2 file unzip libtool-bin pkg-config build-essential \
+        automake yasm gettext autopoint vim ninja-build ant \
+        winbind flex ragel bison zip dos2unix p7zip-full gperf nsis nasm cmake \
+        python3 python3-venv python3-setuptools python3-mako locales meson help2man libltdl-dev \
+        ca-certificates curl default-jdk-headless gnupg procps && \
     dpkg --add-architecture i386 && \
     wget -nc -O /etc/apt/keyrings/winehq.asc https://dl.winehq.org/wine-builds/winehq.key && \
     echo "deb [ signed-by=/etc/apt/keyrings/winehq.asc ] https://dl.winehq.org/wine-builds/debian/ bookworm main" > /etc/apt/sources.list.d/winehq.list && \
