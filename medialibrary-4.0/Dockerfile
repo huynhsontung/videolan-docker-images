@@ -2,7 +2,7 @@ FROM debian:sid-20221114-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
-ENV IMAGE_DATE=20231009100000
+ENV IMAGE_DATE=20231013100000
 
 # If someone wants to use VideoLAN docker images on a local machine and does
 # not want to be disturbed by the videolan user, we should not take an uid/gid
@@ -23,8 +23,8 @@ RUN set -x && \
     gettext pkg-config wget m4 build-essential curl libltdl-dev meson flex bison \
     rapidjson-dev libsqlite3-dev lcov libmpg123-dev libtag-extras-dev liba52-dev \
     liba52-0.7.4-dev liblua5.1-0-dev zlib1g-dev libjpeg62-turbo-dev libxml2-dev gcovr=6.0-1 \
-    gdb libid3-tools python3-scipy cmake sqlite3 libtag1-dev libxxhash-dev \
-    clang libc++-dev libc++abi-dev llvm && \
+    gdb libid3-tools python3-scipy cmake sqlite3 libtag1-dev libxxhash-dev && \
+    apt-get install -yq --no-install-suggests --install-recommends clang libc++-dev libc++abi-dev && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
