@@ -1,4 +1,4 @@
-FROM debian:bullseye-20230208-slim
+FROM debian:bookworm-20231009-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
@@ -18,14 +18,13 @@ RUN apt-get update -qq && mkdir -p /usr/share/man/man1 && \
     python3 python3-venv python3-setuptools python3-mako locales meson help2man libltdl-dev \
     ca-certificates curl default-jdk-headless gnupg procps && \
     dpkg --add-architecture i386 && \
-    wget -nc https://dl.winehq.org/wine-builds/winehq.key && \
-    apt-key add winehq.key && rm -f winehq.key && \
-    echo "deb https://dl.winehq.org/wine-builds/debian/ bullseye main" > /etc/apt/sources.list.d/winehq.list && \
+    wget -nc -O /etc/apt/keyrings/winehq.asc https://dl.winehq.org/wine-builds/winehq.key && \
+    echo "deb [ signed-by=/etc/apt/keyrings/winehq.asc ] https://dl.winehq.org/wine-builds/debian/ bookworm main" > /etc/apt/sources.list.d/winehq.list && \
     apt-get update && apt-get -y install winehq-stable && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/* && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
-    update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1
 
 ENV LANG=en_US.UTF-8
 
