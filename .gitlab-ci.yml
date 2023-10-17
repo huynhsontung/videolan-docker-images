@@ -1,5 +1,11 @@
-.build-images: &build-images |
+stages:
+  - generate
+  - triggers
+  - build
+
+.generate-jobs: &generate-jobs |
   set -x
+  DATE=`date +'%Y%m%d%H%M%S'`
   DIRS=""
   if [ "$CI_COMMIT_BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
     BASE_SHA=$CI_MERGE_REQUEST_DIFF_BASE_SHA
@@ -17,38 +23,101 @@
     esac
   done
   echo "Changed images: '$DIRS'"
-  for d in $DIRS; do
-    [ -d "$d" -a -f "$d/Dockerfile" ] || continue
-    DATE=`date +'%Y%m%d%H%M%S'`
-    docker build --build-arg CORES=`nproc` -t registry-mgmt.videolan.org/$d:$DATE $d/
-    if [ "$CI_PROJECT_NAMESPACE" = "videolan" -a -z "$CI_MERGE_REQUEST_ID" ]; then
-      docker login -u=$REGISTRY_LOGIN -p=$REGISTRY_AUTH registry-mgmt.videolan.org
-      docker push registry-mgmt.videolan.org/$d:$DATE
-      echo "Done: docker pull registry.videolan.org/$d:$DATE"
-    fi
-  done
+
+  cat > generated-config.jsonnet << __EOF__
+  local job(j) =
+  {
+    image: "docker:20.10.12",
+    stage: "build",
+    tags: [ "dind-amd64" ],
+    rules: [ { "if": "\$CI_PIPELINE_SOURCE == \"parent_pipeline\"" } ],
+    script: j.script
+  };
+  __EOF__
+
+  a="["
+
+  if [ -n "$DIRS" ]; then
+    for d in $DIRS; do
+      [ -d "$d" -a -f "$d/Dockerfile" ] || continue
+      script="docker build --build-arg CORES=`nproc` -t registry-mgmt.videolan.org/$d:$DATE $d/"
+      if [ "$CI_PROJECT_NAMESPACE" = "videolan" -a -z "$CI_MERGE_REQUEST_ID" ]; then
+        script="$script\ndocker login -u=\$REGISTRY_LOGIN -p=\$REGISTRY_AUTH registry-mgmt.videolan.org"
+        script="$script\ndocker push registry-mgmt.videolan.org/$d:$DATE"
+        script="$script\necho Done: docker pull registry.videolan.org/$d:$DATE"
+      fi
+      a="$a{\"name\":\"$d\", \"script\":\"$script\"},"
+    done
+  else
+    a="$a{\"name\":\"no-op\", \"script\":\"/bin/true\"}"
+  fi
+  a="$a];"
+
+  cat >> generated-config.jsonnet <<__EOF__
+  local jobs = $a
+  {
+    "variables": {
+      "DOCKER_DRIVER": "overlay2",
+      "DOCKER_TLS_CERTDIR": "/certs"
+    },
+    "default": {
+      "services": [
+        "docker:20.10.12-dind"
+      ],
+      "before_script": [
+        "docker info",
+        "apk add git jsonnet"
+      ]
+    }
+  }
+
+  {
+    [j.name]: job(j)
+    for j in jobs
+  }
+  __EOF__
+
+  cat generated-config.jsonnet
+  jsonnet generated-config.jsonnet > generated-config.yml
+  cat generated-config.yml
 
 variables:
   DOCKER_DRIVER: overlay2
   DOCKER_TLS_CERTDIR: "/certs"
 
-services:
-  - docker:20.10.12-dind
+default:
+  services:
+    - docker:20.10.12-dind
+  before_script:
+    - docker info
+    - apk add git jsonnet
 
-before_script:
-  - docker info
-  - apk add git
-
-build:
-  stage: build
-  interruptible: true
+generate:
+  stage: generate
   tags:
     - dind-amd64
   image:
-    name: docker:20.10.12
+    name: docker:20.10.4
   script:
-    - *build-images
+    - *generate-jobs
   only:
     refs:
       - merge_requests
       - master@videolan/docker-images
+  artifacts:
+    paths:
+      - generated-config.yml
+
+trigger:
+  stage: triggers
+  needs:
+    - generate
+  trigger:
+    include:
+      - artifact: generated-config.yml
+        job: generate
+    strategy: depend
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
