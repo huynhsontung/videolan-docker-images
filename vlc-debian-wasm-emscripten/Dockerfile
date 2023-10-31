@@ -12,7 +12,7 @@ RUN set -x && \
     apt-get update && \
     apt-get -y dist-upgrade && \
     apt-get install -y --no-install-suggests --no-install-recommends \
-        git libtool automake autoconf autopoint make \
+        git libtool libltdl-dev automake autoconf autopoint make \
         gettext pkg-config cmake zip bzip2 p7zip-full wget dos2unix \
         ragel yasm g++ m4 ninja-build ant build-essential libtool-bin gperf \
         flex bison curl nasm meson python3 python3-venv python3-setuptools python3-mako && \
