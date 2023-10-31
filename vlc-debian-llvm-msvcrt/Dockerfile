@@ -79,8 +79,8 @@ RUN ./build-libssp.sh $TOOLCHAIN_PREFIX && \
 # Prepare wine installation
 COPY scripts/wait_process.sh /opt/wine/
 RUN chmod +x /opt/wine/wait_process.sh && \
-    wget -q https://raw.githubusercontent.com/Winetricks/winetricks/5028127369b7b23b03789aec083ba5b68aa1ec34/src/winetricks -O /opt/wine/winetricks && \
-    WINETRICKS_SHA256=7ec9c3e9140e592ef575140417f27e75e16ccebfeee9816cdbab21aa3d5c0841 && \
+    wget -q https://raw.githubusercontent.com/Winetricks/winetricks/20230212/src/winetricks -O /opt/wine/winetricks && \
+    WINETRICKS_SHA256=524c3cd602ef222da3dc644a0a741edd8bca6dfb72ba3c63998a76b82f9e77b2 && \
     echo $WINETRICKS_SHA256 /opt/wine/winetricks | sha256sum -c && \
     chmod +x /opt/wine/winetricks && \
     WINE_MONO_VERSION=4.5.6 && mkdir -p /usr/share/wine/mono && \
