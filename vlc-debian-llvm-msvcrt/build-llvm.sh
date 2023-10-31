@@ -16,12 +16,14 @@
 
 set -e
 
-: ${LLVM_VERSION:=llvmorg-13.0.0}
+: ${LLVM_VERSION:=llvmorg-14.0.0}
 ASSERTS=OFF
 unset HOST
 BUILDDIR="build"
 LINK_DYLIB=ON
 ASSERTSSUFFIX=""
+LLDB=ON
+CLANG_TOOLS_EXTRA=ON
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -57,6 +59,15 @@ while [ $# -gt 0 ]; do
     --with-python)
         WITH_PYTHON=1
         ;;
+    --symlink-projects)
+        SYMLINK_PROJECTS=1
+        ;;
+    --disable-lldb)
+        unset LLDB
+        ;;
+    --disable-clang-tools-extra)
+        unset CLANG_TOOLS_EXTRA
+        ;;
     *)
         PREFIX="$1"
         ;;
@@ -66,7 +77,7 @@ done
 BUILDDIR="$BUILDDIR$ASSERTSSUFFIX"
 if [ -z "$CHECKOUT_ONLY" ]; then
     if [ -z "$PREFIX" ]; then
-        echo $0 [--enable-asserts] [--stage2] [--thinlto] [--lto] [--disable-dylib] [--full-llvm] [--with-python] [--host=triple] dest
+        echo $0 [--enable-asserts] [--stage2] [--thinlto] [--lto] [--disable-dylib] [--full-llvm] [--with-python] [--symlink-projects] [--disable-lldb] [--disable-clang-tools-extra] [--host=triple] dest
         exit 1
     fi
 
@@ -79,18 +90,35 @@ if [ ! -d llvm-project ]; then
     cd llvm-project
     git init
     git remote add origin https://github.com/llvm/llvm-project.git
-    git fetch --depth 1 origin "$LLVM_VERSION"
-    git checkout FETCH_HEAD
     cd ..
     CHECKOUT=1
-    unset SYNC
 fi
 
 if [ -n "$SYNC" ] || [ -n "$CHECKOUT" ]; then
     cd llvm-project
-    if [ -n "$SYNC" ]; then 
-        git fetch --depth 1 origin "$LLVM_VERSION"
-        git checkout FETCH_HEAD
+    # Check if the intended commit or tag exists in the local repo. If it
+    # exists, just check it out instead of trying to fetch it.
+    # (Redoing a shallow fetch will refetch the data even if the commit
+    # already exists locally, unless fetching a tag with the "tag"
+    # argument.)
+    if git cat-file -e "$LLVM_VERSION" 2> /dev/null; then
+        # Exists; just check it out
+        git checkout "$LLVM_VERSION"
+    else
+        case "$LLVM_VERSION" in
+        llvmorg-*)
+            # If $LLVM_VERSION looks like a tag, fetch it with the
+            # "tag" keyword. This makes sure that the local repo
+            # gets the tag too, not only the commit itself. This allows
+            # later fetches to realize that the tag already exists locally.
+            git fetch --depth 1 origin tag "$LLVM_VERSION"
+            git checkout "$LLVM_VERSION"
+            ;;
+        *)
+            git fetch --depth 1 origin "$LLVM_VERSION"
+            git checkout FETCH_HEAD
+            ;;
+        esac
     fi
     cd ..
 fi
@@ -164,15 +192,18 @@ if [ -n "$HOST" ]; then
 
     if [ -n "$WITH_PYTHON" ]; then
         PYTHON_VER="3.9"
+        # The python3-config script requires executing with bash. It outputs
+        # an extra trailing space, which the extra 'echo' layer gets rid of.
+        EXT_SUFFIX="$(echo $(bash $PREFIX/python/bin/python3-config --extension-suffix))"
         CMAKEFLAGS="$CMAKEFLAGS -DLLDB_ENABLE_PYTHON=ON"
-        [ -z "$PYTHON_EXEC" ] && command -v python$PYTHON_VER && PYTHON_EXEC=python$PYTHON_VER
-        [ -z "$PYTHON_EXEC" ] && command -v python3           && PYTHON_EXEC=python3
-        [ -z "$PYTHON_EXEC" ] && command -v python            && PYTHON_EXEC=python
         CMAKEFLAGS="$CMAKEFLAGS -DPYTHON_HOME=$PREFIX/python"
         CMAKEFLAGS="$CMAKEFLAGS -DLLDB_PYTHON_HOME=../python"
+        # Relative to the lldb install root
         CMAKEFLAGS="$CMAKEFLAGS -DLLDB_PYTHON_RELATIVE_PATH=python/lib/python$PYTHON_VER/site-packages"
+        # Relative to LLDB_PYTHON_HOME
+        CMAKEFLAGS="$CMAKEFLAGS -DLLDB_PYTHON_EXE_RELATIVE_PATH=bin/python3.exe"
+        CMAKEFLAGS="$CMAKEFLAGS -DLLDB_PYTHON_EXT_SUFFIX=$EXT_SUFFIX"
 
-        CMAKEFLAGS="$CMAKEFLAGS -DPython3_EXECUTABLE=$PYTHON_EXEC"
         CMAKEFLAGS="$CMAKEFLAGS -DPython3_INCLUDE_DIRS=$PREFIX/python/include/python$PYTHON_VER"
         CMAKEFLAGS="$CMAKEFLAGS -DPython3_LIBRARIES=$PREFIX/python/lib/libpython$PYTHON_VER.dll.a"
     fi
@@ -181,14 +212,16 @@ elif [ -n "$STAGE2" ]; then
     export PATH="$PREFIX/bin:$PATH"
     CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_C_COMPILER=clang"
     CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_CXX_COMPILER=clang++"
-    if [ "$(uname)" != "Darwin" ]; then
-        # Current lld isn't yet properly usable on macOS
-        CMAKEFLAGS="$CMAKEFLAGS -DLLVM_USE_LINKER=lld"
-    fi
+    CMAKEFLAGS="$CMAKEFLAGS -DLLVM_USE_LINKER=lld"
 fi
 
 if [ -n "$LTO" ]; then
     CMAKEFLAGS="$CMAKEFLAGS -DLLVM_ENABLE_LTO=$LTO"
+fi
+
+if [ -n "$MACOS_REDIST" ]; then
+    CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_OSX_ARCHITECTURES=arm64;x86_64"
+    CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_OSX_DEPLOYMENT_TARGET=10.9"
 fi
 
 TOOLCHAIN_ONLY=ON
@@ -198,28 +231,42 @@ fi
 
 cd llvm-project/llvm
 
-case $(uname) in
-MINGW*)
-    EXPLICIT_PROJECTS=1
-    ;;
-*)
-    # If we have working symlinks, hook up other tools by symlinking them
-    # into tools, instead of using LLVM_ENABLE_PROJECTS. This way, all
-    # source code is under the directory tree of the toplevel cmake file
-    # (llvm-project/llvm), which makes cmake use relative paths to all source
-    # files. Using relative paths makes for identical compiler output from
-    # different source trees in different locations (for cases where e.g.
-    # path names are included, in assert messages), allowing ccache to speed
-    # up compilation.
+if [ -n "$SYMLINK_PROJECTS" ]; then
+    # If requested, hook up other tools by symlinking them into tools,
+    # instead of using LLVM_ENABLE_PROJECTS. This way, all source code is
+    # under the directory tree of the toplevel cmake file (llvm-project/llvm),
+    # which makes cmake use relative paths to all source files. Using relative
+    # paths makes for identical compiler output from different source trees in
+    # different locations (for cases where e.g. path names are included, in
+    # assert messages), allowing ccache to share caches across multiple
+    # checkouts.
     cd tools
     for p in clang lld lldb; do
+        if [ "$p" = "lldb" ] && [ -z "$LLDB" ]; then
+            continue
+        fi
         if [ ! -e $p ]; then
             ln -s ../../$p .
         fi
     done
     cd ..
-    ;;
-esac
+    if [ -n "$CLANG_TOOLS_EXTRA" ]; then
+        cd ../clang/tools
+        if [ ! -e extra ]; then
+            ln -s ../../clang-tools-extra extra
+        fi
+        cd ../../llvm
+    fi
+else
+    EXPLICIT_PROJECTS=1
+    PROJECTS="clang;lld"
+    if [ -n "$LLDB" ]; then
+        PROJECTS="$PROJECTS;lldb"
+    fi
+    if [ -n "$CLANG_TOOLS_EXTRA" ]; then
+        PROJECTS="$PROJECTS;clang-tools-extra"
+    fi
+fi
 
 [ -z "$CLEAN" ] || rm -rf $BUILDDIR
 mkdir -p $BUILDDIR
@@ -231,7 +278,7 @@ cmake \
     -DCMAKE_INSTALL_PREFIX="$PREFIX" \
     -DCMAKE_BUILD_TYPE=Release \
     -DLLVM_ENABLE_ASSERTIONS=$ASSERTS \
-    ${EXPLICIT_PROJECTS+-DLLVM_ENABLE_PROJECTS="clang;lld;lldb"} \
+    ${EXPLICIT_PROJECTS+-DLLVM_ENABLE_PROJECTS="$PROJECTS"} \
     -DLLVM_TARGETS_TO_BUILD="ARM;AArch64;X86" \
     -DLLVM_INSTALL_TOOLCHAIN_ONLY=$TOOLCHAIN_ONLY \
     -DLLVM_LINK_LLVM_DYLIB=$LINK_DYLIB \
