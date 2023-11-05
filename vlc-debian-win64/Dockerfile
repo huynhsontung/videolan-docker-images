@@ -26,7 +26,6 @@ COPY patches /patches
 
 # We still need an i686 cross compiler to build the installer
 RUN set -x && \
-    mkdir -p /usr/share/man/man1 && \
     addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
     echo "videolan:videolan" | chpasswd && \
