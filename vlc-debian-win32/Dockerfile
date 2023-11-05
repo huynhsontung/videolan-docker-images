@@ -25,7 +25,6 @@ COPY scripts/wait_process.sh /opt/wine/
 COPY patches /patches
 
 RUN set -x && \
-    mkdir -p /usr/share/man/man1 && \
     addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
     echo "videolan:videolan" | chpasswd && \
