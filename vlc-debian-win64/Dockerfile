@@ -170,4 +170,5 @@ USER videolan
 RUN wine wineboot --init && \
     /opt/wine/wait_process.sh wineserver && \
     /opt/wine/winetricks --unattended dotnet48 dotnet_verifier && \
-    rm -rf ~/.cache/winetricks
+    rm -rf ~/.cache/winetricks && \
+    rm -rf /tmp/.wine-*
