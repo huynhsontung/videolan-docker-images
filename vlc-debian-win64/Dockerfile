@@ -35,8 +35,9 @@ RUN set -x && \
     gettext cmake dos2unix zip wine nsis g++-mingw-w64-i686 curl gperf flex bison \
     libcurl4-gnutls-dev python3 python3-venv python3-setuptools python3-mako python3-requests \
     lftp gcc make procps ca-certificates \
-    openjdk-11-jdk-headless nasm jq gnupg \
+    openjdk-11-jdk-headless locales nasm jq gnupg \
     && \
+    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install --no-install-suggests --no-install-recommends wine32 && \
     echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list.d/testing.list && \
@@ -164,6 +165,7 @@ RUN set -x && \
     cmake --build cbuild --parallel $CORES && cmake --install cbuild --prefix /opt/protobuf && \
     cd / && rm -rf /build
 
+ENV LANG=en_US.UTF-8
 USER videolan
 RUN wine wineboot --init && \
     /opt/wine/wait_process.sh wineserver && \
