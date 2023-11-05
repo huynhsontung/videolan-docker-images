@@ -29,10 +29,6 @@ RUN set -x && \
     addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
     echo "videolan:videolan" | chpasswd && \
-    echo "export TARGET_TUPLE=${TARGET_TUPLE}" >> /etc/profile.d/vlc_env.sh && \
-    echo "export TOOLCHAIN_PREFIX=${TOOLCHAIN_PREFIX}" >> /etc/profile.d/vlc_env.sh && \
-    echo "export MINGW_PREFIX=${MINGW_PREFIX}" >> /etc/profile.d/vlc_env.sh && \
-    echo "export PATH=${TOOLCHAIN_PREFIX}/bin:\$PATH" >> /etc/profile.d/vlc_env.sh && \
     apt-get update -qq && apt-get install -qqy --no-install-suggests --no-install-recommends \
     git wget bzip2 file libwine-dev unzip libtool libtool-bin libltdl-dev pkg-config ant \
     build-essential automake texinfo ragel yasm p7zip-full autopoint \
