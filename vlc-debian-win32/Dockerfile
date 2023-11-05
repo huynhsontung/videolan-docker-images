@@ -29,19 +29,19 @@ RUN set -x && \
     adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
     echo "videolan:videolan" | chpasswd && \
     apt-get update -qq && apt-get install -qqy --no-install-suggests --no-install-recommends \
-    git wget bzip2 file libwine-dev unzip libtool libtool-bin libltdl-dev pkg-config ant \
-    build-essential automake texinfo ragel yasm p7zip-full autopoint \
-    gettext cmake dos2unix zip wine nsis curl gperf flex bison \
-    libcurl4-gnutls-dev python3 python3-venv python3-setuptools python3-mako python3-requests \
-    lftp gcc make procps ca-certificates \
-    openjdk-11-jdk-headless locales nsis nasm jq gnupg \
+        git wget bzip2 file libwine-dev unzip libtool libtool-bin libltdl-dev pkg-config ant \
+        build-essential automake texinfo ragel yasm p7zip-full autopoint \
+        gettext cmake dos2unix zip wine nsis curl gperf flex bison \
+        libcurl4-gnutls-dev python3 python3-venv python3-setuptools python3-mako python3-requests \
+        lftp gcc make procps ca-certificates \
+        openjdk-11-jdk-headless locales nsis nasm jq gnupg \
     && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get -y install --no-install-suggests --no-install-recommends wine32 && \
     echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list.d/testing.list && \
     apt-get update && apt-get -y -t testing --no-install-suggests --no-install-recommends install \
-    nasm meson autoconf autoconf2.69 && \
+        nasm meson autoconf autoconf2.69 && \
     rm -f /etc/apt/sources.list.d/testing.list && \
     wget -nc https://dl.winehq.org/wine-builds/winehq.key && \
     apt-key add winehq.key && rm -f winehq.key && \
