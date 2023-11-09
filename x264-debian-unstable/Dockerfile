@@ -1,4 +1,4 @@
-FROM debian:sid-20211201-slim
+FROM debian:sid-20231030-slim
 
 MAINTAINER VideoLAN roots <roots@videolan.org>
 
@@ -11,8 +11,8 @@ ENV IMAGE_DATE=202112061500
 # - RPM based: <500 (CentOS, RedHat, etc.)
 ARG VIDEOLAN_UID=499
 
-RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
-    adduser --quiet --uid ${VIDEOLAN_UID} --ingroup videolan videolan && \
+RUN groupadd --gid ${VIDEOLAN_UID} videolan && \
+    useradd --uid ${VIDEOLAN_UID} --gid videolan --create-home --shell /bin/bash videolan && \
     echo "videolan:videolan" | chpasswd && \
     dpkg --add-architecture i386 && \
     apt-get update && \
