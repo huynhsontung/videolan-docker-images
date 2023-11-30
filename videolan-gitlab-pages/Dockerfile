@@ -19,7 +19,7 @@ RUN addgroup --quiet --gid ${VIDEOLAN_UID} videolan && \
     echo "deb-src http://ftp.fr.debian.org/debian/ buster main" >> /etc/apt/sources.list && \
     apt-get update && \
     apt-get install -y --no-install-suggests --no-install-recommends \
-        build-essential git zlib1g-dev ruby-full bundler \
+        build-essential git rsync zlib1g-dev ruby-full bundler \
         python3-pip python3-setuptools \
 	graphviz && \
     pip3 install Sphinx==4.4.0 'sphinx-intl>=2.0.1' sphinx-rtd-theme==1.0.0 sphinx-tabs==3.3.1 && \
