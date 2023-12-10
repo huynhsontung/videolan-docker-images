@@ -66,8 +66,6 @@ for i in amdgpu-arch bugpoint c-index-test clang-* clangd clangd-* darwin-debug 
         ;;
     clang++|clang-*.*|clang-cpp)
         ;;
-    clang-format|git-clang-format)
-        ;;
     clangd)
         ;;
     clang-tidy)
@@ -83,14 +81,14 @@ for i in amdgpu-arch bugpoint c-index-test clang-* clangd clangd-* darwin-debug 
             rm -f $i
         fi
         ;;
-    llvm-ar|llvm-cvtres|llvm-dlltool|llvm-nm|llvm-objdump|llvm-ranlib|llvm-rc|llvm-readobj|llvm-strings|llvm-pdbutil|llvm-objcopy|llvm-strip|llvm-cov|llvm-profdata|llvm-addr2line|llvm-symbolizer|llvm-wrapper|llvm-windres|llvm-ml|llvm-readelf|llvm-size|llvm-cxxfilt)
+    llvm-ar|llvm-cvtres|llvm-dlltool|llvm-nm|llvm-objdump|llvm-ranlib|llvm-rc|llvm-readobj|llvm-strings|llvm-pdbutil|llvm-objcopy|llvm-strip|llvm-cov|llvm-profdata|llvm-addr2line|llvm-symbolizer|llvm-wrapper|llvm-windres|llvm-ml|llvm-readelf|llvm-size)
         ;;
     ld64.lld|wasm-ld)
         if [ -e $i ]; then
             rm $i
         fi
         ;;
-    lldb|lldb-server|lldb-argdumper|lldb-instr|lldb-mi|lldb-vscode|lldb-dap)
+    lldb|lldb-server|lldb-argdumper|lldb-instr|lldb-mi|lldb-vscode)
         ;;
     *)
         if [ -f $i ]; then
@@ -121,18 +119,7 @@ fi
 cd ..
 rm -rf libexec
 cd share
-cd clang
-for i in *; do
-    case $i in
-    clang-format*)
-        ;;
-    *)
-        rm -rf $i
-        ;;
-    esac
-done
-cd ..
-rm -rf opt-viewer scan-build scan-view
+rm -rf clang opt-viewer scan-build scan-view
 rm -rf man/man1/scan-build*
 cd ..
 cd include
