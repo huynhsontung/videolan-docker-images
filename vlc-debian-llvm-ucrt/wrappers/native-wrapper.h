@@ -138,6 +138,20 @@ static inline void split_argv(const TCHAR *argv0, const TCHAR **dir_ptr, const T
 #ifdef _WIN32
     TCHAR module_path[8192];
     GetModuleFileName(NULL, module_path, sizeof(module_path)/sizeof(module_path[0]));
+    // Try to resolve the given tool name into its long form. If the caller
+    // called us with a short form executable name, e.g. C__~1.EXE instead of
+    // c++.exe, we need to resolve the original name, so that the wrapper
+    // can invoke the right tool with the right arguments.
+    //
+    // CMake/Ninja generates such tool names when the tools are located in
+    // a path with spaces.
+    TCHAR long_path[8192];
+    int long_path_ret = GetLongPathName(module_path, long_path, sizeof(long_path)/sizeof(long_path[0]));
+    if (long_path_ret > 0 && long_path_ret < sizeof(long_path)/sizeof(long_path[0])) {
+        sep = _tcsrchrs(long_path, '/', '\\');
+        if (sep)
+            basename = _tcsdup(sep + 1);
+    }
     TCHAR *sep2 = _tcsrchr(module_path, '\\');
     if (sep2) {
         sep2[1] = '\0';
@@ -154,6 +168,21 @@ static inline void split_argv(const TCHAR *argv0, const TCHAR **dir_ptr, const T
     if (dash) {
         *dash = '\0';
         exe = dash + 1;
+        // Handle [<target>-]llvm-<tool> as exe=llvm-<tool>
+        TCHAR *dash2 = _tcsrchr(target, '-');
+        if (dash2 && !_tcscmp(dash2, _T("-llvm"))) {
+            // Found <target>-llvm-<tool>; move the llvm- prefix to
+            // exe. Convert the original dash which we overwrite with '\0'
+            // back into a dash and split the string at the preceding dash.
+            *dash = '-';
+            *dash2 = '\0';
+            exe = dash2 + 1;
+        } else if (!_tcscmp(target, _T("llvm"))) {
+            // Found llvm-<tool>; don't treat "llvm" as target but move
+            // it to the exe part.
+            exe = basename;
+            target = NULL;
+        }
     } else {
         target = NULL;
     }

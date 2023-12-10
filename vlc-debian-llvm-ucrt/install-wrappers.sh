@@ -44,18 +44,27 @@ if [ -n "$HOST" ] && [ -z "$CC" ]; then
 fi
 : ${CC:=cc}
 
-case $(uname) in
-MINGW*)
-    EXEEXT=.exe
-    ;;
-esac
-
 if [ -n "$HOST" ]; then
-    EXEEXT=.exe
+    case $HOST in
+    *-mingw32)
+        EXEEXT=.exe
+        ;;
+    esac
+else
+    case $(uname) in
+    MINGW*)
+        EXEEXT=.exe
+        ;;
+    esac
 fi
 
 if [ -n "$MACOS_REDIST" ]; then
-    WRAPPER_FLAGS="$WRAPPER_FLAGS -arch arm64 -arch x86_64 -mmacosx-version-min=10.9"
+    : ${MACOS_REDIST_ARCHS:=arm64 x86_64}
+    : ${MACOS_REDIST_VERSION:=10.9}
+    for arch in $MACOS_REDIST_ARCHS; do
+        WRAPPER_FLAGS="$WRAPPER_FLAGS -arch $arch"
+    done
+    WRAPPER_FLAGS="$WRAPPER_FLAGS -mmacosx-version-min=$MACOS_REDIST_VERSION"
 fi
 
 if [ -n "$EXEEXT" ]; then
@@ -65,7 +74,7 @@ fi
 
 mkdir -p "$PREFIX/bin"
 cp wrappers/*-wrapper.sh "$PREFIX/bin"
-if [ -n "$HOST" ]; then
+if [ -n "$HOST" ] && [ -n "$EXEEXT" ]; then
     # TODO: If building natively on msys, pick up the default HOST value from there.
     WRAPPER_FLAGS="$WRAPPER_FLAGS -DDEFAULT_TARGET=\"$HOST\""
     for i in wrappers/*-wrapper.sh; do
@@ -85,14 +94,21 @@ fi
 cd "$PREFIX/bin"
 for arch in $ARCHS; do
     for target_os in $TARGET_OSES; do
-        for exec in clang clang++ gcc g++ cc c99 c11 c++ as; do
+        for exec in clang clang++ gcc g++ c++ as; do
             ln -sf clang-target-wrapper$CTW_SUFFIX $arch-w64-$target_os-$exec$CTW_LINK_SUFFIX
         done
-        for exec in addr2line ar ranlib nm objcopy readelf strings strip; do
-            if [ -n "$HOST" ]; then
+        for exec in addr2line ar ranlib nm objcopy readelf size strings strip llvm-ar llvm-ranlib; do
+            if [ -n "$EXEEXT" ]; then
                 link_target=llvm-wrapper
             else
-                link_target=llvm-$exec
+                case $exec in
+                llvm-*)
+                    link_target=$exec
+                    ;;
+                *)
+                    link_target=llvm-$exec
+                    ;;
+                esac
             fi
             ln -sf $link_target$EXEEXT $arch-w64-$target_os-$exec$EXEEXT || true
         done
@@ -117,8 +133,11 @@ if [ -n "$EXEEXT" ]; then
     # we are installing wrappers for.
     case $ARCHS in
     *$HOST_ARCH*)
-        for exec in clang clang++ gcc g++ cc c99 c11 c++ addr2line ar dlltool ranlib nm objcopy readelf strings strip windres; do
+        for exec in clang clang++ gcc g++ c++ addr2line ar dlltool ranlib nm objcopy readelf size strings strip windres; do
             ln -sf $HOST-$exec$EXEEXT $exec$EXEEXT
+        done
+        for exec in cc c99 c11; do
+            ln -sf clang$EXEEXT $exec$EXEEXT
         done
         for exec in ld objdump; do
             ln -sf $HOST-$exec $exec
