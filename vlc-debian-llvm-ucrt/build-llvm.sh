@@ -16,7 +16,7 @@
 
 set -e
 
-: ${LLVM_VERSION:=llvmorg-17.0.6}
+: ${LLVM_VERSION:=llvmorg-16.0.6}
 ASSERTS=OFF
 unset HOST
 BUILDDIR="build"
@@ -138,6 +138,8 @@ fi
 
 if command -v ninja >/dev/null; then
     CMAKE_GENERATOR="Ninja"
+    NINJA=1
+    BUILDCMD=ninja
 else
     : ${CORES:=$(nproc 2>/dev/null)}
     : ${CORES:=$(sysctl -n hw.ncpu 2>/dev/null)}
@@ -148,6 +150,7 @@ else
         CMAKE_GENERATOR="MSYS Makefiles"
         ;;
     esac
+    BUILDCMD=make
 fi
 
 CMAKEFLAGS="$LLVM_CMAKEFLAGS"
@@ -221,15 +224,6 @@ elif [ -n "$STAGE2" ]; then
     CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_C_COMPILER=clang"
     CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_CXX_COMPILER=clang++"
     CMAKEFLAGS="$CMAKEFLAGS -DLLVM_USE_LINKER=lld"
-else
-    # Native compilation with the system default compiler.
-
-    # Use a faster linker, if available.
-    if command -v ld.lld >/dev/null; then
-        CMAKEFLAGS="$CMAKEFLAGS -DLLVM_USE_LINKER=lld"
-    elif command -v ld.gold >/dev/null; then
-        CMAKEFLAGS="$CMAKEFLAGS -DLLVM_USE_LINKER=gold"
-    fi
 fi
 
 if [ -n "$TARGET_WINDOWS" ]; then
@@ -311,12 +305,11 @@ cmake \
     -DLLVM_TARGETS_TO_BUILD="ARM;AArch64;X86" \
     -DLLVM_INSTALL_TOOLCHAIN_ONLY=$TOOLCHAIN_ONLY \
     -DLLVM_LINK_LLVM_DYLIB=$LINK_DYLIB \
-    -DLLVM_TOOLCHAIN_TOOLS="llvm-ar;llvm-ranlib;llvm-objdump;llvm-rc;llvm-cvtres;llvm-nm;llvm-strings;llvm-readobj;llvm-dlltool;llvm-pdbutil;llvm-objcopy;llvm-strip;llvm-cov;llvm-profdata;llvm-addr2line;llvm-symbolizer;llvm-windres;llvm-ml;llvm-readelf;llvm-size;llvm-cxxfilt" \
+    -DLLVM_TOOLCHAIN_TOOLS="llvm-ar;llvm-ranlib;llvm-objdump;llvm-rc;llvm-cvtres;llvm-nm;llvm-strings;llvm-readobj;llvm-dlltool;llvm-pdbutil;llvm-objcopy;llvm-strip;llvm-cov;llvm-profdata;llvm-addr2line;llvm-symbolizer;llvm-windres;llvm-ml;llvm-readelf;llvm-size" \
     ${HOST+-DLLVM_HOST_TRIPLE=$HOST} \
     $CMAKEFLAGS \
     ..
 
-cmake --build . ${CORES:+-j${CORES}}
-cmake --install . --strip
+$BUILDCMD ${CORES+-j$CORES} install/strip
 
 cp ../LICENSE.TXT $PREFIX

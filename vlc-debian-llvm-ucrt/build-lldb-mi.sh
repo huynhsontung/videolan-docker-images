@@ -16,7 +16,7 @@
 
 set -e
 
-: ${LLDB_MI_VERSION:=af31036c8348233952f41ee1297c132c52bc5cd3}
+: ${LLDB_MI_VERSION:=07178904778f87df13389480b85b9ce353ba4f31}
 BUILDDIR=build
 unset HOST
 
@@ -53,6 +53,8 @@ fi
 
 if command -v ninja >/dev/null; then
     CMAKE_GENERATOR="Ninja"
+    NINJA=1
+    BUILDCMD=ninja
 else
     : ${CORES:=$(nproc 2>/dev/null)}
     : ${CORES:=$(sysctl -n hw.ncpu 2>/dev/null)}
@@ -63,6 +65,7 @@ else
         CMAKE_GENERATOR="MSYS Makefiles"
         ;;
     esac
+    BUILDCMD=make
 fi
 
 export LLVM_DIR="$PREFIX"
@@ -145,5 +148,4 @@ cmake \
     $CMAKEFLAGS \
     ..
 
-cmake --build . ${CORES:+-j${CORES}}
-cmake --install . --strip
+$BUILDCMD ${CORES+-j$CORES} install/strip

@@ -68,6 +68,8 @@ fi
 
 if command -v ninja >/dev/null; then
     CMAKE_GENERATOR="Ninja"
+    NINJA=1
+    BUILDCMD=ninja
 else
     : ${CORES:=$(nproc 2>/dev/null)}
     : ${CORES:=$(sysctl -n hw.ncpu 2>/dev/null)}
@@ -78,6 +80,7 @@ else
         CMAKE_GENERATOR="MSYS Makefiles"
         ;;
     esac
+    BUILDCMD=make
 fi
 
 cd llvm-project/compiler-rt
@@ -121,8 +124,8 @@ for arch in $ARCHS; do
         -DCMAKE_C_FLAGS_INIT="$CFGUARD_CFLAGS" \
         -DCMAKE_CXX_FLAGS_INIT="$CFGUARD_CFLAGS" \
         $SRC_DIR
-    cmake --build . ${CORES:+-j${CORES}}
-    cmake --install .
+    $BUILDCMD ${CORES+-j$CORES}
+    $BUILDCMD install
     mkdir -p "$PREFIX/$arch-w64-mingw32/bin"
     if [ -n "$SANITIZERS" ]; then
         mv "$CLANG_RESOURCE_DIR/lib/windows/"*.dll "$PREFIX/$arch-w64-mingw32/bin"
