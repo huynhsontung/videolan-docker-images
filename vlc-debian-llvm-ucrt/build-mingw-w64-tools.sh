@@ -49,7 +49,7 @@ fi
 cd mingw-w64
 
 MAKE=make
-if [ -n "$(which gmake)" ]; then
+if command -v gmake >/dev/null; then
     MAKE=gmake
 fi
 
@@ -62,21 +62,40 @@ fi
 if [ -n "$HOST" ]; then
     CONFIGFLAGS="$CONFIGFLAGS --host=$HOST"
     CROSS_NAME=-$HOST
-    EXEEXT=.exe
+    case $HOST in
+    *-mingw32)
+        EXEEXT=.exe
+        ;;
+    esac
 else
     case $(uname) in
     MINGW*)
         EXEEXT=.exe
         ;;
-    *)
-        ;;
     esac
 fi
 if [ -n "$MACOS_REDIST" ]; then
     if [ -z "$CFLAGS" ]; then
-        export CFLAGS="-g -O2"
+        CFLAGS="-g -O2"
     fi
-    export CFLAGS="$CFLAGS -arch arm64 -arch x86_64 -mmacosx-version-min=10.9"
+    : ${MACOS_REDIST_ARCHS:=arm64 x86_64}
+    : ${MACOS_REDIST_VERSION:=10.9}
+    NONNATIVE_ARCH=
+    for arch in $MACOS_REDIST_ARCHS; do
+        CFLAGS="$CFLAGS -arch $arch"
+        if [ "$(uname -m)" != "$arch" ]; then
+            case $arch in
+            arm64) NONNATIVE_ARCH=aarch64 ;;
+            *)     NONNATIVE_ARCH=$arch ;;
+            esac
+        fi
+    done
+    if [ -n "$NONNATIVE_ARCH" ]; then
+        # If we're not building for the native arch, flag that we're
+        # cross compiling.
+        CONFIGFLAGS="$CONFIGFLAGS --host=$NONNATIVE_ARCH-apple-darwin"
+    fi
+    export CFLAGS="$CFLAGS -mmacosx-version-min=$MACOS_REDIST_VERSION"
 fi
 if [ -n "$SKIP_INCLUDE_TRIPLET_PREFIX" ]; then
     INCLUDEDIR="$PREFIX/include"
@@ -92,6 +111,8 @@ cd build${CROSS_NAME}
 ../configure --prefix="$PREFIX" $CONFIGFLAGS
 $MAKE -j$CORES
 $MAKE install-strip
+mkdir -p "$PREFIX/share/gendef"
+install -m644 ../COPYING "$PREFIX/share/gendef"
 cd ../../widl
 [ -z "$CLEAN" ] || rm -rf build${CROSS_NAME}
 mkdir -p build${CROSS_NAME}
@@ -99,6 +120,8 @@ cd build${CROSS_NAME}
 ../configure --prefix="$PREFIX" --target=$ANY_ARCH-w64-mingw32 --with-widl-includedir="$INCLUDEDIR" $CONFIGFLAGS
 $MAKE -j$CORES
 $MAKE install-strip
+mkdir -p "$PREFIX/share/widl"
+install -m644 ../../../COPYING "$PREFIX/share/widl"
 cd ..
 cd "$PREFIX/bin"
 # The build above produced $ANY_ARCH-w64-mingw32-widl, add symlinks to it
