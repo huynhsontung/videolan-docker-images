@@ -33,4 +33,4 @@ jobs:
         with:
           context: ./vlc-debian-llvm-ucrt
           push: true
-          tags: huynhsontung/vlc-debian-llvm-ucrt:${{ github.event_name != 'push' && 'artifact-' }}${{ steps.get-tag.outputs.tag }}
+          tags: huynhsontung/vlc-debian-llvm-ucrt:${{ github.event_name != 'push' && 'artifact-' || '' }}${{ steps.get-tag.outputs.tag }}
